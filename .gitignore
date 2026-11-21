@@ -52,3 +52,7 @@ lcov.info
 *.xlsx
 *.csv
 !samples/**/*.csv
+
+# AppImage test extraction
+/squashfs-root/
+*.AppImage

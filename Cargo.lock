@@ -2511,14 +2511,14 @@ checksum = "f8dcc9c7d52a811697d2151c701e0d08956f92b0e24136cf4cf27b57a6a0d9bf"
 
 [[package]]
 name = "rackcraft"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "rackcraft-ui",
 ]
 
 [[package]]
 name = "rackcraft-engine"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -2527,7 +2527,7 @@ dependencies = [
 
 [[package]]
 name = "rackcraft-io"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64",
  "cfb",
@@ -2545,7 +2545,7 @@ dependencies = [
 
 [[package]]
 name = "rackcraft-ui"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "eframe",
  "rackcraft-engine",

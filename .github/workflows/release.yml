@@ -51,6 +51,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
       - name: Install Linux windowing dependencies
         if: runner.os == 'Linux'
         run: |
@@ -88,6 +99,20 @@ jobs:
           chmod +x "dist/$name/${{ matrix.binary }}"
           tar -C dist -czf "dist/$name.tar.gz" "$name"
 
+      - name: Package AppImage (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 \
+            "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" \
+            -o /tmp/appimagetool
+          chmod +x /tmp/appimagetool
+          APPIMAGETOOL=/tmp/appimagetool ./tools/build_appimage.sh \
+            "target/${{ matrix.target }}/release/rackcraft" \
+            "dist/rackcraft-x86_64.AppImage" \
+            "${{ steps.version.outputs.version }}"
+
       - name: Package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -108,6 +133,15 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Upload AppImage
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rackcraft-appimage
+          path: dist/*.AppImage
+          if-no-files-found: error
+          retention-days: 7
+
   checksums:
     name: Generate SHA256SUMS
     needs: build
@@ -124,7 +158,7 @@ jobs:
         run: |
           set -euo pipefail
           ls -lh
-          sha256sum ./*.tar.gz ./*.zip > SHA256SUMS.txt
+          sha256sum ./*.tar.gz ./*.zip ./*.AppImage > SHA256SUMS.txt
           cat SHA256SUMS.txt
 
       - name: Upload checksums
@@ -173,10 +207,16 @@ jobs:
             Visio `.vssx` stencils and Excel BOM export.
 
             ### Downloads
-            - **Linux x86_64:** `rackcraft-x86_64-unknown-linux-gnu.tar.gz`
+            - **Linux x86_64 AppImage:** `rackcraft-x86_64.AppImage`
+            - **Linux x86_64 tarball:** `rackcraft-x86_64-unknown-linux-gnu.tar.gz`
             - **Windows x86_64:** `rackcraft-x86_64-pc-windows-msvc.zip`
             - **macOS Apple silicon:** `rackcraft-aarch64-apple-darwin.tar.gz`
             - **macOS Intel:** `rackcraft-x86_64-apple-darwin.tar.gz`
+
+            The AppImage targets Arch Linux, CachyOS and other x86_64 desktop
+            distributions. It is built on Ubuntu 22.04 (glibc 2.35) and uses the
+            system Wayland/X11, Mesa and font libraries. If FUSE 2 is missing,
+            run it with `APPIMAGE_EXTRACT_AND_RUN=1` or install `fuse2`.
 
             Each archive contains the `rackcraft` binary (`.exe` on Windows),
             the offline sample stencils and the project documentation.
@@ -193,6 +233,7 @@ jobs:
             RackCraft is an independent community project, not an official
             Storytold / ArtCraft product.
           files: |
+            dist/*.AppImage
             dist/*.tar.gz
             dist/*.zip
             dist/SHA256SUMS.txt

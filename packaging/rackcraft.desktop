@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=RackCraft
+GenericName=Rack & cabling designer
+Comment=Design technical racks and structured cabling from Visio stencils
+Exec=rackcraft %F
+Icon=rackcraft
+Terminal=false
+Categories=Graphics;Engineering;
+Keywords=rack;cabling;datacenter;visio;bom;patch panel;
+StartupNotify=true
+StartupWMClass=RackCraft

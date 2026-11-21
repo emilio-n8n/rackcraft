@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1 — 2026-11-21
+
+- Add a self-contained x86_64 Linux **AppImage** to releases, with desktop
+  metadata and a 256 px icon.
+- Ship release documentation and docs images in the downloadable archives.
+- Build Linux releases on Ubuntu 22.04 so the binary requires only glibc 2.35.
+- Fix GitHub Release publishing permissions in the release workflow.
+
 ## 0.1.0 — 2026-11-21
 
 Initial public MVP.

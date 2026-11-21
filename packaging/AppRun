@@ -1,0 +1,5 @@
+#!/bin/sh
+# AppImage entry point: locate the bundled binary relative to this file.
+set -eu
+HERE=$(dirname "$(readlink -f "$0")")
+exec "$HERE/usr/bin/rackcraft" "$@"

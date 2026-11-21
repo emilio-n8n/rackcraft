@@ -21,7 +21,7 @@ It follows the layout and engineering conventions of the
 is a **community project**: it is not developed, endorsed or supported by
 Storytold or the ArtCraft team.
 
-> **Project status: 0.1.0 MVP.** The parser and editor handle the common Visio
+> **Project status: 0.1.1 MVP.** The parser and editor handle the common Visio
 > 2013+ stencil subset used by cabling vendors: masters, vector geometry,
 > connection points, icons and shape data. Legacy binary `.vss` files are
 > detected and can be converted with LibreOffice when it is installed.
@@ -73,12 +73,28 @@ and **Export Excel** writes it.
 
 ### Build for release
 
-Release builds are produced by GitHub Actions for Linux x86_64, Windows x86_64,
-macOS Apple silicon and macOS Intel. To build locally anyway:
+Release builds are produced by GitHub Actions for Linux x86_64 (tar.gz and
+AppImage), Windows x86_64, macOS Apple silicon and macOS Intel. To build
+locally anyway:
 
 ```bash
 cargo build --release -p rackcraft
 ```
+
+### Linux AppImage
+
+Download `rackcraft-x86_64.AppImage` from the
+[latest release](https://github.com/emilio-n8n/rackcraft/releases/latest), then:
+
+```bash
+chmod +x rackcraft-x86_64.AppImage
+./rackcraft-x86_64.AppImage --sample
+```
+
+The AppImage is built on Ubuntu 22.04 (glibc 2.35) and runs on rolling
+distributions such as Arch Linux and CachyOS. It uses the system's Wayland/X11,
+Mesa and font libraries. If FUSE 2 is unavailable, run it with
+`APPIMAGE_EXTRACT_AND_RUN=1` or install `fuse2`.
 
 ## Samples
 
