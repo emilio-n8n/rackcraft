@@ -262,8 +262,14 @@ fn paint_item(
         }
         // Connection points are the heart of the snapping workflow.
         if item.connection_points.len() <= 128 {
-            for connection in item.absolute_connections() {
-                let point = view.doc_to_screen(origin, connection);
+            for connection in &item.connection_points {
+                let point = view.doc_to_screen(
+                    origin,
+                    Point::new(
+                        position.x + connection.x * item.size.width,
+                        position.y + connection.y * item.size.height,
+                    ),
+                );
                 if area.contains(point) {
                     painter.circle_filled(point, 2.4, theme::SNAP);
                     painter.circle_stroke(

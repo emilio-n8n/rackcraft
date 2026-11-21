@@ -935,8 +935,15 @@ impl RackCraftApp {
                             let delta_y = f64::from((pointer.y - start_pointer.y) / self.view.zoom);
                             let desired =
                                 Point::new(start_position.x + delta_x, start_position.y + delta_y);
+                            let canvas = DocRect::new(
+                                0.0,
+                                0.0,
+                                document.canvas.width_mm,
+                                document.canvas.height_mm,
+                            );
+                            let desired = canvas.clamp_position(item.size, desired);
                             let snap = snap_item(document, item, desired, &self.snap_settings());
-                            (snap, delta_x.abs() + delta_y.abs() > 0.5)
+                            (snap, (pointer - start_pointer).length() > 3.0)
                         })
                     };
                     if let Some((snap, moved)) = updated

@@ -53,24 +53,28 @@ pub fn show(ctx: &egui::Context, open: &mut bool, bom: &Bom, title: &str) -> Inv
             });
             ui.add_space(10.0);
 
+            let metric_width = ((ui.available_width() - 44.0) / 4.0).max(90.0);
             ui.horizontal(|ui| {
                 metric(
                     ui,
                     "Placed items",
                     &bom.total_quantity.to_string(),
                     theme::ACCENT,
+                    metric_width,
                 );
                 metric(
                     ui,
                     "Distinct parts",
                     &bom.distinct_parts().to_string(),
                     theme::SNAP,
+                    metric_width,
                 );
                 metric(
                     ui,
                     "Locations",
                     &locations.len().to_string(),
                     theme::WARNING,
+                    metric_width,
                 );
                 let largest = bom
                     .lines
@@ -78,7 +82,13 @@ pub fn show(ctx: &egui::Context, open: &mut bool, bom: &Bom, title: &str) -> Inv
                     .map(|line| line.quantity)
                     .max()
                     .unwrap_or(0);
-                metric(ui, "Largest group", &largest.to_string(), theme::MUTED);
+                metric(
+                    ui,
+                    "Largest group",
+                    &largest.to_string(),
+                    theme::MUTED,
+                    metric_width,
+                );
             });
             ui.add_space(10.0);
 
@@ -224,15 +234,14 @@ fn header(ui: &mut egui::Ui, text: &str) {
     );
 }
 
-fn metric(ui: &mut egui::Ui, label: &str, value: &str, colour: Color32) {
-    let available = (ui.available_width() - 36.0) / 4.0;
+fn metric(ui: &mut egui::Ui, label: &str, value: &str, colour: Color32, width: f32) {
     egui::Frame::new()
         .fill(theme::PANEL)
         .stroke(Stroke::new(1.0, theme::BORDER))
         .corner_radius(CornerRadius::same(6))
         .inner_margin(egui::Margin::symmetric(11, 7))
         .show(ui, |ui| {
-            ui.set_width(available.max(90.0));
+            ui.set_width(width);
             ui.label(
                 RichText::new(value)
                     .font(FontId::monospace(20.0))
