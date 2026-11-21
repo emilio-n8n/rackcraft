@@ -901,7 +901,7 @@ fn decode_icon(encoded: &str) -> Option<IconImage> {
     parse_ico(&bytes)
 }
 
-fn parse_ico(bytes: &[u8]) -> Option<IconImage> {
+pub(crate) fn parse_ico(bytes: &[u8]) -> Option<IconImage> {
     if bytes.len() < 22 {
         return None;
     }

@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.0 — 2026-11-21
+
+- **Connectors:** new document model (`Connector`, glued/free endpoints, labels,
+  colours, straight/orthogonal routing, dashed lines, arrowheads), full undo/redo
+  and JSON persistence. Attached endpoints follow moved equipment; deleting
+  equipment detaches them at their last position.
+- **Connector tool:** `V` / `C` modes, green connection-point targeting,
+  click-A/click-B creation, connector inspector and deletion.
+- **Vector PDF:** A4 landscape schematic with project cartouche and an inventory
+  page (`Part Number | Description | Quantity`); toolbar button and `Ctrl+E`.
+- **Legacy `.vss`:** automatic `vss2xhtml` and LibreOffice discovery, SVG/XHTML
+  import, plus a native OLE/CFB fallback with streams, printable metadata and
+  PNG/ICO previews. The Linux AppImage now bundles `vss2xhtml` and its libraries.
+- **Samples:** new `network-topology.vssx` library (Cloud/FAI, Firewall, Router,
+  Core Switch, Server, Workstation), four connection points per symbol.
+- **Tests:** 75 tests covering connectors, PDF generation, SVG conversion,
+  native CFB fallback and existing engine/io behaviour.
+
 ## 0.1.1 — 2026-11-21
 
 - Add a self-contained x86_64 Linux **AppImage** to releases, with desktop

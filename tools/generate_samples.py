@@ -77,6 +77,29 @@ def icon_b64(color: tuple[int, int, int], kind: str) -> str:
                         r, g, b = 235, 239, 246
                     if 11 <= x <= 20 and 12 <= y <= 20:
                         r, g, b = 10, 13, 18
+                elif kind == "cloud":
+                    if (8 <= x <= 24 and 12 <= y <= 24) or (15 <= x <= 27 and 8 <= y <= 20) or (18 <= x <= 31 and 13 <= y <= 25):
+                        r, g, b = 210, 220, 235
+                elif kind == "firewall":
+                    if 6 <= x <= 27 and 8 <= y <= 25:
+                        if (y // 5) % 2 == 0 and x % 7 in (1, 2):
+                            r, g, b = 232, 87, 63
+                        elif (y // 5) % 2 == 1 and x % 7 in (4, 5):
+                            r, g, b = 232, 87, 63
+                elif kind == "router":
+                    if 8 <= x <= 25 and 13 <= y <= 21:
+                        r, g, b = 92, 104, 124
+                    if (10 <= x <= 13 and 15 <= y <= 18) or (5 <= x <= 30 and 15 <= y <= 17):
+                        r, g, b = 232, 87, 63
+                elif kind == "server":
+                    for sy in (8, 15, 22):
+                        if 8 <= x <= 25 and sy <= y <= sy + 4:
+                            r, g, b = 210, 220, 235
+                elif kind == "workstation":
+                    if 6 <= x <= 26 and 7 <= y <= 20:
+                        r, g, b = 210, 220, 235
+                    if 13 <= x <= 19 and 21 <= y <= 25:
+                        r, g, b = 92, 104, 124
             pixels.append((b, g, r, a))
 
     # BMP rows are bottom-up BGRA.
@@ -677,6 +700,97 @@ def keystone_master() -> dict:
     }
 
 
+def network_master(
+    *,
+    name: str,
+    part: str,
+    description: str,
+    accent: str,
+    glyph: str,
+    icon_kind: str,
+) -> dict:
+    w, h = 80.0, 50.0
+    connections = [("Top", 0.5, 0.0), ("Right", 1.0, 0.5), ("Bottom", 0.5, 1.0), ("Left", 0.0, 0.5)]
+    glyph_rects: list[tuple[float, float, float, float]] = []
+    glyph_lines: list[tuple[float, float, float, float]] = []
+    if glyph == "cloud":
+        glyph_rects = [(12, 19, 18, 10), (23, 13, 26, 16), (44, 19, 24, 10), (18, 27, 44, 7)]
+    elif glyph == "firewall":
+        for row in range(4):
+            for col in range(6):
+                if (row + col) % 2 == 0:
+                    glyph_rects.append((20 + col * 6.8, 14 + row * 5.6, 6.2, 5.0))
+    elif glyph == "router":
+        glyph_rects = [(30, 17, 20, 12), (35, 20, 4, 3), (41, 20, 4, 3)]
+        glyph_lines = [(20, 23, 29, 23), (51, 23, 60, 23), (40, 10, 40, 16), (40, 30, 40, 37)]
+    elif glyph == "switch":
+        for col in range(8):
+            glyph_rects.append((20 + col * 5.2, 20, 4.2, 8.0))
+    elif glyph == "server":
+        for row in range(3):
+            glyph_rects.append((22, 14 + row * 7.0, 36, 5.5))
+    elif glyph == "workstation":
+        glyph_rects = [(24, 12, 32, 20), (35, 32, 10, 4), (36, 36, 8, 2)]
+    else:
+        glyph_rects = [(22, 17, 36, 16)]
+
+    shapes = [
+        shape_xml(
+            page_w=w,
+            page_h=h,
+            x=0,
+            y=0,
+            w=w,
+            h=h,
+            fill="#242a34",
+            line="#68748a",
+            line_weight=0.35,
+            rects=[(0, 0, w, h), (3, 3, w - 6, h - 6)],
+            properties=[
+                ("Manufacturer", "RackCraft"),
+                ("Part Number", part),
+                ("Product Description", description),
+                ("Category", "Network topology"),
+            ],
+            connections=connections,
+            name=f"{name} body",
+        ),
+        shape_xml(
+            page_w=w,
+            page_h=h,
+            x=0,
+            y=0,
+            w=w,
+            h=h,
+            fill=accent,
+            line=None,
+            rects=[(3, 3, w - 6, 5)],
+            name=f"{name} brand",
+        ),
+        shape_xml(
+            page_w=w,
+            page_h=h,
+            x=0,
+            y=0,
+            w=w,
+            h=h,
+            fill=accent if glyph in ("firewall", "router") else "#cfd9e8",
+            line=accent if glyph in ("cloud", "switch", "server", "workstation") else None,
+            line_weight=0.3,
+            rects=glyph_rects,
+            lines=glyph_lines,
+            name=f"{name} glyph",
+        ),
+    ]
+    return {
+        "name": name,
+        "width_mm": w,
+        "height_mm": h,
+        "icon": icon_b64((232, 87, 63), icon_kind),
+        "shapes": shapes,
+    }
+
+
 def main() -> None:
     SAMPLES.mkdir(parents=True, exist_ok=True)
     write_vssx(
@@ -688,6 +802,60 @@ def main() -> None:
         SAMPLES / "rackcraft-modular.vssx",
         "RackCraft Modular",
         [modular_panel_master(), keystone_master()],
+    )
+    write_vssx(
+        SAMPLES / "network-topology.vssx",
+        "Network Topology",
+        [
+            network_master(
+                name="Cloud / FAI",
+                part="RC-NET-CLOUD",
+                description="Internet cloud / ISP uplink symbol",
+                accent="#5aa7e8",
+                glyph="cloud",
+                icon_kind="cloud",
+            ),
+            network_master(
+                name="Firewall",
+                part="RC-NET-FW",
+                description="Perimeter firewall",
+                accent="#e8573f",
+                glyph="firewall",
+                icon_kind="firewall",
+            ),
+            network_master(
+                name="Router",
+                part="RC-NET-RTR",
+                description="Edge router",
+                accent="#f0b45a",
+                glyph="router",
+                icon_kind="router",
+            ),
+            network_master(
+                name="Core Switch",
+                part="RC-NET-CSW",
+                description="Core L3 switch",
+                accent="#54d184",
+                glyph="switch",
+                icon_kind="switch",
+            ),
+            network_master(
+                name="Server",
+                part="RC-NET-SRV",
+                description="Rack server node",
+                accent="#9b8cf0",
+                glyph="server",
+                icon_kind="server",
+            ),
+            network_master(
+                name="Workstation",
+                part="RC-NET-WKS",
+                description="End-user workstation",
+                accent="#78c8d8",
+                glyph="workstation",
+                icon_kind="workstation",
+            ),
+        ],
     )
 
 

@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (without the leading v), e.g. 0.1.0"
+        description: "Release version (without the leading v), e.g. 0.2.0"
         required: true
-        default: "0.1.0"
+        default: "0.2.0"
         type: string
 
 permissions:
@@ -70,7 +70,8 @@ jobs:
             libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libx11-dev \
             libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
             libxcursor-dev libxrandr-dev libxi-dev libgl1-mesa-dev \
-            libfontconfig1-dev libfreetype6-dev pkg-config
+            libfontconfig1-dev libfreetype6-dev pkg-config \
+            libvisio-tools
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -93,7 +94,7 @@ jobs:
           name="rackcraft-${{ matrix.target }}"
           mkdir -p "dist/$name"
           cp "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/$name/"
-          cp README.md LICENSE-MIT LICENSE-APACHE AGENTS.md "dist/$name/"
+          cp README.md LICENSE-MIT LICENSE-APACHE AGENTS.md packaging/THIRD_PARTY.md "dist/$name/"
           cp -R samples "dist/$name/samples"
           cp -R docs "dist/$name/docs"
           chmod +x "dist/$name/${{ matrix.binary }}"
@@ -108,7 +109,8 @@ jobs:
             "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" \
             -o /tmp/appimagetool
           chmod +x /tmp/appimagetool
-          APPIMAGETOOL=/tmp/appimagetool ./tools/build_appimage.sh \
+          APPIMAGETOOL=/tmp/appimagetool VSS2XHTML=/usr/bin/vss2xhtml \
+            ./tools/build_appimage.sh \
             "target/${{ matrix.target }}/release/rackcraft" \
             "dist/rackcraft-x86_64.AppImage" \
             "${{ steps.version.outputs.version }}"
@@ -120,7 +122,7 @@ jobs:
           $name = "rackcraft-${{ matrix.target }}"
           New-Item -ItemType Directory -Force -Path "dist/$name" | Out-Null
           Copy-Item "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/$name/"
-          Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE, AGENTS.md "dist/$name/"
+          Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE, AGENTS.md, packaging/THIRD_PARTY.md "dist/$name/"
           Copy-Item -Recurse samples "dist/$name/samples"
           Copy-Item -Recurse docs "dist/$name/docs"
           Compress-Archive -Path "dist/$name" -DestinationPath "dist/$name.zip" -Force
@@ -203,8 +205,15 @@ jobs:
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
           body: |
-            Native rack and structured-cabling diagram designer, compatible with
-            Visio `.vssx` stencils and Excel BOM export.
+            Native rack, cabling and network-topology diagram designer,
+            compatible with Visio `.vssx` stencils, vector PDF and Excel export.
+
+            ### Highlights
+            - Magnetic cables with labels, colours, ortho/straight routing,
+              dashed lines and arrows.
+            - Vector A4 PDF: schematic + project cartouche + inventory page.
+            - Legacy `.vss` import with bundled `vss2xhtml` in the AppImage.
+            - Offline sample stencils, including network topology symbols.
 
             ### Downloads
             - **Linux x86_64 AppImage:** `rackcraft-x86_64.AppImage`
@@ -215,8 +224,10 @@ jobs:
 
             The AppImage targets Arch Linux, CachyOS and other x86_64 desktop
             distributions. It is built on Ubuntu 22.04 (glibc 2.35) and uses the
-            system Wayland/X11, Mesa and font libraries. If FUSE 2 is missing,
-            run it with `APPIMAGE_EXTRACT_AND_RUN=1` or install `fuse2`.
+            system Wayland/X11, Mesa and font libraries. **Legacy `.vss` support
+            is bundled** through `vss2xhtml` (libvisio-tools), so no separate
+            LibreOffice install is needed. If FUSE 2 is missing, run it with
+            `APPIMAGE_EXTRACT_AND_RUN=1` or install `fuse2`.
 
             Each archive contains the `rackcraft` binary (`.exe` on Windows),
             the offline sample stencils and the project documentation.

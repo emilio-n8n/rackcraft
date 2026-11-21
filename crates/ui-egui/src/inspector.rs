@@ -1,7 +1,10 @@
 //! Right-hand shape-data inspector.
 
-use eframe::egui::{self, CornerRadius, RichText, Stroke};
-use rackcraft_engine::{Document, Item, ItemId, ShapeField};
+use eframe::egui::{self, Color32, CornerRadius, RichText, Sense, Stroke};
+use rackcraft_engine::{
+    Arrow, Color, Connector, ConnectorEnd, ConnectorId, Document, Item, ItemId, LineStyle, Routing,
+    ShapeField,
+};
 
 use crate::theme;
 
@@ -66,6 +69,49 @@ impl InspectorForm {
     pub fn is_dirty(&self, item: &Item) -> bool {
         &Self::from_item(item) != self
     }
+}
+
+/// Editable copy of connector properties.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConnectorForm {
+    /// Connector being edited.
+    pub connector_id: ConnectorId,
+    /// Cable label.
+    pub label: String,
+    /// Stroke colour.
+    pub color: Color,
+    /// Straight or orthogonal routing.
+    pub routing: Routing,
+    /// Solid or dashed.
+    pub line_style: LineStyle,
+    /// Arrowheads.
+    pub arrow: Arrow,
+}
+
+impl ConnectorForm {
+    /// Build a form from a connector.
+    #[must_use]
+    pub fn from_connector(connector: &Connector) -> Self {
+        Self {
+            connector_id: connector.id,
+            label: connector.label.clone(),
+            color: connector.color,
+            routing: connector.routing,
+            line_style: connector.line_style,
+            arrow: connector.arrow,
+        }
+    }
+}
+
+/// Action requested by the connector inspector.
+#[derive(Debug, Clone)]
+pub enum ConnectorAction {
+    /// No action.
+    None,
+    /// Apply the edited connector properties.
+    Apply(ConnectorForm),
+    /// Delete the connector.
+    Delete,
 }
 
 /// Action requested by the inspector.
@@ -286,6 +332,188 @@ pub fn show(
     action
 }
 
+/// Draw the connector editor in the right-hand panel.
+pub fn show_connector(
+    ui: &mut egui::Ui,
+    document: &Document,
+    id: ConnectorId,
+    form: &mut Option<ConnectorForm>,
+) -> ConnectorAction {
+    let mut action = ConnectorAction::None;
+    ui.horizontal(|ui| {
+        theme::section_label(ui, "Connector");
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+            theme::badge(ui, &format!("#{id}"), theme::FAINT);
+        });
+    });
+    ui.add_space(4.0);
+    let Some(connector) = document.connector(id) else {
+        ui.label(RichText::new("Connector no longer exists").color(theme::MUTED));
+        return action;
+    };
+    if form.as_ref().map(|form| form.connector_id) != Some(id) {
+        *form = Some(ConnectorForm::from_connector(connector));
+    }
+    let Some(form) = form.as_mut() else {
+        return action;
+    };
+    let dirty = *form != ConnectorForm::from_connector(connector);
+
+    egui::Frame::new()
+        .fill(theme::PANEL)
+        .stroke(Stroke::new(1.0, theme::BORDER))
+        .corner_radius(CornerRadius::same(7))
+        .inner_margin(egui::Margin::same(10))
+        .show(ui, |ui| {
+            ui.set_width(ui.available_width());
+            ui.label(
+                RichText::new(if connector.label.is_empty() {
+                    "Untitled link"
+                } else {
+                    &connector.label
+                })
+                .size(14.0)
+                .strong()
+                .color(theme::TEXT),
+            );
+            ui.label(
+                RichText::new(format!(
+                    "{} -> {}",
+                    describe_end(document, &connector.from),
+                    describe_end(document, &connector.to)
+                ))
+                .size(9.5)
+                .color(theme::MUTED),
+            );
+            ui.add_space(3.0);
+            ui.label(
+                RichText::new(
+                    "Attached ends follow equipment moves; deleted equipment leaves a free anchor.",
+                )
+                .size(9.0)
+                .color(theme::FAINT),
+            );
+        });
+
+    ui.add_space(8.0);
+    theme::section_label(ui, "Link");
+    ui.label(RichText::new("Label").size(10.0).color(theme::MUTED));
+    ui.add(
+        egui::TextEdit::singleline(&mut form.label)
+            .hint_text("Cat6A, 10G SFP+, WAN…")
+            .desired_width(f32::INFINITY),
+    );
+
+    ui.add_space(5.0);
+    ui.label(RichText::new("Color").size(10.0).color(theme::MUTED));
+    ui.horizontal(|ui| {
+        let mut color =
+            Color32::from_rgba_unmultiplied(form.color.r, form.color.g, form.color.b, form.color.a);
+        if ui.color_edit_button_srgba(&mut color).changed() {
+            form.color = Color::rgba(color.r(), color.g(), color.b(), color.a());
+        }
+        color_swatch(ui, Color::rgb(84, 209, 132), &mut form.color);
+        color_swatch(ui, Color::rgb(232, 87, 63), &mut form.color);
+        color_swatch(ui, Color::rgb(90, 167, 232), &mut form.color);
+        color_swatch(ui, Color::rgb(240, 180, 90), &mut form.color);
+        color_swatch(ui, Color::rgb(235, 239, 246), &mut form.color);
+    });
+
+    ui.add_space(5.0);
+    ui.label(RichText::new("Routing").size(10.0).color(theme::MUTED));
+    ui.horizontal(|ui| {
+        ui.radio_value(&mut form.routing, Routing::Straight, "Straight");
+        ui.radio_value(&mut form.routing, Routing::Orthogonal, "Orthogonal");
+    });
+    ui.label(RichText::new("Line style").size(10.0).color(theme::MUTED));
+    ui.horizontal(|ui| {
+        ui.radio_value(&mut form.line_style, LineStyle::Solid, "Solid");
+        ui.radio_value(&mut form.line_style, LineStyle::Dashed, "Dashed");
+    });
+    ui.label(RichText::new("Arrows").size(10.0).color(theme::MUTED));
+    ui.horizontal(|ui| {
+        ui.radio_value(&mut form.arrow, Arrow::None, "None");
+        ui.radio_value(&mut form.arrow, Arrow::End, "End");
+        ui.radio_value(&mut form.arrow, Arrow::Double, "Both");
+    });
+
+    ui.add_space(6.0);
+    if dirty {
+        ui.label(
+            RichText::new("● Unsaved connector edits")
+                .size(9.5)
+                .color(theme::WARNING),
+        );
+    }
+    ui.horizontal(|ui| {
+        let apply = ui.add(
+            egui::Button::new(
+                RichText::new("Apply link")
+                    .size(11.5)
+                    .strong()
+                    .color(Color32::WHITE),
+            )
+            .fill(if dirty { theme::ACCENT } else { theme::RAISED })
+            .corner_radius(CornerRadius::same(5))
+            .min_size(egui::vec2(110.0, 28.0)),
+        );
+        if apply.clicked() {
+            action = ConnectorAction::Apply(form.clone());
+        }
+        if ui
+            .add(
+                egui::Button::new(RichText::new("Delete").size(10.5).color(theme::ERROR))
+                    .fill(theme::RAISED)
+                    .corner_radius(CornerRadius::same(5)),
+            )
+            .on_hover_text("Delete this connector (Del)")
+            .clicked()
+        {
+            action = ConnectorAction::Delete;
+        }
+    });
+    action
+}
+
+fn color_swatch(ui: &mut egui::Ui, colour: Color, current: &mut Color) {
+    let (rect, response) = ui.allocate_exact_size(egui::vec2(18.0, 18.0), Sense::click());
+    ui.painter().rect(
+        rect,
+        CornerRadius::same(4),
+        Color32::from_rgba_unmultiplied(colour.r, colour.g, colour.b, colour.a),
+        if *current == colour {
+            Stroke::new(2.0, Color32::WHITE)
+        } else {
+            Stroke::new(1.0, theme::BORDER)
+        },
+        egui::StrokeKind::Inside,
+    );
+    if response.clicked() {
+        *current = colour;
+    }
+    response.on_hover_text("Use this color");
+}
+
+fn describe_end(document: &Document, end: &ConnectorEnd) -> String {
+    match end {
+        ConnectorEnd::Free { point } => format!("Free {:.0}, {:.0} mm", point.x, point.y),
+        ConnectorEnd::ConnectionPoint {
+            item_id,
+            connection_point,
+        } => document.item(*item_id).map_or_else(
+            || "Missing equipment".to_owned(),
+            |item| {
+                let name = item
+                    .connection_points
+                    .get(*connection_point)
+                    .and_then(|connection| connection.name.as_deref())
+                    .unwrap_or("Connection point");
+                format!("{} · {name}", item.name)
+            },
+        ),
+    }
+}
+
 fn field(ui: &mut egui::Ui, label: &str, hint: &str, value: &mut String) {
     ui.label(RichText::new(label).size(10.0).color(theme::MUTED));
     ui.add(
@@ -336,8 +564,10 @@ fn empty_state(ui: &mut egui::Ui, document: &Document) {
     for tip in [
         "Wheel zooms under the cursor.",
         "Middle-drag or space-drag pans.",
+        "V selects; C draws cables between connection points.",
+        "Click a cable in Select mode to edit its label and style.",
         "Green rings show rack-U and port snapping.",
-        "Ctrl+Z undoes, Ctrl+D duplicates, Del removes.",
+        "Ctrl+E exports a vector PDF; Ctrl+Z undoes.",
     ] {
         ui.label(
             RichText::new(format!("· {tip}"))

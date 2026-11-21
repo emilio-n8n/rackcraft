@@ -68,6 +68,11 @@ UI crate. The UI never parses `.vssx` itself.
   - stencil shape data + editable project fields.
 - Documents embed everything needed to render and compute a BOM, so a saved
   `.json` opens without the original stencil library.
+- A `Connector` glues two `ConnectorEnd`s (item connection point or free mm
+  point) and stores label, colour, straight/orthogonal routing, line style and
+  arrows. Endpoints resolve dynamically, so moved equipment updates cables.
+  Deleting equipment converts its attached ends to free anchors. Connectors use
+  their own id sequence and are schema-versioned with the document.
 - Shape data fields are case-insensitive on import. Manufacturer, Part Number
   and Product Description are the BOM identity; project fields are Installed
   Date, Warranty Exp, Location, Building and Notes.
@@ -89,9 +94,12 @@ UI crate. The UI never parses `.vssx` itself.
   `RelQuadBezTo`, ellipse/arc approximations and NURBS endpoints. Values in
   cells are inches; apply the shape transform (Pin, LocPin, Angle, Flip) through
   nested groups, then normalize to the master page.
-- Legacy binary `.vss` is detected by the CFB magic, never parsed as ZIP. If
-  LibreOffice (`soffice`) is installed, convert to `.vssx` in a temp directory;
-  otherwise return an actionable error explaining the conversion.
+- Legacy binary `.vss` is detected by the CFB magic, never parsed as ZIP.
+  Conversion order: LibreOffice (`soffice`) → `.vssx`; `vss2xhtml`
+  (libvisio-tools) → SVG/XHTML; native CFB inspection fallback for streams,
+  PNG/ICO previews, printable metadata and a clearly labelled placeholder.
+  The Linux AppImage bundles `vss2xhtml` and its private libraries. Never present
+  a placeholder as a fully converted master.
 - Keep parsing defensive: malformed masters are skipped with diagnostics rather
   than panicking. Library must not `unwrap()` on external input.
 
@@ -109,7 +117,7 @@ UI crate. The UI never parses `.vssx` itself.
   bump in `Document::schema_version`.
 - New features require tests: parser fixtures, snap math, BOM grouping, undo
   bounds, CSV escaping, XLSX generation (open the generated ZIP and assert
-  sheet contents).
+  sheet contents), connector resolution and PDF validity/page content.
 - UI wording is English (the ArtCraft ecosystem convention); user-facing docs
   may be French or English. Keep code comments in English.
 

@@ -5,6 +5,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 
 use crate::SCHEMA_VERSION;
+use crate::connector::{Connector, ConnectorId};
 use crate::error::{EngineError, Result};
 use crate::geometry::{Color, Point, Rect, Size};
 
@@ -524,9 +525,15 @@ pub struct Document {
     /// Placed items, in insertion order (painter sorts by `z_index`).
     #[serde(default)]
     pub items: Vec<Item>,
+    /// Cables / network connectors.
+    #[serde(default)]
+    pub connectors: Vec<Connector>,
     /// Next item id to assign.
     #[serde(default = "default_next_id")]
     pub next_id: ItemId,
+    /// Next connector id to assign.
+    #[serde(default = "default_next_id")]
+    pub next_connector_id: ConnectorId,
     /// Extensible project metadata.
     #[serde(default)]
     pub metadata: BTreeMap<String, String>,
@@ -555,7 +562,9 @@ impl Document {
             name: name.into(),
             canvas: Canvas::default(),
             items: Vec::new(),
+            connectors: Vec::new(),
             next_id: 1,
+            next_connector_id: 1,
             metadata: BTreeMap::new(),
         }
     }
@@ -584,8 +593,12 @@ impl Document {
     }
 
     /// Remove an item and return it.
+    ///
+    /// Connectors attached to this item become free anchors at their last
+    /// resolved position, so the diagram never keeps a dangling item id.
     pub fn remove_item(&mut self, id: ItemId) -> Option<Item> {
         let index = self.items.iter().position(|item| item.id == id)?;
+        self.detach_item(id);
         Some(self.items.remove(index))
     }
 
@@ -641,6 +654,13 @@ impl Document {
         }
         let max_id = document.items.iter().map(|item| item.id).max().unwrap_or(0);
         document.next_id = document.next_id.max(max_id + 1).max(1);
+        let max_connector = document
+            .connectors
+            .iter()
+            .map(|connector| connector.id)
+            .max()
+            .unwrap_or(0);
+        document.next_connector_id = document.next_connector_id.max(max_connector + 1).max(1);
         document.schema_version = SCHEMA_VERSION;
         Ok(document)
     }
@@ -700,6 +720,19 @@ mod tests {
         assert_eq!(loaded.next_id, 2);
         assert_eq!(loaded.items, doc.items);
         assert_eq!(loaded.name, "JSON");
+    }
+
+    #[test]
+    fn schema_one_documents_load_without_connectors() {
+        let doc = Document::new("Old");
+        let mut value = serde_json::to_value(doc).unwrap();
+        value["schema_version"] = serde_json::json!(1);
+        value.as_object_mut().unwrap().remove("connectors");
+        value.as_object_mut().unwrap().remove("next_connector_id");
+        let loaded = Document::from_json(&value.to_string()).unwrap();
+        assert!(loaded.connectors.is_empty());
+        assert_eq!(loaded.next_connector_id, 1);
+        assert_eq!(loaded.schema_version, SCHEMA_VERSION);
     }
 
     #[test]

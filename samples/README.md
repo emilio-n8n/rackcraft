@@ -1,6 +1,6 @@
 # RackCraft sample stencils
 
-These two `.vssx` files are hand-authored, deterministic fixtures with the same
+These three `.vssx` files are hand-authored, deterministic fixtures with the same
 OPC/ZIP and Visio 2013 XML structure as vendor stencil libraries. They are not
 copied from any commercial stencil set.
 
@@ -8,6 +8,7 @@ copied from any commercial stencil set.
 | --- | --- |
 | `rackcraft-datacenter.vssx` | 25U open frame rack, 24-port CAT6 patch panel, 24-port gigabit switch, 1U cable manager |
 | `rackcraft-modular.vssx` | 24-aperture modular patch panel, CAT6 keystone jack RJ45 |
+| `network-topology.vssx` | Cloud/FAI, Firewall, Router, Core Switch, Server, Workstation — four edge connection points each |
 
 Each master includes:
 

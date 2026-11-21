@@ -4,7 +4,8 @@ use eframe::egui::{
     self, Color32, CornerRadius, FontId, Pos2, Rect, Stroke, StrokeKind, Vec2, pos2, vec2,
 };
 use rackcraft_engine::{
-    Canvas, Color, Document, DrawPath, Item, PathCommand, Point, SnapKind, SnapResult,
+    Arrow, Canvas, Color, ConnectorEnd, ConnectorId, Document, DrawPath, Item, LineStyle,
+    PathCommand, Point, Routing, SnapKind, SnapResult,
 };
 use rackcraft_io::Master;
 
@@ -397,6 +398,263 @@ pub fn paint_snap(painter: &egui::Painter, area: Rect, view: &View, snap: &SnapR
     );
 }
 
+/// Paint all connectors under/over the equipment layer.
+pub fn paint_connectors(
+    painter: &egui::Painter,
+    area: Rect,
+    view: &View,
+    document: &Document,
+    selected: Option<ConnectorId>,
+    hovered: Option<ConnectorId>,
+) {
+    for connector in &document.connectors {
+        let Some(path) = document.connector_path(connector) else {
+            continue;
+        };
+        let points: Vec<Pos2> = path
+            .iter()
+            .map(|point| view.doc_to_screen(area.min, *point))
+            .collect();
+        if points.len() < 2 {
+            continue;
+        }
+        let is_selected = selected == Some(connector.id);
+        let is_hovered = hovered == Some(connector.id);
+        let colour = color_to_egui(connector.color);
+        let width = if is_selected {
+            2.8
+        } else if is_hovered {
+            2.2
+        } else {
+            1.6
+        };
+        if is_selected {
+            painter.add(egui::Shape::line(
+                points.clone(),
+                Stroke::new(
+                    width + 3.0,
+                    Color32::from_rgba_unmultiplied(232, 87, 63, 55),
+                ),
+            ));
+        }
+        let stroke = Stroke::new(width, colour);
+        if connector.line_style == LineStyle::Dashed {
+            painter.extend(egui::Shape::dashed_line(&points, stroke, 7.0, 4.5));
+        } else {
+            painter.add(egui::Shape::line(points.clone(), stroke));
+        }
+        if connector.arrow != Arrow::None {
+            draw_connector_arrow(
+                painter,
+                points[points.len() - 2],
+                points[points.len() - 1],
+                colour,
+            );
+        }
+        if connector.arrow == Arrow::Double {
+            draw_connector_arrow(painter, points[1], points[0], colour);
+        }
+        if is_selected {
+            for point in [points[0], *points.last().unwrap()] {
+                painter.circle_filled(point, 4.0, theme::PANEL);
+                painter.circle_stroke(point, 4.0, Stroke::new(1.5, theme::ACCENT_LIGHT));
+            }
+        }
+        if !connector.label.is_empty() {
+            let t = 0.28 + 0.14 * (connector.id % 4) as f32;
+            let midpoint = polyline_point_at(&points, t);
+            let text = connector.label.clone();
+            let width = text.chars().count() as f32 * 5.2 + 8.0;
+            let rect = Rect::from_center_size(midpoint, vec2(width, 15.0));
+            painter.rect(
+                rect,
+                CornerRadius::same(4),
+                Color32::from_rgba_unmultiplied(20, 23, 29, 220),
+                Stroke::new(1.0, colour.gamma_multiply(0.55)),
+                StrokeKind::Inside,
+            );
+            painter.text(
+                midpoint,
+                egui::Align2::CENTER_CENTER,
+                text,
+                FontId::proportional(8.5),
+                colour,
+            );
+        }
+    }
+}
+
+/// Draw every connection point in connector mode and highlight the nearest one.
+pub fn paint_connector_ports(
+    painter: &egui::Painter,
+    area: Rect,
+    view: &View,
+    document: &Document,
+    hovered: Option<(u64, usize)>,
+    pending_start: Option<&ConnectorEnd>,
+) {
+    let mut drawn = 0;
+    for item in &document.items {
+        if item.connection_points.len() > 96 {
+            continue;
+        }
+        for (index, connection) in item.connection_points.iter().enumerate() {
+            let point = view.doc_to_screen(
+                area.min,
+                Point::new(
+                    item.position.x + connection.x * item.size.width,
+                    item.position.y + connection.y * item.size.height,
+                ),
+            );
+            if !area.expand(8.0).contains(point) {
+                continue;
+            }
+            drawn += 1;
+            if drawn > 600 {
+                return;
+            }
+            let is_hovered = hovered == Some((item.id, index));
+            let is_start = pending_start.is_some_and(|end| {
+                matches!(
+                    end,
+                    ConnectorEnd::ConnectionPoint {
+                        item_id,
+                        connection_point
+                    } if *item_id == item.id && *connection_point == index
+                )
+            });
+            let colour = if is_hovered || is_start {
+                theme::SNAP
+            } else {
+                Color32::from_rgba_unmultiplied(84, 209, 132, 110)
+            };
+            if is_hovered || is_start {
+                painter.circle_filled(
+                    point,
+                    8.0,
+                    Color32::from_rgba_unmultiplied(84, 209, 132, 35),
+                );
+                painter.circle_stroke(point, 8.0, Stroke::new(1.3, theme::SNAP));
+            }
+            painter.circle_filled(point, if is_hovered { 4.0 } else { 2.0 }, colour);
+            if is_hovered {
+                let label = connection
+                    .name
+                    .clone()
+                    .unwrap_or_else(|| format!("Port {}", index + 1));
+                let label_rect = Rect::from_min_size(
+                    point + vec2(11.0, -23.0),
+                    vec2(label.chars().count() as f32 * 5.4 + 8.0, 16.0),
+                );
+                painter.rect_filled(label_rect, CornerRadius::same(4), theme::PANEL);
+                painter.text(
+                    label_rect.center(),
+                    egui::Align2::CENTER_CENTER,
+                    label,
+                    FontId::proportional(8.5),
+                    theme::SNAP,
+                );
+            }
+        }
+    }
+}
+
+/// Dashed preview for a connector being created.
+pub fn paint_connector_preview(
+    painter: &egui::Painter,
+    area: Rect,
+    view: &View,
+    start: Point,
+    end: Point,
+    end_is_connection: bool,
+    routing: Routing,
+) {
+    let start = view.doc_to_screen(area.min, start);
+    let end = view.doc_to_screen(area.min, end);
+    let points = match routing {
+        Routing::Straight => vec![start, end],
+        Routing::Orthogonal => {
+            let mid_x = (start.x + end.x) * 0.5;
+            vec![start, pos2(mid_x, start.y), pos2(mid_x, end.y), end]
+        }
+    };
+    painter.extend(egui::Shape::dashed_line(
+        &points,
+        Stroke::new(2.0, theme::ACCENT_LIGHT),
+        9.0,
+        5.0,
+    ));
+    painter.circle_filled(start, 4.5, theme::SNAP);
+    painter.circle_stroke(start, 7.0, Stroke::new(1.2, theme::SNAP));
+    let end_colour = if end_is_connection {
+        theme::SNAP
+    } else {
+        theme::ACCENT_LIGHT
+    };
+    painter.circle_filled(end, 4.0, end_colour);
+    painter.circle_stroke(end, 6.5, Stroke::new(1.2, end_colour));
+}
+
+/// Find the nearest item connection point in document space.
+#[must_use]
+pub fn nearest_connection(
+    document: &Document,
+    point: Point,
+    tolerance_mm: f64,
+) -> Option<(u64, usize, Point)> {
+    let mut best: Option<(f64, u64, usize, Point)> = None;
+    for item in &document.items {
+        for (index, connection) in item.connection_points.iter().enumerate() {
+            let absolute = Point::new(
+                item.position.x + connection.x * item.size.width,
+                item.position.y + connection.y * item.size.height,
+            );
+            let distance = point.distance(absolute);
+            if distance <= tolerance_mm
+                && best.is_none_or(|(best_distance, ..)| distance < best_distance)
+            {
+                best = Some((distance, item.id, index, absolute));
+            }
+        }
+    }
+    best.map(|(_, item_id, index, point)| (item_id, index, point))
+}
+
+fn draw_connector_arrow(painter: &egui::Painter, from: Pos2, tip: Pos2, colour: Color32) {
+    let dir = tip - from;
+    let length = dir.length().max(0.001);
+    let unit = dir / length;
+    let normal = vec2(-unit.y, unit.x);
+    let size = 7.0;
+    let wing = 3.4;
+    let points = vec![
+        tip,
+        tip - unit * size + normal * wing,
+        tip - unit * size - normal * wing,
+    ];
+    painter.add(egui::Shape::convex_polygon(points, colour, Stroke::NONE));
+}
+
+fn polyline_point_at(points: &[Pos2], fraction: f32) -> Pos2 {
+    let total: f32 = points
+        .windows(2)
+        .map(|pair| pair[0].distance(pair[1]))
+        .sum();
+    if total <= 0.0 {
+        return points[0];
+    }
+    let mut remaining = total * fraction.clamp(0.0, 1.0);
+    for pair in points.windows(2) {
+        let length = pair[0].distance(pair[1]);
+        if remaining <= length {
+            let t = (remaining / length).clamp(0.0, 1.0);
+            return pair[0] + (pair[1] - pair[0]) * t;
+        }
+        remaining -= length;
+    }
+    *points.last().unwrap_or(&points[0])
+}
+
 /// Paint the zoom / hint HUD without intercepting input.
 pub fn paint_hud(painter: &egui::Painter, area: Rect, view: &View, document: &Document) {
     let title = format!("{}  ·  {} items", document.name, document.items.len());
@@ -415,7 +673,7 @@ pub fn paint_hud(painter: &egui::Painter, area: Rect, view: &View, document: &Do
         theme::MUTED,
     );
 
-    let hints = "Wheel: zoom   ·   Middle/space-drag: pan   ·   Del: remove";
+    let hints = "V: select · C: connect · Wheel: zoom · Middle/space-drag: pan · Del: remove";
     painter.text(
         area.left_bottom() + vec2(14.0, -26.0),
         egui::Align2::LEFT_TOP,

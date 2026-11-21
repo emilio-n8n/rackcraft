@@ -10,17 +10,21 @@
 pub mod bom_export;
 pub mod error;
 pub mod legacy;
+pub mod legacy_native;
+pub mod legacy_svg;
 pub mod model;
+pub mod pdf;
 pub mod vssx;
 
 use std::path::Path;
 
 pub use bom_export::{BOM_HEADERS, bom_csv_bytes, bom_xlsx_bytes, export_bom_csv, export_bom_xlsx};
 pub use error::{IoError, Result};
-pub use legacy::{describe_legacy, soffice_available};
+pub use legacy::{describe_legacy, find_executable, soffice_available, vss2xhtml_available};
 pub use model::{
     IconImage, Master, StencilFormat, StencilLibrary, detect_format, infer_category, infer_tags,
 };
+pub use pdf::{export_pdf, pdf_bytes};
 pub use vssx::load_vssx_bytes;
 
 /// Bundled stencils compiled into the binary so `--sample` works offline.
@@ -32,6 +36,10 @@ pub const BUNDLED_STENCILS: &[(&str, &[u8])] = &[
     (
         "RackCraft Modular",
         include_bytes!("../../../samples/rackcraft-modular.vssx"),
+    ),
+    (
+        "Network Topology",
+        include_bytes!("../../../samples/network-topology.vssx"),
     ),
 ];
 
@@ -78,7 +86,12 @@ pub fn load_stencil_file(path: impl AsRef<Path>) -> Result<StencilLibrary> {
 pub fn load_stencil_bytes(bytes: &[u8], display_name: &str) -> Result<StencilLibrary> {
     match detect_format(bytes) {
         StencilFormat::Vssx => load_vssx_bytes(bytes, display_name, None),
-        StencilFormat::Vss => Err(legacy::legacy_error(bytes)),
+        StencilFormat::Vss => {
+            match legacy_native::load_native_fallback(bytes, display_name, None) {
+                Ok(library) => Ok(library),
+                Err(_) => Err(legacy::legacy_error(bytes)),
+            }
+        }
         StencilFormat::Unknown => Err(IoError::UnknownFormat(display_name.to_owned())),
     }
 }
@@ -111,13 +124,13 @@ mod tests {
             "bundled stencil errors: {:?}",
             bundled.errors
         );
-        assert_eq!(bundled.libraries.len(), 2);
+        assert_eq!(bundled.libraries.len(), 3);
         let total: usize = bundled
             .libraries
             .iter()
             .map(|library| library.masters.len())
             .sum();
-        assert_eq!(total, 6);
+        assert_eq!(total, 12);
     }
 
     #[test]
@@ -140,6 +153,28 @@ mod tests {
         assert_eq!(rack.mount.as_ref().unwrap().units, 25);
         assert_eq!(rack.connection_points.len(), 25);
         assert!(rack.icon.is_some());
+    }
+
+    #[test]
+    fn network_library_has_four_way_symbols() {
+        let bundled = load_bundled_stencils();
+        let network = &bundled.libraries[2];
+        assert_eq!(network.name, "Network Topology");
+        assert_eq!(network.masters.len(), 6);
+        for master in &network.masters {
+            assert_eq!(master.connection_points.len(), 4, "{}", master.name);
+            assert!(master.mount.is_none());
+            assert!(master.graphics.len() >= 3);
+        }
+        let firewall = network
+            .masters
+            .iter()
+            .find(|master| master.name == "Firewall")
+            .unwrap();
+        assert_eq!(
+            crate::model::shape_value(&firewall.shape_data, &["Part Number"]),
+            Some("RC-NET-FW")
+        );
     }
 
     #[test]

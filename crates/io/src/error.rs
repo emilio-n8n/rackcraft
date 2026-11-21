@@ -32,9 +32,11 @@ pub enum IoError {
     NoMasters,
     /// A legacy binary `.vss` file was detected.
     #[error(
-        "legacy binary Visio stencil (.vss) detected{detail}. RackCraft reads .vssx natively. \
-         Convert it first with `soffice --headless --convert-to vssx --outdir <folder> <file>` \
-         (LibreOffice) or re-save it as .vssx from Visio, then import the .vssx file."
+        "legacy binary Visio stencil (.vss) could not be read{detail}. Install `vss2xhtml` \
+         (libvisio-tools) or LibreOffice, or re-save the file as .vssx. \
+         Arch/CachyOS: `sudo pacman -S libvisio`; Fedora: `sudo dnf install libvisio-tools`; \
+         Debian/Ubuntu: `sudo apt install libvisio-tools`. LibreOffice command: \
+         `soffice --headless --convert-to vssx --outdir <folder> <file>`."
     )]
     LegacyVss {
         /// Additional information extracted from the compound file.

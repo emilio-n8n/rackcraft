@@ -13,7 +13,7 @@ equipment in technical racks: drop in a rack, patch panels, switches, cable
 managers and keystone jacks, snap them to rack units and modular apertures, fill
 in manufacturer shape data, then export the inventory to Excel.
 
-![RackCraft editing the bundled 25U sample rack: stencil browser on the left, vector canvas in the centre, shape data on the right, inventory in the toolbar](docs/images/rackcraft-sample.png)
+![RackCraft editing the example rack with the connector tool: stencil browser on the left, vector canvas with green ports, connector inspector on the right, PDF and Excel export in the toolbar](docs/images/rackcraft-sample.png)
 
 It follows the layout and engineering conventions of the
 [ArtCraft ecosystem](https://getartcraft.com/) (`cargo` workspace, pure-Rust
@@ -21,10 +21,10 @@ It follows the layout and engineering conventions of the
 is a **community project**: it is not developed, endorsed or supported by
 Storytold or the ArtCraft team.
 
-> **Project status: 0.1.1 MVP.** The parser and editor handle the common Visio
-> 2013+ stencil subset used by cabling vendors: masters, vector geometry,
-> connection points, icons and shape data. Legacy binary `.vss` files are
-> detected and can be converted with LibreOffice when it is installed.
+> **Project status: 0.2.0 MVP.** Rack diagrams, network topology diagrams,
+> magnetically glued cables, vector PDF/Excel inventories, and Visio stencil
+> import (`.vssx` natively, legacy `.vss` through bundled `vss2xhtml`, LibreOffice
+> or a native metadata fallback).
 
 ## What works
 
@@ -35,16 +35,27 @@ Storytold or the ArtCraft team.
   category with thumbnail previews.
 - **Magnetic snapping** — equipment aligns to rack `U` slots and stencil
   connection points; a bright green marker confirms the glue.
+- **Connectors / cables** — a dedicated connector tool (`C`) glues cables to
+  ports or free canvas points, follows equipment moves, and supports labels,
+  colours, straight/orthogonal routing, dashed lines and arrowheads. Moving or
+  edge-clicking a cable opens its inspector.
+- **Vector PDF export** — A4 landscape schematic with a project cartouche plus
+  an inventory page (`Part Number | Description | Quantity`).
 - **Shape data** — manufacturer, part number and product description are read
   from the stencil, while installed date, warranty expiry, location, building
   and notes are editable project fields.
 - **BOM / inventory** — live grouping by part identity and quantity; export to
-  a formatted `.xlsx` workbook or UTF-8 `.csv`.
+  a formatted `.xlsx` workbook, UTF-8 `.csv` or the PDF inventory page.
+- **Legacy `.vss`** — native OLE/CFB inspection (streams, PNG/ICO previews,
+  metadata) as a fallback; `vss2xhtml` and LibreOffice are detected
+  automatically. The AppImage bundles `vss2xhtml` so old industrial stencils
+  work without installing LibreOffice.
 - **Self-contained documents** — save and open `.json` files with undo/redo
   history intact during the session. Documents do not need the original stencil
   library to render or compute a BOM.
-- **Offline samples** — two realistic `.vssx` libraries ship in `samples/`; the
-  binary's `--sample` flag opens a ready-made rack.
+- **Offline samples** — three realistic `.vssx` libraries ship in `samples/`,
+  including network symbols with four connection points; the binary's
+  `--sample` flag opens a ready-made rack.
 
 ## Quick start
 
@@ -67,9 +78,12 @@ cargo run -p rackcraft
 ```
 
 In the app: use **Load sample** in the toolbar, **Import .vssx** to add a
-library, then drag a shape from the left panel onto the rack. Middle-drag (or
-space-drag) pans; the wheel zooms under the cursor. **Inventory** shows the BOM
-and **Export Excel** writes it.
+library, then drag a shape from the left panel onto the rack. Use **V** for
+selection and **C** to draw a cable between two ports (or free canvas points);
+click a cable in selection mode to edit its label, color, routing and arrows in
+the right panel. Middle-drag (or space-drag) pans; the wheel zooms under the
+cursor. **Inventory** shows the BOM; **Export PDF** writes the vector schematic
+and inventory, and **Export Excel** writes the `.xlsx`.
 
 ### Build for release
 
@@ -93,8 +107,9 @@ chmod +x rackcraft-x86_64.AppImage
 
 The AppImage is built on Ubuntu 22.04 (glibc 2.35) and runs on rolling
 distributions such as Arch Linux and CachyOS. It uses the system's Wayland/X11,
-Mesa and font libraries. If FUSE 2 is unavailable, run it with
-`APPIMAGE_EXTRACT_AND_RUN=1` or install `fuse2`.
+Mesa and font libraries. `vss2xhtml` (libvisio-tools) is bundled inside the
+AppImage, so legacy `.vss` stencils import out of the box. If FUSE 2 is
+unavailable, run it with `APPIMAGE_EXTRACT_AND_RUN=1` or install `fuse2`.
 
 ## Samples
 
@@ -102,6 +117,7 @@ Mesa and font libraries. If FUSE 2 is unavailable, run it with
 | --- | --- |
 | `samples/rackcraft-datacenter.vssx` | 25U wall rack, 24-port CAT6 patch panel, 24-port switch, 1U cable manager |
 | `samples/rackcraft-modular.vssx` | 24-aperture modular panel, keystone RJ45 jack |
+| `samples/network-topology.vssx` | Cloud/FAI, Firewall, Router, Core Switch, Server, Workstation |
 | `samples/README.md` | fixture provenance and regeneration instructions |
 
 The samples are hand-authored fixtures with the same XML structure as vendor
@@ -113,9 +129,9 @@ offline and the test suite deterministic.
 
 ```
 apps/rackcraft        native binary, --sample flag
-  └── crates/ui-egui  dark egui UI: browser, canvas, shape data, BOM window
-        ├── crates/io     .vssx parser, .vss detection, xlsx/csv export
-        │     └── crates/engine  document, units, snap, undo, BOM, JSON
+  └── crates/ui-egui  dark egui UI: browser, canvas, connectors, BOM window
+        ├── crates/io     .vssx/.vss import, xlsx/csv/vector-PDF export
+        │     └── crates/engine  document, connectors, units, snap, undo, BOM, JSON
         └── (egui, eframe, rfd)
 ```
 
@@ -123,7 +139,7 @@ apps/rackcraft        native binary, --sample flag
   `1 U = 44.45 mm`.
 - `io` parses OPC/ZIP + Visio XML with `roxmltree`, converts master geometry to
   `kurbo` paths, extracts normalized graphics, connection points and shape
-  data.
+  data, imports legacy `.vss` through SVG/CFB, and writes XLSX/CSV/vector PDF.
 - `ui-egui` owns only presentation and interaction state. Stencil parsing is
   done by `io`, document mutations by `engine`.
 - See [`AGENTS.md`](AGENTS.md) for the full contribution and environment rules,
@@ -144,10 +160,12 @@ cargo run -p rackcraft-io --example stencil_info -- samples/rackcraft-datacenter
 - `Connection` rows become snap anchors; `Property`/`ShapeData` rows become
   editable shape data. Master icons are decoded from the embedded ICO payload
   for the stencil browser.
-- Binary `.vss` is detected by its CFB signature. If `soffice` is on `PATH`,
-  RackCraft converts it to `.vssx` in a temporary directory; otherwise it shows
-  the exact conversion command to run. Visio for the web / desktop can also
-  re-save a `.vss` as `.vssx`.
+- Binary `.vss` is detected by its CFB signature. RackCraft tries LibreOffice
+  first, then `vss2xhtml` (bundled in the AppImage), then a native OLE reader
+  that recovers streams, preview icons and printable metadata. The native
+  fallback is clearly labelled and never pretends to contain full Visio geometry.
+  Visio for the web / desktop can also re-save a `.vss` as `.vssx` for maximum
+  shape-data fidelity.
 
 ## Development
 
@@ -188,3 +206,7 @@ Licensed under either of:
 at your option. Unless you explicitly state otherwise, any contribution
 intentionally submitted for inclusion in this project shall be dual-licensed as
 above, without any additional terms or conditions.
+
+The Linux AppImage bundles the third-party `vss2xhtml`/libvisio conversion
+libraries; their notices are in
+[`packaging/THIRD_PARTY.md`](packaging/THIRD_PARTY.md).

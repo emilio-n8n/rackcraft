@@ -7,8 +7,8 @@ use eframe::egui::{
     Sense, Stroke, pos2, vec2,
 };
 use rackcraft_engine::{
-    Document, History, ItemId, Point, ProjectFields, Rect as DocRect, SnapKind, SnapResult,
-    SnapSettings, snap_item,
+    Connector, ConnectorEnd, ConnectorId, Document, History, ItemId, Point, ProjectFields,
+    Rect as DocRect, Routing, SnapKind, SnapResult, SnapSettings, snap_item,
 };
 use rackcraft_io::StencilLibrary;
 
@@ -74,6 +74,12 @@ enum PendingAction {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ToolMode {
+    Select,
+    Connector,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum UiAction {
     New,
     Open,
@@ -81,10 +87,13 @@ enum UiAction {
     SaveAs,
     Import,
     Sample,
+    ToolSelect,
+    ToolConnector,
     Undo,
     Redo,
     Inventory,
     ExportExcel,
+    ExportPdf,
     Fit,
     Help,
     DeleteSelected,
@@ -98,10 +107,15 @@ pub struct RackCraftApp {
     libraries: Vec<StencilLibrary>,
     browser: BrowserState,
     view: canvas::View,
+    tool_mode: ToolMode,
     selection: Option<ItemId>,
+    selected_connector: Option<ConnectorId>,
     hovered: Option<ItemId>,
+    hovered_connector: Option<ConnectorId>,
+    pending_connection: Option<ConnectorEnd>,
     item_drag: Option<ItemDrag>,
     form: Option<inspector::InspectorForm>,
+    connector_form: Option<inspector::ConnectorForm>,
     project_path: Option<PathBuf>,
     status: Status,
     show_inventory: bool,
@@ -147,10 +161,15 @@ impl RackCraftApp {
             libraries: bundled.libraries,
             browser: BrowserState::default(),
             view: canvas::View::default(),
+            tool_mode: ToolMode::Select,
             selection: None,
+            selected_connector: None,
             hovered: None,
+            hovered_connector: None,
+            pending_connection: None,
             item_drag: None,
             form: None,
+            connector_form: None,
             project_path: None,
             status,
             show_inventory: false,
@@ -164,17 +183,48 @@ impl RackCraftApp {
     }
 
     fn select(&mut self, id: Option<ItemId>) {
-        if self.selection != id {
+        if self.selection != id || self.selected_connector.is_some() {
             self.form = None;
+            self.connector_form = None;
         }
         self.selection = id;
+        self.selected_connector = None;
+    }
+
+    fn select_connector(&mut self, id: Option<ConnectorId>) {
+        if self.selected_connector != id || self.selection.is_some() {
+            self.form = None;
+            self.connector_form = None;
+        }
+        self.selected_connector = id;
+        self.selection = None;
+        self.pending_connection = None;
+    }
+
+    fn set_tool_mode(&mut self, mode: ToolMode) {
+        if self.tool_mode != mode {
+            self.pending_connection = None;
+        }
+        self.tool_mode = mode;
+        self.item_drag = None;
+        self.hovered_connector = None;
+        if mode == ToolMode::Connector {
+            self.browser.armed = None;
+            self.browser.dragging = None;
+            self.hovered = None;
+        }
     }
 
     fn reset_session(&mut self) {
         self.selection = None;
+        self.selected_connector = None;
         self.hovered = None;
+        self.hovered_connector = None;
+        self.pending_connection = None;
         self.form = None;
+        self.connector_form = None;
         self.item_drag = None;
+        self.tool_mode = ToolMode::Select;
         self.browser.armed = None;
         self.browser.dragging = None;
         self.drop_queue = None;
@@ -223,6 +273,8 @@ impl RackCraftApp {
             }
             UiAction::Import => self.import_stencil(),
             UiAction::Sample => self.request(PendingAction::Sample),
+            UiAction::ToolSelect => self.set_tool_mode(ToolMode::Select),
+            UiAction::ToolConnector => self.set_tool_mode(ToolMode::Connector),
             UiAction::Undo => {
                 if self.history.undo() {
                     self.after_history_change();
@@ -239,6 +291,7 @@ impl RackCraftApp {
                 self.show_inventory = !self.show_inventory;
             }
             UiAction::ExportExcel => self.export_inventory(false),
+            UiAction::ExportPdf => self.export_pdf(),
             UiAction::Fit => {
                 self.view.initialized = false;
                 self.status = Status::info("Canvas fitted to window");
@@ -249,7 +302,9 @@ impl RackCraftApp {
             UiAction::DeleteSelected => self.delete_selected(),
             UiAction::DuplicateSelected => self.duplicate_selected(),
             UiAction::Escape => {
-                if self.browser.armed.is_some() || self.browser.dragging.is_some() {
+                if self.pending_connection.take().is_some() {
+                    self.status = Status::info("Connector cancelled");
+                } else if self.browser.armed.is_some() || self.browser.dragging.is_some() {
                     self.browser.armed = None;
                     self.browser.dragging = None;
                     self.status = Status::info("Placement cancelled");
@@ -270,12 +325,20 @@ impl RackCraftApp {
 
     fn after_history_change(&mut self) {
         self.form = None;
+        self.connector_form = None;
         self.item_drag = None;
+        self.pending_connection = None;
         if self
             .selection
             .is_some_and(|id| self.history.document().item(id).is_none())
         {
             self.selection = None;
+        }
+        if self
+            .selected_connector
+            .is_some_and(|id| self.history.document().connector(id).is_none())
+        {
+            self.selected_connector = None;
         }
     }
 
@@ -374,18 +437,25 @@ impl RackCraftApp {
                 }
                 library.name = unique.clone();
                 let master_count = library.masters.len();
-                let warning_count = library.warnings.len();
+                let warnings = library.warnings.clone();
                 self.libraries.push(library);
                 self.browser.clear_textures();
                 self.browser.armed = None;
                 self.browser.search.clear();
-                self.status = if warning_count == 0 {
+                self.status = if warnings.is_empty() {
                     Status::success(format!("Imported {unique} · {master_count} masters"))
                 } else {
                     Status::info(format!(
-                        "Imported {unique} · {master_count} masters ({warning_count} warnings)"
+                        "Imported {unique} · {master_count} masters ({} notices)",
+                        warnings.len()
                     ))
                 };
+                if !warnings.is_empty() {
+                    self.error_dialog = Some(format!(
+                        "Imported {unique} with the following notices:\n\n{}",
+                        warnings.join("\n\n")
+                    ));
+                }
             }
             Err(err) => {
                 self.status = Status::error("Stencil import failed");
@@ -436,7 +506,52 @@ impl RackCraftApp {
         }
     }
 
+    fn export_pdf(&mut self) {
+        let document = self.history.document().clone();
+        let default_name = format!("{}.pdf", sanitize_file_stem(&document.name));
+        let Some(path) = rfd::FileDialog::new()
+            .add_filter("PDF document", &["pdf"])
+            .set_file_name(default_name)
+            .save_file()
+            .map(|path| with_extension(path, "pdf"))
+        else {
+            return;
+        };
+        match rackcraft_io::export_pdf(&document, &path) {
+            Ok(()) => {
+                self.status = Status::success(format!("Exported {}", display_path(&path)));
+            }
+            Err(err) => {
+                self.status = Status::error("PDF export failed");
+                self.error_dialog = Some(format!("Could not write {}:\n\n{err}", path.display()));
+            }
+        }
+    }
+
     fn delete_selected(&mut self) {
+        if let Some(id) = self.selected_connector {
+            let label = self
+                .history
+                .document()
+                .connector(id)
+                .map(|connector| {
+                    if connector.label.is_empty() {
+                        "connector".to_owned()
+                    } else {
+                        connector.label.clone()
+                    }
+                })
+                .unwrap_or_else(|| "connector".into());
+            let mut removed = false;
+            self.history.apply(|doc| {
+                removed = doc.remove_connector(id).is_some();
+            });
+            if removed {
+                self.select_connector(None);
+                self.status = Status::success(format!("Removed {label}"));
+            }
+            return;
+        }
         let Some(id) = self.selection else {
             return;
         };
@@ -490,6 +605,21 @@ impl RackCraftApp {
         self.status = Status::success("Shape data applied");
     }
 
+    fn apply_connector_form(&mut self, form: inspector::ConnectorForm) {
+        let id = form.connector_id;
+        self.history.apply(|doc| {
+            if let Some(connector) = doc.connector_mut(id) {
+                connector.label = form.label.trim().to_owned();
+                connector.color = form.color;
+                connector.routing = form.routing;
+                connector.line_style = form.line_style;
+                connector.arrow = form.arrow;
+            }
+        });
+        self.connector_form = None;
+        self.status = Status::success("Connector applied");
+    }
+
     fn place_stencil_at(&mut self, key: &StencilKey, screen: Pos2) {
         let Some(rect) = self.canvas_rect else {
             return;
@@ -524,6 +654,7 @@ impl RackCraftApp {
         });
         if let Some(id) = new_id {
             self.select(Some(id));
+            self.tool_mode = ToolMode::Select;
             self.browser.armed = None;
             self.browser.dragging = None;
             self.drop_queue = None;
@@ -567,10 +698,16 @@ impl RackCraftApp {
                 action = Some(UiAction::New);
             } else if input.consume_key(Modifiers::COMMAND, Key::D) {
                 action = Some(UiAction::DuplicateSelected);
-            } else if input.consume_key(Modifiers::COMMAND, Key::E) {
+            } else if input.consume_key(Modifiers::COMMAND | Modifiers::SHIFT, Key::E) {
                 action = Some(UiAction::ExportExcel);
+            } else if input.consume_key(Modifiers::COMMAND, Key::E) {
+                action = Some(UiAction::ExportPdf);
             } else if input.consume_key(Modifiers::COMMAND, Key::I) {
                 action = Some(UiAction::Import);
+            } else if input.consume_key(Modifiers::NONE, Key::V) {
+                action = Some(UiAction::ToolSelect);
+            } else if input.consume_key(Modifiers::NONE, Key::C) {
+                action = Some(UiAction::ToolConnector);
             } else if input.consume_key(Modifiers::NONE, Key::Delete)
                 || input.consume_key(Modifiers::NONE, Key::Backspace)
             {
@@ -595,6 +732,8 @@ impl RackCraftApp {
         let doc_name = document.name.clone();
         let item_count = document.items.len();
         let part_count = document.bom().distinct_parts();
+        let connector_count = document.connectors.len();
+        let tool_mode = self.tool_mode;
         let path_label = self
             .project_path
             .as_ref()
@@ -634,7 +773,9 @@ impl RackCraftApp {
                     ui.vertical(|ui| {
                         ui.horizontal(|ui| {
                             if dirty {
-                                ui.label(RichText::new("●").size(9.0).color(theme::ACCENT));
+                                ui.label(
+                                    RichText::new("*").size(12.0).strong().color(theme::ACCENT),
+                                );
                             }
                             ui.label(
                                 RichText::new(truncate(&doc_name, 48))
@@ -724,6 +865,29 @@ impl RackCraftApp {
                     ui.add_space(4.0);
                     ui.separator();
                     ui.add_space(4.0);
+                    if toolbar_mode_button(
+                        ui,
+                        "Select  V",
+                        "Selection and editing tool (V)",
+                        tool_mode == ToolMode::Select,
+                    )
+                    .clicked()
+                    {
+                        action = Some(UiAction::ToolSelect);
+                    }
+                    if toolbar_mode_button(
+                        ui,
+                        "Connect  C",
+                        "Draw cables between connection points (C)",
+                        tool_mode == ToolMode::Connector,
+                    )
+                    .clicked()
+                    {
+                        action = Some(UiAction::ToolConnector);
+                    }
+                    ui.add_space(4.0);
+                    ui.separator();
+                    ui.add_space(4.0);
                     if toolbar_button(ui, "Fit", "Fit canvas").clicked() {
                         action = Some(UiAction::Fit);
                     }
@@ -738,23 +902,42 @@ impl RackCraftApp {
                             .add(
                                 egui::Button::new(
                                     RichText::new("Export Excel")
-                                        .size(11.5)
+                                        .size(11.0)
                                         .strong()
                                         .color(Color32::WHITE),
                                 )
                                 .fill(theme::ACCENT)
                                 .corner_radius(CornerRadius::same(5))
-                                .min_size(vec2(118.0, 27.0)),
+                                .min_size(vec2(112.0, 27.0)),
                             )
-                            .on_hover_text("Export the inventory to .xlsx (Ctrl+E)")
+                            .on_hover_text("Export the inventory to .xlsx (Ctrl+Shift+E)")
                             .clicked()
                         {
                             action = Some(UiAction::ExportExcel);
                         }
+                        if ui
+                            .add(
+                                egui::Button::new(
+                                    RichText::new("Export PDF")
+                                        .size(11.0)
+                                        .strong()
+                                        .color(theme::TEXT),
+                                )
+                                .fill(theme::RAISED)
+                                .corner_radius(CornerRadius::same(5))
+                                .min_size(vec2(104.0, 27.0)),
+                            )
+                            .on_hover_text("Export the schematic and inventory to PDF (Ctrl+E)")
+                            .clicked()
+                        {
+                            action = Some(UiAction::ExportPdf);
+                        }
                         ui.label(
-                            RichText::new(format!("{part_count} parts · {item_count} items"))
-                                .size(9.5)
-                                .color(theme::FAINT),
+                            RichText::new(format!(
+                                "{part_count} parts · {item_count} items · {connector_count} links"
+                            ))
+                            .size(9.0)
+                            .color(theme::FAINT),
                         );
                     });
                 });
@@ -818,8 +1001,9 @@ impl RackCraftApp {
             });
     }
 
-    fn inspector_panel(&mut self, ui: &mut egui::Ui) -> Option<inspector::InspectorAction> {
-        let mut action = None;
+    fn inspector_panel(&mut self, ui: &mut egui::Ui) {
+        let mut item_action = None;
+        let mut connector_action = None;
         egui::Panel::right("inspector-panel")
             .resizable(true)
             .default_size(342.0)
@@ -836,15 +1020,38 @@ impl RackCraftApp {
                     .auto_shrink([false, false])
                     .show(ui, |ui| {
                         ui.set_width(ui.available_width());
-                        action = Some(inspector::show(
-                            ui,
-                            self.history.document(),
-                            self.selection,
-                            &mut self.form,
-                        ));
+                        if let Some(id) = self.selected_connector {
+                            connector_action = Some(inspector::show_connector(
+                                ui,
+                                self.history.document(),
+                                id,
+                                &mut self.connector_form,
+                            ));
+                        } else {
+                            item_action = Some(inspector::show(
+                                ui,
+                                self.history.document(),
+                                self.selection,
+                                &mut self.form,
+                            ));
+                        }
                     });
             });
-        action
+        if let Some(action) = item_action {
+            match action {
+                inspector::InspectorAction::None => {}
+                inspector::InspectorAction::Apply(form) => self.apply_form(form),
+                inspector::InspectorAction::Delete => self.delete_selected(),
+                inspector::InspectorAction::Duplicate => self.duplicate_selected(),
+            }
+        }
+        if let Some(action) = connector_action {
+            match action {
+                inspector::ConnectorAction::None => {}
+                inspector::ConnectorAction::Apply(form) => self.apply_connector_form(form),
+                inspector::ConnectorAction::Delete => self.delete_selected(),
+            }
+        }
     }
 
     fn canvas_panel(&mut self, ui: &mut egui::Ui) {
@@ -865,6 +1072,22 @@ impl RackCraftApp {
                     .hover_pos()
                     .or_else(|| ui.ctx().pointer_latest_pos())
                     .filter(|pointer| rect.contains(*pointer));
+                let pointer_doc =
+                    pointer_over.map(|pointer| self.view.screen_to_doc(rect.min, pointer));
+                let stencil_active =
+                    self.browser.armed.is_some() || self.browser.dragging.is_some();
+                let connector_mode = self.tool_mode == ToolMode::Connector && !stencil_active;
+                let hovered_connection = if connector_mode {
+                    pointer_doc.and_then(|point| {
+                        canvas::nearest_connection(
+                            self.history.document(),
+                            point,
+                            f64::from(12.0 / self.view.zoom.max(0.08)),
+                        )
+                    })
+                } else {
+                    None
+                };
 
                 // Wheel / pinch zoom under the pointer.
                 if let Some(pointer) = pointer_over {
@@ -896,6 +1119,7 @@ impl RackCraftApp {
                 // Begin moving an item.
                 if response.drag_started_by(PointerButton::Primary)
                     && !panning
+                    && self.tool_mode == ToolMode::Select
                     && self.browser.armed.is_none()
                     && let Some(pointer) = response.interact_pointer_pos()
                 {
@@ -955,31 +1179,101 @@ impl RackCraftApp {
                     }
                 }
 
-                // Selection on press/click (drag selection is handled above).
+                // Selection on click (drag selection is handled above).
                 if response.clicked_by(PointerButton::Primary)
                     && !panning
                     && self.item_drag.is_none()
                     && self.browser.armed.is_none()
-                    && let Some(pointer) = response.interact_pointer_pos()
+                    && self.tool_mode == ToolMode::Select
+                    && let Some(point) = pointer_doc
                 {
-                    let doc_point = self.view.screen_to_doc(rect.min, pointer);
                     let hit = self
                         .history
                         .document()
-                        .hit_test(doc_point, true)
+                        .hit_test(point, true)
                         .map(|item| item.id);
-                    self.select(hit);
+                    if let Some(id) = hit {
+                        self.select(Some(id));
+                    } else {
+                        let connector = self
+                            .history
+                            .document()
+                            .hit_test_connector(point, f64::from(8.0 / self.view.zoom.max(0.08)));
+                        if connector.is_some() {
+                            self.select_connector(connector);
+                        } else {
+                            self.select(None);
+                        }
+                    }
                 }
 
-                // Hover.
+                // Hover items and connectors (selection tool only).
                 if self.item_drag.is_none() {
-                    self.hovered = pointer_over.and_then(|pointer| {
-                        let doc_point = self.view.screen_to_doc(rect.min, pointer);
-                        self.history
-                            .document()
-                            .hit_test(doc_point, true)
-                            .map(|item| item.id)
-                    });
+                    if self.tool_mode == ToolMode::Select {
+                        let hovered_item = pointer_doc.and_then(|point| {
+                            self.history
+                                .document()
+                                .hit_test(point, true)
+                                .map(|item| item.id)
+                        });
+                        self.hovered = hovered_item;
+                        self.hovered_connector = if hovered_item.is_none() {
+                            pointer_doc.and_then(|point| {
+                                self.history.document().hit_test_connector(
+                                    point,
+                                    f64::from(8.0 / self.view.zoom.max(0.08)),
+                                )
+                            })
+                        } else {
+                            None
+                        };
+                    } else {
+                        self.hovered = None;
+                        self.hovered_connector = None;
+                    }
+                }
+
+                // Connector tool: click A then click B (port or free canvas point).
+                if connector_mode
+                    && response.clicked_by(PointerButton::Primary)
+                    && !panning
+                    && let Some(point) = pointer_doc
+                {
+                    let endpoint = hovered_connection.map_or_else(
+                        || ConnectorEnd::Free {
+                            point: clamp_canvas_point(self.history.document(), point),
+                        },
+                        |(item_id, connection_point, _)| ConnectorEnd::ConnectionPoint {
+                            item_id,
+                            connection_point,
+                        },
+                    );
+                    if let Some(start) = self.pending_connection.take() {
+                        let start_point = self.history.document().resolve_connector_end(&start);
+                        let end_point = self.history.document().resolve_connector_end(&endpoint);
+                        if start == endpoint
+                            || start_point
+                                .zip(end_point)
+                                .is_some_and(|(a, b)| a.distance(b) < 0.2)
+                        {
+                            self.status = Status::info("Connector start and end are identical");
+                        } else {
+                            let mut new_id = None;
+                            self.history.apply(|doc| {
+                                new_id = Some(doc.add_connector(Connector::new(start, endpoint)));
+                            });
+                            if let Some(id) = new_id {
+                                self.select_connector(Some(id));
+                                self.status = Status::success(
+                                    "Connector created · edit its label and style on the right",
+                                );
+                            }
+                        }
+                    } else {
+                        self.pending_connection = Some(endpoint);
+                        self.status =
+                            Status::info("Connector started · click a second port or canvas point");
+                    }
                 }
 
                 // Build placement ghost from the browser's armed/dragging stencil.
@@ -1025,6 +1319,45 @@ impl RackCraftApp {
                     self.hovered,
                     drag_preview,
                 );
+                canvas::paint_connectors(
+                    &painter,
+                    rect,
+                    &self.view,
+                    document,
+                    self.selected_connector,
+                    self.hovered_connector,
+                );
+                if connector_mode {
+                    canvas::paint_connector_ports(
+                        &painter,
+                        rect,
+                        &self.view,
+                        document,
+                        hovered_connection.map(|(item_id, index, _)| (item_id, index)),
+                        self.pending_connection.as_ref(),
+                    );
+                    if let Some(start) = &self.pending_connection
+                        && let (Some(start_point), Some(end_point)) = (
+                            document.resolve_connector_end(start),
+                            pointer_doc.map(|point| {
+                                hovered_connection.map_or_else(
+                                    || clamp_canvas_point(document, point),
+                                    |(_, _, connection_point)| connection_point,
+                                )
+                            }),
+                        )
+                    {
+                        canvas::paint_connector_preview(
+                            &painter,
+                            rect,
+                            &self.view,
+                            start_point,
+                            end_point,
+                            hovered_connection.is_some(),
+                            Routing::Straight,
+                        );
+                    }
+                }
                 if let Some((item, position, snap)) = &ghost {
                     canvas::paint_ghost(&painter, rect, &self.view, item, *position);
                     if snap.is_snapped() {
@@ -1038,7 +1371,10 @@ impl RackCraftApp {
                 }
                 canvas::paint_hud(&painter, rect, &self.view, document);
 
-                if self.browser.armed.is_some() && pointer_over.is_some() && !panning {
+                if (self.browser.armed.is_some() || connector_mode)
+                    && pointer_over.is_some()
+                    && !panning
+                {
                     ui.ctx().set_cursor_icon(CursorIcon::Crosshair);
                 }
                 if self.item_drag.is_some() {
@@ -1123,8 +1459,10 @@ impl RackCraftApp {
                             for (keys, label) in [
                                 ("Ctrl+N / Ctrl+O", "New / open project"),
                                 ("Ctrl+S / Ctrl+Shift+S", "Save / save as"),
-                                ("Ctrl+I", "Import a .vssx stencil"),
-                                ("Ctrl+E", "Export inventory to Excel"),
+                                ("V / C", "Select tool / connector tool"),
+                                ("Ctrl+I", "Import a .vssx or .vss stencil"),
+                                ("Ctrl+E", "Export the schematic + inventory to PDF"),
+                                ("Ctrl+Shift+E", "Export inventory to Excel"),
                                 ("Ctrl+Z / Ctrl+Shift+Z", "Undo / redo"),
                                 ("Ctrl+D / Del", "Duplicate / delete"),
                                 ("Wheel", "Zoom under the cursor"),
@@ -1140,7 +1478,7 @@ impl RackCraftApp {
                     theme::section_label(ui, "Stencils");
                     ui.label(
                         RichText::new(
-                            "RackCraft reads Visio 2013+ .vssx stencils, including vector geometry, connection points, shape data and embedded previews. Legacy .vss files are detected and can be converted with LibreOffice.",
+                            "RackCraft reads Visio 2013+ .vssx stencils, including vector geometry, connection points, shape data and embedded previews. Legacy .vss files use bundled vss2xhtml in the AppImage, LibreOffice if installed, or a native metadata fallback.",
                         )
                         .size(10.5)
                         .color(theme::MUTED),
@@ -1283,15 +1621,13 @@ impl eframe::App for RackCraftApp {
             }
         }
 
-        if let Some(action) = self.inspector_panel(ui) {
-            match action {
-                inspector::InspectorAction::None => {}
-                inspector::InspectorAction::Apply(form) => self.apply_form(form),
-                inspector::InspectorAction::Delete => self.delete_selected(),
-                inspector::InspectorAction::Duplicate => self.duplicate_selected(),
-            }
+        self.inspector_panel(ui);
+        if (self.browser.armed.is_some() || self.browser.dragging.is_some())
+            && self.tool_mode != ToolMode::Select
+        {
+            self.tool_mode = ToolMode::Select;
+            self.pending_connection = None;
         }
-
         self.canvas_panel(ui);
         self.windows(ui.ctx());
         self.update_title(ui.ctx());
@@ -1304,6 +1640,25 @@ fn toolbar_button(ui: &mut egui::Ui, label: &str, hover: &str) -> egui::Response
             .fill(theme::PANEL)
             .corner_radius(CornerRadius::same(5))
             .min_size(vec2(0.0, 27.0)),
+    )
+    .on_hover_text(hover)
+}
+
+fn toolbar_mode_button(
+    ui: &mut egui::Ui,
+    label: &str,
+    hover: &str,
+    active: bool,
+) -> egui::Response {
+    ui.add(
+        egui::Button::new(RichText::new(label).size(10.5).color(if active {
+            Color32::WHITE
+        } else {
+            theme::TEXT
+        }))
+        .fill(if active { theme::ACCENT } else { theme::PANEL })
+        .corner_radius(CornerRadius::same(5))
+        .min_size(vec2(0.0, 27.0)),
     )
     .on_hover_text(hover)
 }
@@ -1351,6 +1706,13 @@ fn truncate(text: &str, max: usize) -> String {
     } else {
         text.to_owned()
     }
+}
+
+fn clamp_canvas_point(document: &Document, point: Point) -> Point {
+    Point::new(
+        point.x.clamp(0.0, document.canvas.width_mm.max(0.0)),
+        point.y.clamp(0.0, document.canvas.height_mm.max(0.0)),
+    )
 }
 
 fn display_path(path: &Path) -> String {

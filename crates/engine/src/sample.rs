@@ -4,6 +4,7 @@
 //! artwork, connection points and shape data, so the sample opens even when no
 //! `.vssx` file is available.
 
+use crate::connector::{Connector, ConnectorEnd, LineStyle, Routing};
 use crate::document::{
     Canvas, ConnectionPoint, Document, DrawPath, Item, MountSpec, PathCommand, ShapeField,
     StencilRef,
@@ -439,7 +440,7 @@ pub fn document() -> Document {
     panel.project.building = "HQ-1".into();
     panel.project.installed_date = "2026-11-20".into();
     panel.project.warranty_exp = "2038-11-20".into();
-    doc.add_item(panel);
+    let panel_id = doc.add_item(panel);
 
     let mut switch = item(
         "switch-24",
@@ -464,7 +465,25 @@ pub fn document() -> Document {
     switch.project.building = "HQ-1".into();
     switch.project.installed_date = "2026-11-20".into();
     switch.project.warranty_exp = "2031-11-20".into();
-    doc.add_item(switch);
+    let switch_id = doc.add_item(switch);
+
+    // Four patched links from the CAT6 panel to the switch.
+    for port in 0..4 {
+        let mut cable = Connector::new(
+            ConnectorEnd::ConnectionPoint {
+                item_id: panel_id,
+                connection_point: port,
+            },
+            ConnectorEnd::ConnectionPoint {
+                item_id: switch_id,
+                connection_point: port,
+            },
+        )
+        .with_label("Cat6A")
+        .with_routing(Routing::Orthogonal);
+        cable.line_style = LineStyle::Solid;
+        doc.add_connector(cable);
+    }
 
     let mut manager = item(
         "cable-manager-1u",
@@ -561,6 +580,23 @@ mod tests {
             .find(|line| line.part_number == "RC-KJ-RJ45")
             .unwrap();
         assert_eq!(keystones.quantity, 6);
+    }
+
+    #[test]
+    fn sample_has_patched_cables() {
+        let doc = document();
+        assert_eq!(doc.connectors.len(), 4);
+        let labels: Vec<&str> = doc
+            .connectors
+            .iter()
+            .map(|connector| connector.label.as_str())
+            .collect();
+        assert!(labels.iter().all(|label| *label == "Cat6A"));
+        assert!(
+            doc.connectors
+                .iter()
+                .all(|connector| doc.resolve_connector(connector).is_some())
+        );
     }
 
     #[test]

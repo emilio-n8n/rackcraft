@@ -99,10 +99,19 @@ thumbnail generated from the geometry.
 ## Legacy `.vss`
 
 Binary `.vss` files are OLE Compound Files, detected by their magic
-`D0 CF 11 E0 A1 B1 1A E1`. RackCraft does not attempt to parse the binary
-streams. If `soffice` is on `PATH`, it converts to `.vssx` in a temporary
-directory and parses the result; otherwise it returns an actionable error with
-the exact `soffice --headless --convert-to vssx` command.
+`D0 CF 11 E0 A1 B1 1A E1`. Import tries, in order:
+
+1. LibreOffice `soffice --headless --convert-to vssx` (full metadata).
+2. `vss2xhtml` from libvisio-tools, whose SVG/XHTML output is parsed into
+   vector masters with four edge connection points and a clear metadata warning.
+   The AppImage bundles `vss2xhtml` plus its private library directory.
+3. A native `cfb` reader that lists OLE streams, extracts printable UTF-16/ASCII
+   metadata and decodes PNG/ICO previews, then creates one clearly labelled
+   placeholder master. It never claims to have recovered Visio geometry.
+
+Package hints shown to users: `pacman -S libvisio` (Arch/CachyOS),
+`dnf install libvisio-tools` (Fedora), `apt install libvisio-tools`
+(Debian/Ubuntu).
 
 ## Out of scope (for 0.1.x)
 
