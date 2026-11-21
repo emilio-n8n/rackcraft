@@ -81,6 +81,7 @@ jobs:
           cp "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/$name/"
           cp README.md LICENSE-MIT LICENSE-APACHE AGENTS.md "dist/$name/"
           cp -R samples "dist/$name/samples"
+          cp -R docs "dist/$name/docs"
           chmod +x "dist/$name/${{ matrix.binary }}"
           tar -C dist -czf "dist/$name.tar.gz" "$name"
 
@@ -93,6 +94,7 @@ jobs:
           Copy-Item "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/$name/"
           Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE, AGENTS.md "dist/$name/"
           Copy-Item -Recurse samples "dist/$name/samples"
+          Copy-Item -Recurse docs "dist/$name/docs"
           Compress-Archive -Path "dist/$name" -DestinationPath "dist/$name.zip" -Force
 
       - name: Upload platform archive

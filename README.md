@@ -13,6 +13,8 @@ equipment in technical racks: drop in a rack, patch panels, switches, cable
 managers and keystone jacks, snap them to rack units and modular apertures, fill
 in manufacturer shape data, then export the inventory to Excel.
 
+![RackCraft editing the bundled 25U sample rack: stencil browser on the left, vector canvas in the centre, shape data on the right, inventory in the toolbar](docs/images/rackcraft-sample.png)
+
 It follows the layout and engineering conventions of the
 [ArtCraft ecosystem](https://getartcraft.com/) (`cargo` workspace, pure-Rust
 `egui`/`eframe` UI, `--sample` convention, checksum-published releases), but it
