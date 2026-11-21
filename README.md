@@ -52,9 +52,9 @@ Prerequisites: Rust 1.95+ and the usual Linux windowing development packages
 (`libxkbcommon-dev`, `libxkbcommon-x11-dev`, `libwayland-dev`, `libx11-dev`,
 `libxcursor-dev`, `libxrandr-dev`, `libxi-dev`, `libgl1-mesa-dev`).
 
-The prebuilt Linux archive additionally needs the runtime libraries
-`libxkbcommon-x11-0`, `libwayland-client0` and `libgl1` (normally already
-installed on a desktop Linux system).
+The prebuilt Linux archive is built on Ubuntu 22.04 (glibc 2.35) and needs the
+runtime libraries `libxkbcommon-x11-0`, `libwayland-client0` and `libgl1`
+(normally already installed on a desktop Linux system).
 
 ```bash
 cargo run -p rackcraft -- --sample

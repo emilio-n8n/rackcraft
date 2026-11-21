@@ -28,7 +28,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          # Pin the oldest still-supported Ubuntu LTS for the Linux release so
+          # the GNU binary only requires an older glibc than ubuntu-latest may
+          # carry (ubuntu-latest moved to 26.04 / glibc 2.43 in 2026).
+          - os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
             archive: tar.gz
             binary: rackcraft
