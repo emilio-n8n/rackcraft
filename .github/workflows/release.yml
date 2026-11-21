@@ -1,0 +1,196 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (without the leading v), e.g. 0.1.0"
+        required: true
+        default: "0.1.0"
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            archive: tar.gz
+            binary: rackcraft
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            archive: zip
+            binary: rackcraft.exe
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            archive: tar.gz
+            binary: rackcraft
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            archive: tar.gz
+            binary: rackcraft
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux windowing dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libx11-dev \
+            libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
+            libxcursor-dev libxrandr-dev libxi-dev libgl1-mesa-dev \
+            libfontconfig1-dev libfreetype6-dev pkg-config
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: release-${{ matrix.target }}
+
+      - name: Build optimized binary
+        run: cargo build --locked --release -p rackcraft --target ${{ matrix.target }}
+
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          name="rackcraft-${{ matrix.target }}"
+          mkdir -p "dist/$name"
+          cp "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/$name/"
+          cp README.md LICENSE-MIT LICENSE-APACHE AGENTS.md "dist/$name/"
+          cp -R samples "dist/$name/samples"
+          chmod +x "dist/$name/${{ matrix.binary }}"
+          tar -C dist -czf "dist/$name.tar.gz" "$name"
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $name = "rackcraft-${{ matrix.target }}"
+          New-Item -ItemType Directory -Force -Path "dist/$name" | Out-Null
+          Copy-Item "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/$name/"
+          Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE, AGENTS.md "dist/$name/"
+          Copy-Item -Recurse samples "dist/$name/samples"
+          Compress-Archive -Path "dist/$name" -DestinationPath "dist/$name.zip" -Force
+
+      - name: Upload platform archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: rackcraft-${{ matrix.target }}
+          path: dist/*.${{ matrix.archive }}
+          if-no-files-found: error
+          retention-days: 7
+
+  checksums:
+    name: Generate SHA256SUMS
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all archives
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Compute checksums
+        working-directory: dist
+        run: |
+          set -euo pipefail
+          ls -lh
+          sha256sum ./*.tar.gz ./*.zip > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Upload checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: SHA256SUMS
+          path: dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    name: Publish GitHub Release
+    needs: [build, checksums]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download archives and checksums
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: List release files
+        run: ls -lh dist
+
+      - name: Resolve release tag
+        id: tag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=v${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: RackCraft ${{ steps.tag.outputs.name }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          body: |
+            Native rack and structured-cabling diagram designer, compatible with
+            Visio `.vssx` stencils and Excel BOM export.
+
+            ### Downloads
+            - **Linux x86_64:** `rackcraft-x86_64-unknown-linux-gnu.tar.gz`
+            - **Windows x86_64:** `rackcraft-x86_64-pc-windows-msvc.zip`
+            - **macOS Apple silicon:** `rackcraft-aarch64-apple-darwin.tar.gz`
+            - **macOS Intel:** `rackcraft-x86_64-apple-darwin.tar.gz`
+
+            Each archive contains the `rackcraft` binary (`.exe` on Windows),
+            the offline sample stencils and the project documentation.
+
+            ### Verify your download
+            ```bash
+            sha256sum -c SHA256SUMS.txt
+            ```
+            On Windows PowerShell:
+            ```powershell
+            Get-FileHash .\rackcraft-x86_64-pc-windows-msvc.zip -Algorithm SHA256
+            ```
+
+            RackCraft is an independent community project, not an official
+            Storytold / ArtCraft product.
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/SHA256SUMS.txt
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

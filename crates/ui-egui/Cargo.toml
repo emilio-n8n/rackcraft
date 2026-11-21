@@ -1,0 +1,15 @@
+[package]
+name = "rackcraft-ui"
+description = "egui/eframe desktop UI for RackCraft"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+
+[dependencies]
+rackcraft-engine.workspace = true
+rackcraft-io.workspace = true
+eframe.workspace = true
+rfd.workspace = true

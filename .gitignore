@@ -1,0 +1,54 @@
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+*.profraw
+*.profdata
+*.gcda
+*.gcno
+*.d
+*.rlib
+*.rmeta
+*.so
+*.dylib
+*.dll
+*.exe
+Cargo.lock.orig
+vendor/
+
+# IDEs / editors
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Local build/run artefacts
+*.log
+/tmp/
+/out/
+/dist/
+artifacts/
+*.tar.gz
+*.zip
+!samples/**/*.zip
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# Coverage
+coverage/
+lcov.info
+
+# Generated XLSX/CSV exports (keep sample fixtures explicit)
+/export/
+*.xlsx
+*.csv
+!samples/**/*.csv
