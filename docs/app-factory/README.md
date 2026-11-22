@@ -18,6 +18,7 @@ couches et les pièges système sont réutilisables.
 | --- | --- |
 | [PORTFOLIO.md](PORTFOLIO.md) | Les dix apps prévues : MVP, risques, réutilisation, ordre de démarrage |
 | [BATCHES.md](BATCHES.md) | Vagues de cinq sous-agents et périmètres des tranches |
+| [STATUS.md](STATUS.md) | État courant des dépôts, commits, CI et actions suivantes |
 | [BATCHES.md](BATCHES.md) | Découpage en vagues de cinq sous-agents et périmètres des tranches |
 | [WORKFLOW.md](WORKFLOW.md) | Cycle complet : cadrage → architecture → cœur → UI → CI → release → maintenance |
 | [HANDOFF.md](HANDOFF.md) | Prompt de reprise compact et checklist d'état |
