@@ -20,23 +20,22 @@
 | FormCraft | `aae8d4d` | `79fe16c` | ✅ publiée | Vague A en cours |
 | MathCraft | `6d9839b` | `1099943` | ✅ publiée | Vague A en cours |
 | MasterCraft | `8d76c81` | `bfddbde` | ✅ publiée | Vague A en cours |
-| CircuitCraft | `d86ad8a` | `99ef5ae` | ⏳ en cours | Vague B à lancer |
-| GeoCraft | `da38592` | `dd771be` | ⏳ en cours | Vague B à lancer |
-| MusicCraft | `c971588` | `f4f03ce` | ⏳ en cours | Vague B à lancer |
-| StreamCraft | `76147a7` | `7ad60b7` | ⏳ en cours | Vague B à lancer |
-| SimCraft | `981b128` | `69464f5` | ⏳ en cours | Vague B à lancer |
+| CircuitCraft | `d86ad8a` | `99ef5ae` | ✅ publiée | Vague B à lancer |
+| GeoCraft | `da38592` | `dd771be` | ✅ publiée | Vague B à lancer |
+| MusicCraft | `c971588` | `f4f03ce` | ✅ publiée | Vague B à lancer |
+| StreamCraft | `76147a7` | `7ad60b7` | ✅ publiée | Vague B à lancer |
+| SimCraft | `981b128` | `69464f5` | ✅ publiée | Vague B à lancer |
 
 Les commits `main` ci-dessus sont ceux **avant** la productisation. Les agents
 de vague A vont ajouter de nouveaux commits.
 
 ## Releases
 
-- Les 5 premières releases `v0.1.0` ont **7 assets** chacune :
+- Les **10 releases `v0.1.0`** sont publiées, avec **7 assets** chacune :
   archives Linux/Windows/macOS ARM/Intel, `craft-app.json`, icône,
   `SHA256SUMS.txt`.
-- DiagramCraft `v0.1.0` passe `craft-release-check github` avec **0 warning**.
-- Les 10 apps passent `craft-release-check dir` sur une release simulée avec
-  **0 warning**.
+- Les 10 passent `craft-release-check github` avec **0 warning**.
+- Les 10 `SHA256SUMS.txt` ont été vérifiés après téléchargement.
 - Aucun MSI, DMG, AppImage, `.deb` ou `.rpm` signé pour l'instant.
 
 ## Launcher

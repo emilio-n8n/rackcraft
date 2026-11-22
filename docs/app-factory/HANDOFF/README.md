@@ -17,13 +17,9 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
   bibliothèque `v0.1.0`, `main` `8b88798`.
 - **10 applications** générées depuis CraftKit, toutes sur GitHub, CI verte,
   avec `craft-app.json`, icône 128×128, validateur et workflow de release.
-- **5 releases `v0.1.0` déjà publiées** : DiagramCraft, ProjectCraft, FormCraft,
-  MathCraft, MasterCraft.
-- **4 releases `v0.1.0` en cours** au moment du snapshot : CircuitCraft,
-  GeoCraft, MusicCraft, StreamCraft, SimCraft (certaines peuvent être finies
-  depuis ; vérifier avec `gh`).
-- **1 release réelle validée par le launcher unofficial** : DiagramCraft
-  `v0.1.0`.
+- **10 releases `v0.1.0` publiées** et validées par `craft-release-check`
+  (0 warning).
+- DiagramCraft a été le premier pilote ; les 9 autres ont suivi.
 
 ## Travail en cours au moment du snapshot
 

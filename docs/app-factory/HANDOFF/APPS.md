@@ -72,7 +72,7 @@ Aucune n’est un clone complet d’un logiciel commercial.
 - Limites : fils droits, pas de jonctions, symboles fixes, pas de PCB/SPICE.
 - Productisation B : rotation, labels/valeurs, fils orthogonaux + jonctions,
   netlist nommée, BOM CSV, SVG/PDF, zoom-to-fit.
-- Release `v0.1.0` en cours.
+- Release `v0.1.0` publiée.
 
 ## GeoCraft — cartographie vectorielle
 
@@ -82,7 +82,7 @@ Aucune n’est un clone complet d’un logiciel commercial.
   géométrie, trous peints avec la couleur de fond.
 - Productisation B : dessin/édition de features, table attributaire éditable,
   import CSV/GeoJSON, export carte PNG, styles de couche.
-- Release `v0.1.0` en cours.
+- Release `v0.1.0` publiée.
 
 ## MusicCraft — DAW offline
 
@@ -92,7 +92,7 @@ Aucune n’est un clone complet d’un logiciel commercial.
   limitée, mono 44,1 kHz float32.
 - Productisation B : édition de notes, import/export MIDI, effets simples,
   playback `cpal` si l’environnement le permet.
-- Release `v0.1.0` en cours.
+- Release `v0.1.0` publiée.
 
 ## StreamCraft — composition de scènes
 
@@ -101,7 +101,7 @@ Aucune n’est un clone complet d’un logiciel commercial.
 - Limites : pas de capture écran/webcam/micro, pas d’encodage vidéo.
 - Productisation B : capture écran/fenêtre, micro, enregistrement local,
   transitions, plein écran.
-- Release `v0.1.0` en cours.
+- Release `v0.1.0` publiée.
 - Ne pas prétendre que la capture fonctionne sans test réel.
 
 ## SimCraft — FEM thermique 2D
@@ -113,7 +113,7 @@ Aucune n’est un clone complet d’un logiciel commercial.
   triangulaire, un seul matériau.
 - Productisation B : matériaux/régions, flux/convection, maillage plus fin,
   export CSV/PNG, presets, validation.
-- Release `v0.1.0` en cours.
+- Release `v0.1.0` publiée.
 
 ## RackCraft — hors périmètre
 

@@ -2,16 +2,8 @@
 
 ## Immédiat
 
-1. Vérifier les 9 releases `v0.1.0` :
-   ```bash
-   for r in projectcraft formcraft mathcraft mastercraft circuitcraft geocraft musiccraft streamcraft simcraft; do
-     gh run list --repo emilio-n8n/$r --workflow Release --limit 1
-     gh release view v0.1.0 --repo emilio-n8n/$r
-   done
-   ```
-   Si une release a échoué : lire le job, corriger le workflow ou le packaging,
-   puis relancer via `workflow_dispatch` avec la version `0.1.0` **sans**
-   déplacer le tag. Si le tag est en cause, préférer une nouvelle version.
+1. Les 10 releases `v0.1.0` sont publiées, avec 7 assets, checksums vérifiés
+   et `craft-release-check github` à 0 warning.
 
 2. Attendre les 5 agents de productisation vague A.
    Vérifier leurs commits, CI, `python3 tools/launcher_check.py .`, puis lancer

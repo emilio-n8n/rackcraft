@@ -22,16 +22,96 @@
     "observed_429": false
   },
   "apps": [
-    {"id": "diagramcraft", "repo": "emilio-n8n/diagramcraft", "main": "015c0d8", "tag": "v0.1.0", "release": "published", "wave": "A"},
-    {"id": "projectcraft", "repo": "emilio-n8n/projectcraft", "main": "b82aa23", "tag": "v0.1.0", "release": "published", "wave": "A"},
-    {"id": "formcraft", "repo": "emilio-n8n/formcraft", "main": "aae8d4d", "tag": "v0.1.0", "release": "published", "wave": "A"},
-    {"id": "mathcraft", "repo": "emilio-n8n/mathcraft", "main": "6d9839b", "tag": "v0.1.0", "release": "published", "wave": "A"},
-    {"id": "mastercraft", "repo": "emilio-n8n/mastercraft", "main": "8d76c81", "tag": "v0.1.0", "release": "published", "wave": "A"},
-    {"id": "circuitcraft", "repo": "emilio-n8n/circuitcraft", "main": "d86ad8a", "tag": "v0.1.0", "release": "in_progress", "wave": "B"},
-    {"id": "geocraft", "repo": "emilio-n8n/geocraft", "main": "da38592", "tag": "v0.1.0", "release": "in_progress", "wave": "B"},
-    {"id": "musiccraft", "repo": "emilio-n8n/musiccraft", "main": "c971588", "tag": "v0.1.0", "release": "in_progress", "wave": "B"},
-    {"id": "streamcraft", "repo": "emilio-n8n/streamcraft", "main": "76147a7", "tag": "v0.1.0", "release": "in_progress", "wave": "B"},
-    {"id": "simcraft", "repo": "emilio-n8n/simcraft", "main": "981b128", "tag": "v0.1.0", "release": "in_progress", "wave": "B"}
+    {
+      "id": "diagramcraft",
+      "repo": "emilio-n8n/diagramcraft",
+      "main": "015c0d8",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "A",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "projectcraft",
+      "repo": "emilio-n8n/projectcraft",
+      "main": "b82aa23",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "A",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "formcraft",
+      "repo": "emilio-n8n/formcraft",
+      "main": "aae8d4d",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "A",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "mathcraft",
+      "repo": "emilio-n8n/mathcraft",
+      "main": "6d9839b",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "A",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "mastercraft",
+      "repo": "emilio-n8n/mastercraft",
+      "main": "8d76c81",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "A",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "circuitcraft",
+      "repo": "emilio-n8n/circuitcraft",
+      "main": "d86ad8a",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "B",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "geocraft",
+      "repo": "emilio-n8n/geocraft",
+      "main": "da38592",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "B",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "musiccraft",
+      "repo": "emilio-n8n/musiccraft",
+      "main": "c971588",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "B",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "streamcraft",
+      "repo": "emilio-n8n/streamcraft",
+      "main": "76147a7",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "B",
+      "release_check": "0 warnings"
+    },
+    {
+      "id": "simcraft",
+      "repo": "emilio-n8n/simcraft",
+      "main": "981b128",
+      "tag": "v0.1.0",
+      "release": "published",
+      "wave": "B",
+      "release_check": "0 warnings"
+    }
   ],
   "productization": {
     "wave_a": [
