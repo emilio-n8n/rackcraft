@@ -79,7 +79,8 @@
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
-      "release_check": "0 warnings"
+      "release_check": "0 warnings",
+      "productization": "wave B in progress"
     },
     {
       "id": "geocraft",
@@ -88,7 +89,8 @@
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
-      "release_check": "0 warnings"
+      "release_check": "0 warnings",
+      "productization": "wave B in progress"
     },
     {
       "id": "musiccraft",
@@ -97,7 +99,8 @@
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
-      "release_check": "0 warnings"
+      "release_check": "0 warnings",
+      "productization": "wave B in progress"
     },
     {
       "id": "streamcraft",
@@ -106,7 +109,8 @@
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
-      "release_check": "0 warnings"
+      "release_check": "0 warnings",
+      "productization": "wave B in progress"
     },
     {
       "id": "simcraft",
@@ -115,7 +119,8 @@
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
-      "release_check": "0 warnings"
+      "release_check": "0 warnings",
+      "productization": "wave B in progress"
     }
   ],
   "productization": {
@@ -153,6 +158,28 @@
       "mastercraft": {
         "commit": "bb09a91",
         "status": "done"
+      }
+    },
+    "wave_b_status": {
+      "circuitcraft": {
+        "session": "ses_dfba3a723ffeXoD9LipEYl1iAe",
+        "status": "in_progress"
+      },
+      "geocraft": {
+        "session": "ses_dfba3a720ffecf0RUkKEJXx11q",
+        "status": "in_progress"
+      },
+      "musiccraft": {
+        "session": "ses_dfba3a70effehu7sWKCqt7WTgQ",
+        "status": "in_progress"
+      },
+      "streamcraft": {
+        "session": "ses_dfba3a70affeoebUmv5Qv5Uvi2",
+        "status": "in_progress"
+      },
+      "simcraft": {
+        "session": "ses_dfba3a706ffe7Q5ZBUuq49i1I8",
+        "status": "in_progress"
       }
     }
   },

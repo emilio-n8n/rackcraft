@@ -25,9 +25,9 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
 
 - **Vague A de productisation** terminée : DiagramCraft, ProjectCraft,
   FormCraft, MathCraft et MasterCraft ont leurs commits v0.2 et une CI verte.
-- **Vague B prête mais non lancée** : CircuitCraft, GeoCraft, MusicCraft,
-  StreamCraft, SimCraft.
-- Les 9 releases `v0.1.0` tournent ou viennent de finir sur GitHub Actions.
+- **Vague B lancée** : CircuitCraft, GeoCraft, MusicCraft, StreamCraft et
+  SimCraft sont en cours de productisation.
+- **Les 10 releases `v0.1.0` sont publiées et vérifiées.**
 
 ## Ordre de lecture
 

@@ -9,12 +9,18 @@
 | MasterCraft | `bb09a91` | ✅ | Livré |
 | DiagramCraft | `19ac4ba` | ✅ | Livré |
 | MathCraft | `efc1f7d` | ✅ | Livré |
-| MasterCraft | `bb09a91` | ✅ | Livré |
 
-## Vague B
+## Vague B — lancée
 
-À lancer après la vague A : CircuitCraft, GeoCraft, MusicCraft, StreamCraft,
-SimCraft. Prompts dans `PROMPTS/`.
+| App | Session | État |
+| --- | --- | --- |
+| CircuitCraft | `ses_dfba3a723ffeXoD9LipEYl1iAe` | En cours |
+| GeoCraft | `ses_dfba3a720ffecf0RUkKEJXx11q` | En cours |
+| MusicCraft | `ses_dfba3a70effehu7sWKCqt7WTgQ` | En cours |
+| StreamCraft | `ses_dfba3a70affeoebUmv5Qv5Uvi2` | En cours |
+| SimCraft | `ses_dfba3a706ffe7Q5ZBUuq49i1I8` | En cours |
+
+Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 
 ## ProjectCraft — 847ec5d
 

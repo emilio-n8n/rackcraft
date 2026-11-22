@@ -5,21 +5,13 @@
 1. Les 10 releases `v0.1.0` sont publiées, avec 7 assets, checksums vérifiés
    et `craft-release-check github` à 0 warning.
 
-2. Attendre les 5 agents de productisation vague A.
-   Vérifier leurs commits, CI, `python3 tools/launcher_check.py .`, puis lancer
-   si possible un test visuel `--sample` sous Xvfb.
+2. Attendre les 5 agents de productisation **vague B** :
+   CircuitCraft, GeoCraft, MusicCraft, StreamCraft, SimCraft.
+   Vérifier leurs commits, CI et `python3 tools/launcher_check.py .`.
 
 ## Ensuite
 
-3. Lancer la vague B, **5 agents maximum**, avec les prompts de
-   `PROMPTS/<slug>-product.md` :
-   - CircuitCraft
-   - GeoCraft
-   - MusicCraft
-   - StreamCraft
-   - SimCraft
-
-4. Quand A et B sont terminées :
+3. Quand A et B sont terminées :
    - vérifier les 10 CI ;
    - vérifier les binaires `--sample` ;
    - décider des releases `v0.2.0` ;

@@ -20,11 +20,11 @@
 | FormCraft | `59f0850` | `79fe16c` | ✅ publiée | Vague A terminée |
 | MathCraft | `efc1f7d` | `1099943` | ✅ publiée | Vague A terminée |
 | MasterCraft | `bb09a91` | `bfddbde` | ✅ publiée | Vague A terminée |
-| CircuitCraft | `d86ad8a` | `99ef5ae` | ✅ publiée | Vague B à lancer |
-| GeoCraft | `da38592` | `dd771be` | ✅ publiée | Vague B à lancer |
-| MusicCraft | `c971588` | `f4f03ce` | ✅ publiée | Vague B à lancer |
-| StreamCraft | `76147a7` | `7ad60b7` | ✅ publiée | Vague B à lancer |
-| SimCraft | `981b128` | `69464f5` | ✅ publiée | Vague B à lancer |
+| CircuitCraft | `d86ad8a` | `99ef5ae` | ✅ publiée | Vague B en cours |
+| GeoCraft | `da38592` | `dd771be` | ✅ publiée | Vague B en cours |
+| MusicCraft | `c971588` | `f4f03ce` | ✅ publiée | Vague B en cours |
+| StreamCraft | `76147a7` | `7ad60b7` | ✅ publiée | Vague B en cours |
+| SimCraft | `981b128` | `69464f5` | ✅ publiée | Vague B en cours |
 
 Les commits `main` ci-dessus sont ceux **avant** la productisation. Les agents
 de vague A vont ajouter de nouveaux commits.
@@ -47,7 +47,7 @@ de vague A vont ajouter de nouveaux commits.
 | FormCraft | `59f0850` | ✅ | Livré |
 | MathCraft | `efc1f7d` | ✅ | Livré |
 | MasterCraft | `bb09a91` | ✅ | Livré |
-| CircuitCraft, GeoCraft, MusicCraft, StreamCraft, SimCraft | — | — | Vague B lancée |
+| CircuitCraft, GeoCraft, MusicCraft, StreamCraft, SimCraft | en cours | — | Vague B lancée |
 
 ## Launcher
 
@@ -67,6 +67,6 @@ de vague A vont ajouter de nouveaux commits.
 
 ## Disque
 
-Au dernier contrôle : ~3,3 Go libres sur `/tmp`, `debug/` ~5 Go.
+Au dernier contrôle : ~2,3 Go libres sur `/tmp`, `debug/` ~6 Go.
 Les builds complets peuvent remplir le disque et provoquer des `SIGBUS` du
 linker. Nettoyer les `debug/build/<app>` des apps terminées avant une vague.

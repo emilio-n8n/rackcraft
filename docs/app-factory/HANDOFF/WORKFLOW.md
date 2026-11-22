@@ -106,16 +106,17 @@ cargo run -q -p craft-release-check -- github \
 | MathCraft | `ses_dfbd118a0ffe2cWJOBYDh0rEY2` |
 | MasterCraft | `ses_dfbd11884ffe8FdWG81bOgFu4W` |
 
-### Vague B — à lancer quand A a rendu
+### Sessions de productisation vague B (lancées)
 
-Créer ou réutiliser une session par app, avec le prompt
-`PROMPTS/<slug>-product.md` :
+| App | Session |
+| --- | --- |
+| CircuitCraft | `ses_dfba3a723ffeXoD9LipEYl1iAe` |
+| GeoCraft | `ses_dfba3a720ffecf0RUkKEJXx11q` |
+| MusicCraft | `ses_dfba3a70effehu7sWKCqt7WTgQ` |
+| StreamCraft | `ses_dfba3a70affeoebUmv5Qv5Uvi2` |
+| SimCraft | `ses_dfba3a706ffe7Q5ZBUuq49i1I8` |
 
-- `circuitcraft`
-- `geocraft`
-- `musiccraft`
-- `streamcraft`
-- `simcraft`
+Prompts : `PROMPTS/<slug>-product.md`.
 
 ## Disque
 
