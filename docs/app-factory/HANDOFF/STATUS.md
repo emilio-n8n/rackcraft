@@ -18,7 +18,7 @@
 | DiagramCraft | `19ac4ba` | `f6e8929` | ✅ publiée | Vague A terminée |
 | ProjectCraft | `847ec5d` | `00bdd07` | ✅ publiée | Vague A terminée |
 | FormCraft | `59f0850` | `79fe16c` | ✅ publiée | Vague A terminée |
-| MathCraft | `6d9839b` | `1099943` | ✅ publiée | Vague A en cours |
+| MathCraft | `efc1f7d` | `1099943` | ✅ publiée | Vague A terminée |
 | MasterCraft | `bb09a91` | `bfddbde` | ✅ publiée | Vague A terminée |
 | CircuitCraft | `d86ad8a` | `99ef5ae` | ✅ publiée | Vague B à lancer |
 | GeoCraft | `da38592` | `dd771be` | ✅ publiée | Vague B à lancer |

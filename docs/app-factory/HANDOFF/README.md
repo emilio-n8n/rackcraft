@@ -23,9 +23,8 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
 
 ## Travail en cours au moment du snapshot
 
-- **Vague A de productisation** (5 agents `hy4-flash-free`) :
-  ProjectCraft est terminé ; DiagramCraft, FormCraft, MathCraft et MasterCraft
-  sont encore en cours.
+- **Vague A de productisation** terminée : DiagramCraft, ProjectCraft,
+  FormCraft, MathCraft et MasterCraft ont leurs commits v0.2 et une CI verte.
 - **Vague B prête mais non lancée** : CircuitCraft, GeoCraft, MusicCraft,
   StreamCraft, SimCraft.
 - Les 9 releases `v0.1.0` tournent ou viennent de finir sur GitHub Actions.

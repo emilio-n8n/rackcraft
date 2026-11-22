@@ -55,11 +55,12 @@
     {
       "id": "mathcraft",
       "repo": "emilio-n8n/mathcraft",
-      "main": "6d9839b",
+      "main": "efc1f7d",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
-      "release_check": "0 warnings"
+      "release_check": "0 warnings",
+      "productization": "wave A complete"
     },
     {
       "id": "mastercraft",
@@ -146,7 +147,8 @@
         "status": "done"
       },
       "mathcraft": {
-        "status": "in_progress"
+        "commit": "efc1f7d",
+        "status": "done"
       },
       "mastercraft": {
         "commit": "bb09a91",

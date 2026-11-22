@@ -8,7 +8,7 @@
 | FormCraft | `59f0850` | ✅ | Livré |
 | MasterCraft | `bb09a91` | ✅ | Livré |
 | DiagramCraft | `19ac4ba` | ✅ | Livré |
-| MathCraft | en cours | — | En cours |
+| MathCraft | `efc1f7d` | ✅ | Livré |
 | MasterCraft | `bb09a91` | ✅ | Livré |
 
 ## Vague B
@@ -53,10 +53,17 @@ SimCraft. Prompts dans `PROMPTS/`.
 - Limites : `.accdb` non supporté, undo données en session, pas d'undo sur le
   schéma, `WITHOUT ROWID` non éditable, filtre LIKE global. 16 tests.
 
-## MathCraft — en cours
+## MathCraft — efc1f7d
 
-Objectif : matrices persistées, feuilles multiples, notation scientifique,
-tracé interactif, CSV. Voir `PROMPTS/mathcraft-product.md`.
+- Schéma 2 : feuilles multiples, résultats/erreurs persistés, matrices nommées,
+  séries CSV, variables, feuille active ; migration schéma 1 testée.
+- Références de cellules `A1`, `A2` avec détection de cycles.
+- Parseur : notation scientifique, multiplication implicite, 22 fonctions.
+- Tracé interactif pan/zoom, plages X/Y, plusieurs courbes, export CSV/PNG.
+- Import/export CSV, exemples, aide syntaxique.
+- 46 tests lib + 3 bin. Limites : PNG sans graduations textuelles, `x(x+1)`
+  n’est pas une multiplication implicite, références inter-feuilles limitées,
+  champs matrices A/B non persistés, CSV 2 colonnes, pas de test Xvfb.
 
 ## MasterCraft — bb09a91
 

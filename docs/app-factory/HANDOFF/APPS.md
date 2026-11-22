@@ -62,9 +62,12 @@ Aucune n’est un clone complet d’un logiciel commercial.
 - MVP : parseur, variables, matrices, tracé 2D, historique.
 - Limites : matrices non persistées, une seule expression, pas de notation
   scientifique/multiplication implicite, tracé fixe.
-- Productisation A : matrices persistées (schéma 2 + migration), feuilles
-  multiples, notation scientifique, tracé zoom/pan, import/export CSV.
-- Release `v0.1.0` publiée.
+- Productisation A livrée (`efc1f7d`) : schéma 2, feuilles multiples, matrices
+  nommées persistées, notation scientifique, 22 fonctions, références A1,
+  tracé interactif multi-courbes, export CSV/PNG, 49 tests.
+- Limites : PNG sans graduations, `x(x+1)` non implicite, références
+  inter-feuilles limitées, CSV 2 colonnes, pas de test Xvfb.
+- Release `v0.1.0` publiée ; la productisation ira vers `v0.2.0`.
 
 ## MasterCraft — audio offline
 
