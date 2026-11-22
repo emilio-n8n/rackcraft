@@ -55,9 +55,9 @@ Deux chemins distincts :
    et MailCraft sont revues et épinglées par les mainteneurs ; macOS/Windows
    demandent des paquets signés.
 
-Les **dix apps** passent `craft-release-check` sur une release simulée
-(`dir`, tag `v0.1.0`) avec **0 warning**. Seule DiagramCraft a une release
-réelle à ce jour.
+Les **dix releases `v0.1.0`** sont publiées et passent `craft-release-check
+github` avec **0 warning**. Chaque release contient 7 assets et ses checksums
+ont été vérifiés.
 
 Sans certificats Apple/Windows, le chemin officiel reste bloqué pour une
 installation complète sur macOS/Windows. Les assets Linux/Windows portables
