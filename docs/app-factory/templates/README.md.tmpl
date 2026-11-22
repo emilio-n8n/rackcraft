@@ -1,0 +1,90 @@
+# <APP>
+
+**<APP> is an independent, community open-source project.** It is not an
+official product of, endorsed by, or affiliated with any third-party vendor it
+interoperates with.
+
+<One paragraph: what the app does, for whom, and the core promise.>
+
+![<APP> screenshot](docs/images/screenshot.png)
+
+## Features
+
+- <Feature 1>
+- <Feature 2>
+- <Feature 3>
+- Offline-first: no account, no telemetry, no network required.
+- Native performance with a native Rust desktop UI.
+
+## Install
+
+### Linux (AppImage)
+
+```bash
+curl -fLO https://github.com/<OWNER>/<SLUG>/releases/latest/download/<SLUG>-x86_64.AppImage
+chmod +x <SLUG>-x86_64.AppImage
+./<SLUG>-x86_64.AppImage
+```
+
+If FUSE 2 is unavailable:
+
+```bash
+./<SLUG>-x86_64.AppImage --appimage-extract-and-run
+```
+
+### Linux (tarball)
+
+```bash
+curl -fLO https://github.com/<OWNER>/<SLUG>/releases/latest/download/<SLUG>-x86_64-unknown-linux-gnu.tar.gz
+tar -xzf <SLUG>-x86_64-unknown-linux-gnu.tar.gz
+./<SLUG>/<SLUG>
+```
+
+### Windows / macOS
+
+Download the archive for your platform from the
+[releases page](https://github.com/<OWNER>/<SLUG>/releases) and extract it.
+
+### From source
+
+```bash
+git clone https://github.com/<OWNER>/<SLUG>.git
+cd <SLUG>
+cargo run -p <SLUG> --release
+```
+
+## Usage
+
+```bash
+<SLUG>              # start with an empty document
+<SLUG> --sample     # open the built-in demo document
+<SLUG> --open FILE  # open a project file
+```
+
+## File format
+
+<Describe the format, versioning and compatibility guarantees. Be explicit about
+what is embedded and what still depends on external files.>
+
+## Build and test
+
+```bash
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+```
+
+Release binaries are produced by GitHub Actions on `v*` tags.
+
+## Licence
+
+Licensed under either of:
+
+- Apache License, Version 2.0 (`LICENSE-APACHE`)
+- MIT license (`LICENSE-MIT`)
+
+at your option.
+
+## Third-party notices
+
+See [packaging/THIRD_PARTY.md](packaging/THIRD_PARTY.md).

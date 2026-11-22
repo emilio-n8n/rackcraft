@@ -1,0 +1,226 @@
+# Template — replace every <...> placeholder before committing.
+# Convention: tools/build_appimage.sh <binary> <output.AppImage> <version>
+# The AppImage step is skipped when that script does not exist.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version without the leading v (e.g. 0.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Pin an older Ubuntu LTS so the Linux binary does not require the
+          # newest glibc shipped by ubuntu-latest.
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            archive: tar.gz
+            binary: <SLUG>
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            archive: zip
+            binary: <SLUG>.exe
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            archive: tar.gz
+            binary: <SLUG>
+          # Cross-compiled from the Apple silicon runner; add the target below.
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            archive: tar.gz
+            binary: <SLUG>
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Install Linux windowing dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential pkg-config \
+            libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libx11-dev \
+            libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
+            libxcursor-dev libxrandr-dev libxi-dev libgl1-mesa-dev \
+            libfontconfig1-dev libfreetype6-dev
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: release-${{ matrix.target }}
+
+      - name: Build optimized binary
+        run: cargo build --locked --release -p <SLUG> --target ${{ matrix.target }}
+
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          name="<SLUG>-${{ matrix.target }}"
+          mkdir -p "dist/$name"
+          cp "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/$name/"
+          cp README.md LICENSE-MIT LICENSE-APACHE AGENTS.md "dist/$name/"
+          cp -R docs "dist/$name/docs"
+          chmod +x "dist/$name/${{ matrix.binary }}"
+          tar -C dist -czf "dist/$name.tar.gz" "$name"
+
+      - name: Package AppImage (Linux)
+        if: runner.os == 'Linux' && hashFiles('tools/build_appimage.sh') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 \
+            "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" \
+            -o /tmp/appimagetool
+          chmod +x /tmp/appimagetool
+          APPIMAGETOOL=/tmp/appimagetool ./tools/build_appimage.sh \
+            "target/${{ matrix.target }}/release/<SLUG>" \
+            "dist/<SLUG>-x86_64.AppImage" \
+            "${{ steps.version.outputs.version }}"
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $name = "<SLUG>-${{ matrix.target }}"
+          New-Item -ItemType Directory -Force -Path "dist/$name" | Out-Null
+          Copy-Item "target/${{ matrix.target }}/release/${{ matrix.binary }}" "dist/$name/"
+          Copy-Item README.md, LICENSE-MIT, LICENSE-APACHE, AGENTS.md "dist/$name/"
+          Copy-Item -Recurse docs "dist/$name/docs"
+          Compress-Archive -Path "dist/$name" -DestinationPath "dist/$name.zip" -Force
+
+      - name: Upload platform archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: <SLUG>-${{ matrix.target }}
+          path: dist/*.${{ matrix.archive }}
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload AppImage
+        if: runner.os == 'Linux' && hashFiles('tools/build_appimage.sh') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: <SLUG>-appimage
+          path: dist/*.AppImage
+          if-no-files-found: error
+          retention-days: 7
+
+  checksums:
+    name: Generate SHA256SUMS
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Compute checksums
+        working-directory: dist
+        run: |
+          set -euo pipefail
+          ls -lh
+          sha256sum ./*.tar.gz ./*.zip ./*.AppImage > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SHA256SUMS
+          path: dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    name: Publish GitHub Release
+    needs: [build, checksums]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: List release files
+        run: ls -lh dist
+
+      - name: Resolve release tag
+        id: tag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=v${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: <APP> ${{ steps.tag.outputs.name }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          body: |
+            <One paragraph describing the release.>
+
+            ### Downloads
+            - **Linux x86_64 AppImage:** `<SLUG>-x86_64.AppImage`
+            - **Linux x86_64 tarball:** `<SLUG>-x86_64-unknown-linux-gnu.tar.gz`
+            - **Windows x86_64:** `<SLUG>-x86_64-pc-windows-msvc.zip`
+            - **macOS Apple silicon:** `<SLUG>-aarch64-apple-darwin.tar.gz`
+            - **macOS Intel:** `<SLUG>-x86_64-apple-darwin.tar.gz`
+
+            ### Verify your download
+            ```bash
+            sha256sum -c SHA256SUMS.txt
+            ```
+
+            <APP> is an independent community project.
+          files: |
+            dist/*.AppImage
+            dist/*.tar.gz
+            dist/*.zip
+            dist/SHA256SUMS.txt
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -203,6 +203,10 @@ CI runs the three checks above on Ubuntu. The release workflow builds all four
 platform targets, packages `.tar.gz`/`.zip` archives, publishes a
 `SHA256SUMS.txt` and attaches everything to the GitHub Release.
 
+For the reusable, domain-agnostic workflow used to build this application — and
+to bootstrap other native Rust desktop apps — see the
+[App Factory playbook](docs/app-factory/README.md).
+
 ## Community & independence
 
 RackCraft is an independent open-source project maintained by its contributors.

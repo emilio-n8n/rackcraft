@@ -125,6 +125,14 @@ UI crate. The UI never parses `.vssx` itself.
 - UI wording is English (the ArtCraft ecosystem convention); user-facing docs
   may be French or English. Keep code comments in English.
 
+## App creation playbook
+
+`docs/app-factory/` is a domain-agnostic playbook for bootstrapping other native
+Rust desktop applications: environment, architecture, UI, CI/release, generic
+error catalogue, checklists and templates. It is intentionally independent of
+RackCraft's Visio-specific logic. Read it before starting a new app; keep it
+generic when updating it.
+
 ## Commits & releases
 
 - Conventional, imperative commit messages (`feat:`, `fix:`, `docs:`, `ci:`).
