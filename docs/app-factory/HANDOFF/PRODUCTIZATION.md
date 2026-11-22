@@ -84,18 +84,6 @@ Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 
 ## CircuitCraft — cd71ed6
 
-- Rotation 90° des composants (`R`, barre d'outils, inspecteur), pins et
-  symboles solidaires ; champ `rotation` `serde(default)`.
-- Fils orthogonaux automatiques, jonctions aux pins partagés et croisements,
-  sélection/suppression d'un fil.
-- Netlist nommée (`GND`, `V+`, `N<n>`) par union-find ; export BOM CSV.
-- Exports SVG et PDF (une page, Helvetica standard), échappement du texte.
-- Grille/snapping 20 unités, zoom-to-fit `F`, palette de 10 symboles.
-- 24 tests. Limites : routage sans waypoints manuels, tout croisement est une
-  jonction, PDF non-ASCII remplacé par `?`, pas de test visuel.
-
-## CircuitCraft — cd71ed6
-
 - Rotation par pas de 90° (`R`, barre d'outils, inspecteur), pins et symboles
   pivotent ; champ `rotation` rétrocompatible (`serde(default)`).
 - Fils orthogonaux, jonctions aux pins partagés et croisements, suppression
