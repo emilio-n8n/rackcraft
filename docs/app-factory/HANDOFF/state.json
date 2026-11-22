@@ -1,0 +1,59 @@
+{
+  "generated": "2026-11-22",
+  "rackcraft": {
+    "repo": "emilio-n8n/rackcraft",
+    "commit": "372f81a",
+    "status": "excluded",
+    "note": "Projet d'un ami, trop spécifique, ne pas modifier ni publier dans ArtCraft"
+  },
+  "craftkit": {
+    "repo": "emilio-n8n/craftkit",
+    "main": "8b88798",
+    "tag": "v0.1.0",
+    "tests": 35
+  },
+  "rate_limit": {
+    "model": "opencode-go/hy4-flash-free",
+    "max_concurrent_agents": 5,
+    "published_concurrency_limit": null,
+    "daily_request_limit": "non exposée",
+    "observed_subagents": 15,
+    "observed_steps_hy4": 775,
+    "observed_429": false
+  },
+  "apps": [
+    {"id": "diagramcraft", "repo": "emilio-n8n/diagramcraft", "main": "015c0d8", "tag": "v0.1.0", "release": "published", "wave": "A"},
+    {"id": "projectcraft", "repo": "emilio-n8n/projectcraft", "main": "b82aa23", "tag": "v0.1.0", "release": "published", "wave": "A"},
+    {"id": "formcraft", "repo": "emilio-n8n/formcraft", "main": "aae8d4d", "tag": "v0.1.0", "release": "published", "wave": "A"},
+    {"id": "mathcraft", "repo": "emilio-n8n/mathcraft", "main": "6d9839b", "tag": "v0.1.0", "release": "published", "wave": "A"},
+    {"id": "mastercraft", "repo": "emilio-n8n/mastercraft", "main": "8d76c81", "tag": "v0.1.0", "release": "published", "wave": "A"},
+    {"id": "circuitcraft", "repo": "emilio-n8n/circuitcraft", "main": "d86ad8a", "tag": "v0.1.0", "release": "in_progress", "wave": "B"},
+    {"id": "geocraft", "repo": "emilio-n8n/geocraft", "main": "da38592", "tag": "v0.1.0", "release": "in_progress", "wave": "B"},
+    {"id": "musiccraft", "repo": "emilio-n8n/musiccraft", "main": "c971588", "tag": "v0.1.0", "release": "in_progress", "wave": "B"},
+    {"id": "streamcraft", "repo": "emilio-n8n/streamcraft", "main": "76147a7", "tag": "v0.1.0", "release": "in_progress", "wave": "B"},
+    {"id": "simcraft", "repo": "emilio-n8n/simcraft", "main": "981b128", "tag": "v0.1.0", "release": "in_progress", "wave": "B"}
+  ],
+  "productization": {
+    "wave_a": [
+      "diagramcraft",
+      "projectcraft",
+      "formcraft",
+      "mathcraft",
+      "mastercraft"
+    ],
+    "wave_b_pending": [
+      "circuitcraft",
+      "geocraft",
+      "musiccraft",
+      "streamcraft",
+      "simcraft"
+    ]
+  },
+  "launcher": {
+    "unofficial_repo": "YalKouassi/craft-unofficial-launcher",
+    "official_issue": "storytold/craft-launcher#989",
+    "diagramcraft_release_check": "0 warnings",
+    "all_apps_simulated_dir_check": "0 warnings",
+    "certificates": "none"
+  }
+}

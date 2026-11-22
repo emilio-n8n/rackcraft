@@ -1,0 +1,104 @@
+# Incidents et pièges rencontrés
+
+## `/tmp` réinitialisé
+
+Le toolchain Rust, `CARGO_HOME`, `RUSTUP_HOME` et `CARGO_TARGET_DIR` peuvent
+disparaître entre deux sessions.
+
+Symptômes : `rustc: command not found`, `rustup could not choose a version`.
+
+Correctif : réinstaller (voir `WORKFLOW.md`) puis `cargo fetch`.
+
+## Disque plein et `SIGBUS` du linker
+
+Un build local a échoué avec :
+
+```text
+collect2: fatal error: ld terminated with signal 7 [Bus error]
+```
+
+Cause : `/tmp` à 100 %, `debug/build/<app>` contenant des binaires dupliqués de
+~300 Mo et `debug/incremental`.
+
+Correctif :
+
+```bash
+df -h /tmp
+du -sh /tmp/cargo-target/debug/build/* | sort -h | tail
+rm -rf /tmp/cargo-target/debug/build/<app-terminee>
+rm -rf /tmp/cargo-target/debug/incremental
+```
+
+Ne pas supprimer `debug/deps` ni les artefacts partagés eframe/egui pendant un
+build actif.
+
+## `libxkbcommon-x11.so` manquant
+
+Au lancement d’une app :
+
+```text
+Library libxkbcommon-x11.so could not be loaded
+```
+
+Installer la lib runtime :
+
+```bash
+sudo apt-get install -y libxkbcommon-x11-0
+```
+
+## Sessions d’agents en double
+
+Des sessions MVP en double ont existé (DiagramCraft, ProjectCraft, MathCraft,
+MasterCraft, FormCraft). Elles ont convergé vers les mêmes commits, mais il ne
+faut **pas** les relancer en parallèle.
+
+Une seule session de productisation par app est listée dans `WORKFLOW.md`.
+
+## `pkill -f` qui tue son propre shell
+
+Ne jamais lancer depuis une commande qui contient la chaîne :
+
+```bash
+pkill -f "Xvfb :99"
+```
+
+Cela peut tuer le shell courant. Utiliser un PID stocké dans `/tmp`.
+
+## Warnings GitHub Actions Node.js 20
+
+Les annotations `actions/checkout@v4` / `upload-artifact@v4` Node.js 20 sont des
+avertissements, pas des échecs. Ne pas bloquer une release pour cela.
+
+## Nom d’archive Windows
+
+Le launcher unofficial exige :
+
+```text
+<id>-<version>-windows-x64-portable.zip
+```
+
+Un `.zip` sans `-portable` est ignoré. Les workflows ont été corrigés.
+
+## `rust-version` du générateur
+
+`tools/new-app.py` a déjà eu un bug : `version.workspace = true` remplaçait
+aussi `rust-version.workspace = true`, donnant `rust-version = "0.1.0"`.
+Corrigé dans CraftKit ; le tag `v0.1.0` de la bibliothèque reste utilisable.
+
+## Cloud Shell / apt
+
+`apt-get` peut être verrouillé par un autre processus ou perdre ses paquets
+après une réinitialisation. Attendre le processus, puis réinstaller si besoin :
+`xvfb`, `x11-apps`, `imagemagick`, `libxkbcommon-x11-0`, `libasound2-dev`
+(pour un futur playback audio).
+
+## Releases bloquées / en cours
+
+Toujours vérifier :
+
+```bash
+gh run list --repo emilio-n8n/<slug> --workflow Release --limit 1
+gh release view v0.1.0 --repo emilio-n8n/<slug>
+```
+
+Un workflow `in_progress` n’est pas un échec. Ne pas recréer le tag.
