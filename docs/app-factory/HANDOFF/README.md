@@ -29,6 +29,8 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
   MusicCraft sont livrés.
 - **Les 10 releases `v0.1.0` sont publiées et vérifiées.**
 - **10 releases `v0.2.0` validées** (7 assets, 0 warning), toutes publiées.
+- **Audit E2E des binaires `v0.2.0`** : 2 défauts réels trouvés et corrigés
+  (DiagramCraft, SimCraft), releases `v0.2.1` en cours. Voir `E2E.md`.
 
 ## Ordre de lecture
 

@@ -25,7 +25,7 @@
     {
       "id": "diagramcraft",
       "repo": "emilio-n8n/diagramcraft",
-      "main": "8f7d284",
+      "main": "c3722fe",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
@@ -33,7 +33,11 @@
       "productization": "wave A complete",
       "tag_v0_2_0": "v0.2.0",
       "release_v0_2_0": "validated",
-      "release_v0_2_0_run": 45058722934
+      "release_v0_2_0_run": 45058722934,
+      "tag_v0_2_1": "v0.2.1",
+      "release_v0_2_1": "in progress",
+      "release_v0_2_1_run": 45063489569,
+      "fix_v0_2_1": "1fdab24"
     },
     {
       "id": "projectcraft",
@@ -142,7 +146,7 @@
     {
       "id": "simcraft",
       "repo": "emilio-n8n/simcraft",
-      "main": "07e56a1",
+      "main": "a76e96d",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
@@ -150,7 +154,11 @@
       "productization": "wave B complete",
       "tag_v0_2_0": "v0.2.0",
       "release_v0_2_0": "validated",
-      "release_v0_2_0_run": 45058746567
+      "release_v0_2_0_run": 45058746567,
+      "tag_v0_2_1": "v0.2.1",
+      "release_v0_2_1": "in progress",
+      "release_v0_2_1_run": 45063493549,
+      "fix_v0_2_1": "976db22"
     }
   ],
   "productization": {
@@ -247,5 +255,21 @@
       "streamcraft"
     ],
     "rerunning": []
+  },
+  "e2e_audit": {
+    "date": "2026-11-22",
+    "report": "E2E.md",
+    "bugs_found": [
+      "diagramcraft: shape placement and duplicate toolbar buttons",
+      "simcraft: Solve button unreachable"
+    ],
+    "not_covered": [
+      "native file dialogs",
+      "UI-driven exports",
+      "real WAV in MasterCraft",
+      "audio/webcam hardware",
+      "Wayland",
+      "Windows/macOS runtime"
+    ]
   }
 }

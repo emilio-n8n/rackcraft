@@ -5,8 +5,12 @@
 1. Les 10 releases `v0.1.0` sont publiées, avec 7 assets, checksums vérifiés
    et `craft-release-check github` à 0 warning.
 
-2. Soumettre DiagramCraft au Craft Unofficial Launcher (puis les autres apps),
-   avec `craft-app.json`, l'icône et les archives `v0.2.0`.
+2. Valider les releases `v0.2.1` de DiagramCraft et SimCraft, puis reprendre
+   la campagne E2E décrite dans `E2E.md` (dialogues de fichier, exports UI,
+   WAV réel, matériel audio, Wayland, Windows/macOS).
+
+3. Soumettre DiagramCraft au Craft Unofficial Launcher (puis les autres apps),
+   avec `craft-app.json`, l'icône et les archives `v0.2.1`.
 
 ## Ensuite
 

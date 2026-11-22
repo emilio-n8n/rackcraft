@@ -15,7 +15,7 @@
 
 | App | `main` | `v0.1.0` | Release | Productisation |
 | --- | --- | --- | --- | --- |
-| DiagramCraft | `19ac4ba` | `f6e8929` | ✅ publiée | Vague A terminée |
+| DiagramCraft | `c3722fe` | `f6e8929` | ✅ publiée | Vague A terminée |
 | ProjectCraft | `847ec5d` | `00bdd07` | ✅ publiée | Vague A terminée |
 | FormCraft | `59f0850` | `79fe16c` | ✅ publiée | Vague A terminée |
 | MathCraft | `efc1f7d` | `1099943` | ✅ publiée | Vague A terminée |
@@ -24,7 +24,7 @@
 | GeoCraft | `a169b10` | `dd771be` | ✅ publiée | Vague B terminée |
 | MusicCraft | `575052b` | `f4f03ce` | ✅ publiée | Vague B terminée |
 | StreamCraft | `a0aca05` | `7ad60b7` | ✅ publiée | Vague B terminée |
-| SimCraft | `07e56a1` | `69464f5` | ✅ publiée | Vague B terminée |
+| SimCraft | `a76e96d` | `69464f5` | ✅ publiée | Vague B terminée |
 
 Les commits `main` ci-dessus sont ceux **avant** la productisation. Les agents
 de vague A vont ajouter de nouveaux commits.
@@ -42,13 +42,13 @@ de vague A vont ajouter de nouveaux commits.
 
 | App | Commit | CI | État |
 | --- | --- | --- | --- |
-| DiagramCraft | `19ac4ba` | ✅ | Livré |
+| DiagramCraft | `c3722fe` | ✅ | Livré (v0.2.1) |
 | ProjectCraft | `847ec5d` | ✅ | Livré |
 | FormCraft | `59f0850` | ✅ | Livré |
 | MathCraft | `efc1f7d` | ✅ | Livré |
 | MasterCraft | `bb09a91` | ✅ | Livré |
 | CircuitCraft | `cd71ed6` | ✅ | Livré (v0.2 fonctionnelle) |
-| SimCraft | `07e56a1` | ✅ | Livré (v0.2 fonctionnelle) |
+| SimCraft | `a76e96d` | ✅ | Livré (v0.2.1) |
 | GeoCraft | `a169b10` | ✅ | Livré (v0.2 fonctionnelle) |
 | StreamCraft | `a0aca05` | ✅ | Livré (v0.2 fonctionnelle) |
 | MusicCraft | `575052b` | ✅ | Livré (v0.2 fonctionnelle) |
@@ -70,6 +70,17 @@ sont publiées et validées par `craft-release-check` (0 warning, 7 assets).
 | StreamCraft | `da7415f` | `v0.2.0` | ✅ validée |
 | SimCraft | `07e56a1` | `v0.2.0` | ✅ validée |
 | MusicCraft | `575052b` | `v0.2.0` | ✅ validée |
+
+## Correctifs v0.2.1
+
+L'audit E2E sur les binaires `v0.2.0` a trouvé deux défauts réels :
+
+| App | Correctif | Tag | Release |
+| --- | --- | --- | --- |
+| DiagramCraft | `1fdab24` | `v0.2.1` (`c3722fe`) | en cours |
+| SimCraft | `976db22` | `v0.2.1` (`a76e96d`) | en cours |
+
+Détail et couverture : `E2E.md`.
 
 ## Launcher
 

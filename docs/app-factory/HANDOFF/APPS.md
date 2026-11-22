@@ -19,6 +19,8 @@ Aucune n’est un clone complet d’un logiciel commercial.
   sélection/déplacement, export SVG, JSON.
 - Limites MVP : labels non éditables, pas de resize/rotation, connecteurs
   droits uniquement, pas de multi-sélection, pas de PDF.
+- Correctif `v0.2.1` (`c3722fe`) : placement des formes sur canevas vide et
+  suppression des boutons dupliqués.
 - Productisation A livrée (`19ac4ba`) : labels inline, 8 poignées de resize,
   multi-sélection, copier/coller/dupliquer, connecteurs orthogonaux avec
   waypoints, alignement/distribution, PDF vectoriel, zoom-to-fit, 46 tests.
