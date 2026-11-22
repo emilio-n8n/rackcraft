@@ -29,6 +29,9 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
   GeoCraft (`a169b10`) et StreamCraft (`a0aca05`) sont livrés ; MusicCraft est
   encore en cours.
 - **Les 10 releases `v0.1.0` sont publiées et vérifiées.**
+- **9 releases `v0.2.0` lancées** : tags poussés sur les 9 apps terminées,
+  workflows GitHub Actions en cours. MusicCraft reste à taguer après sa
+  productisation.
 
 ## Ordre de lecture
 

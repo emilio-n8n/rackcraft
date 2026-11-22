@@ -53,6 +53,25 @@ de vague A vont ajouter de nouveaux commits.
 | StreamCraft | `a0aca05` | ✅ | Livré (v0.2 fonctionnelle) |
 | MusicCraft | en cours | — | Vague B en cours |
 
+## Releases v0.2.0
+
+Les 9 apps terminées ont reçu le tag `v0.2.0` le 22 novembre 2026 et les
+workflows de release GitHub Actions ont été lancés :
+
+| App | Commit | Tag | Release |
+| --- | --- | --- | --- |
+| DiagramCraft | `8f7d284` | `v0.2.0` | en cours |
+| ProjectCraft | `1a4f808` | `v0.2.0` | en cours |
+| FormCraft | `c6b927e` | `v0.2.0` | en cours |
+| MathCraft | `99061bc` | `v0.2.0` | en cours |
+| MasterCraft | `dd43c55` | `v0.2.0` | en cours |
+| CircuitCraft | `02e8a88` | `v0.2.0` | en cours |
+| GeoCraft | `ab09978` | `v0.2.0` | en cours |
+| StreamCraft | `08de7dd` | `v0.2.0` | en cours |
+| SimCraft | `07e56a1` | `v0.2.0` | en cours |
+
+MusicCraft n'est pas taguée : sa productisation est encore en cours.
+
 ## Launcher
 
 - **Craft Unofficial Launcher** : lit `craft-app.json`, chemin validé.

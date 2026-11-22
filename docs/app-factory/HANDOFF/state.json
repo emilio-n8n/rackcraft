@@ -25,72 +25,93 @@
     {
       "id": "diagramcraft",
       "repo": "emilio-n8n/diagramcraft",
-      "main": "19ac4ba",
+      "main": "8f7d284",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
       "release_check": "0 warnings",
-      "productization": "wave A complete"
+      "productization": "wave A complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058722934
     },
     {
       "id": "projectcraft",
       "repo": "emilio-n8n/projectcraft",
-      "main": "847ec5d",
+      "main": "1a4f808",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
       "release_check": "0 warnings",
-      "productization": "wave A complete"
+      "productization": "wave A complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058726001
     },
     {
       "id": "formcraft",
       "repo": "emilio-n8n/formcraft",
-      "main": "59f0850",
+      "main": "c6b927e",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
       "release_check": "0 warnings",
-      "productization": "wave A complete"
+      "productization": "wave A complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058729735
     },
     {
       "id": "mathcraft",
       "repo": "emilio-n8n/mathcraft",
-      "main": "efc1f7d",
+      "main": "99061bc",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
       "release_check": "0 warnings",
-      "productization": "wave A complete"
+      "productization": "wave A complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058732163
     },
     {
       "id": "mastercraft",
       "repo": "emilio-n8n/mastercraft",
-      "main": "bb09a91",
+      "main": "dd43c55",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
       "release_check": "0 warnings",
-      "productization": "wave A complete"
+      "productization": "wave A complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058734887
     },
     {
       "id": "circuitcraft",
       "repo": "emilio-n8n/circuitcraft",
-      "main": "cd71ed6",
+      "main": "02e8a88",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B complete"
+      "productization": "wave B complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058738122
     },
     {
       "id": "geocraft",
       "repo": "emilio-n8n/geocraft",
-      "main": "a169b10",
+      "main": "ab09978",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B complete"
+      "productization": "wave B complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058741228
     },
     {
       "id": "musiccraft",
@@ -105,12 +126,15 @@
     {
       "id": "streamcraft",
       "repo": "emilio-n8n/streamcraft",
-      "main": "a0aca05",
+      "main": "08de7dd",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B complete"
+      "productization": "wave B complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058744385
     },
     {
       "id": "simcraft",
@@ -120,7 +144,10 @@
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B complete"
+      "productization": "wave B complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45058746567
     }
   ],
   "productization": {
@@ -189,5 +216,20 @@
     "diagramcraft_release_check": "0 warnings",
     "all_apps_simulated_dir_check": "0 warnings",
     "certificates": "none"
+  },
+  "releases_v0_2_0": {
+    "launched": "2026-11-22",
+    "apps": [
+      "circuitcraft",
+      "diagramcraft",
+      "formcraft",
+      "geocraft",
+      "mastercraft",
+      "mathcraft",
+      "projectcraft",
+      "simcraft",
+      "streamcraft"
+    ],
+    "musiccraft": "pending productization"
   }
 }
