@@ -29,7 +29,8 @@ Règles absolues :
   (0 warning).
 - Vague A de productisation terminée : DiagramCraft 19ac4ba, ProjectCraft
   847ec5d, FormCraft 59f0850, MathCraft efc1f7d, MasterCraft bb09a91.
-- Vague B lancée : CircuitCraft, GeoCraft, MusicCraft, StreamCraft, SimCraft.
+- Vague B lancée : CircuitCraft livré (`cd71ed6`, CI verte) ; GeoCraft,
+  MusicCraft, StreamCraft et SimCraft sont encore en cours.
 - Sessions B dans WORKFLOW.md ; attendre leurs rapports, vérifier CI et
   launcher_check, puis mettre à jour le dossier.
 
