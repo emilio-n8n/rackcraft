@@ -93,3 +93,17 @@ Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 - Grille/snapping 20 unités, zoom-to-fit `F`, palette de 10 symboles.
 - 24 tests. Limites : routage sans waypoints manuels, tout croisement est une
   jonction, PDF non-ASCII remplacé par `?`, pas de test visuel.
+
+## CircuitCraft — cd71ed6
+
+- Rotation par pas de 90° (`R`, barre d'outils, inspecteur), pins et symboles
+  pivotent ; champ `rotation` rétrocompatible (`serde(default)`).
+- Fils orthogonaux, jonctions aux pins partagés et croisements, suppression
+  individuelle.
+- Netlist nommée `GND` / `V+` / `N<n>` par union-find.
+- Exports CSV (BOM), SVG et PDF one-page ; palette à 10 symboles ; grille et
+  snapping ; zoom-to-fit (`F`).
+- 24 tests ; schéma 1 conservé, ouverture des documents v0.1.0 testée.
+- Limites : routage sans waypoints, croisements toujours connectés, PDF
+  Helvetica non embarquée (non-ASCII → `?`), pas de test visuel, pas de PCB
+  ni de SPICE.
