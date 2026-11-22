@@ -77,8 +77,8 @@ L'audit E2E sur les binaires `v0.2.0` a trouvé deux défauts réels :
 
 | App | Correctif | Tag | Release |
 | --- | --- | --- | --- |
-| DiagramCraft | `1fdab24` | `v0.2.1` (`c3722fe`) | en cours |
-| SimCraft | `976db22` | `v0.2.1` (`a76e96d`) | en cours |
+| DiagramCraft | `1fdab24` | `v0.2.1` (`c3722fe`) | ✅ validée, 7 assets |
+| SimCraft | `976db22` | `v0.2.1` (`a76e96d`) | ✅ validée, 7 assets |
 
 Détail et couverture : `E2E.md`.
 

@@ -73,3 +73,15 @@ archives de release qui ont été testées.
 4. Tester MasterCraft avec un WAV réel et un périphérique audio.
 5. Tester StreamCraft sur un écran physique et avec ffmpeg installé.
 6. Exécuter les binaires Windows/macOS sur les OS cibles.
+
+## Vérification des correctifs `v0.2.1` (binaires publiés)
+
+Les archives Linux `v0.2.1` ont été retéléchargées et relancées sous Xvfb :
+
+- **DiagramCraft** : `0.2.1`, un seul bouton Settings et un seul Job ; outil
+  Rectangle puis clic sur canevas vide → 4 formes, statut « Added a Rectangle
+  shape ». Correctif confirmé dans le binaire publié.
+- **SimCraft** : `0.2.1`, panneau scrollable ; Solve visible, résolution de
+  l'exemple en 449 balayages (ω = 1,940, correction 9,63e-9) et carte de
+  température affichée avec sa légende. Correctif confirmé dans le binaire
+  publié.
