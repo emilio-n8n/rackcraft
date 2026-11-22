@@ -5,9 +5,9 @@
 1. Les 10 releases `v0.1.0` sont publiées, avec 7 assets, checksums vérifiés
    et `craft-release-check github` à 0 warning.
 
-2. Valider les 10 releases `v0.2.0` :
-   `craft-release-check github --repo emilio-n8n/<app> --tag v0.2.0`.
-   Vérifier les 7 assets et les checksums.
+2. Valider StreamCraft `v0.2.0` après le correctif ALSA :
+   `craft-release-check github --repo emilio-n8n/streamcraft --tag v0.2.0`.
+   Les 9 autres releases sont validées.
 
 ## Ensuite
 

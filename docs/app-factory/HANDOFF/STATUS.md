@@ -55,21 +55,21 @@ de vague A vont ajouter de nouveaux commits.
 
 ## Releases v0.2.0
 
-Les 10 apps ont reçu le tag `v0.2.0` le 22 novembre 2026 et les workflows de
-release GitHub Actions ont été lancés :
+Les 10 apps ont reçu le tag `v0.2.0` le 22 novembre 2026. Neuf releases sont
+publiées et validées ; StreamCraft est relancée après un correctif ALSA.
 
 | App | Commit | Tag | Release |
 | --- | --- | --- | --- |
-| DiagramCraft | `8f7d284` | `v0.2.0` | en cours |
-| ProjectCraft | `1a4f808` | `v0.2.0` | en cours |
-| FormCraft | `c6b927e` | `v0.2.0` | en cours |
-| MathCraft | `99061bc` | `v0.2.0` | en cours |
-| MasterCraft | `dd43c55` | `v0.2.0` | en cours |
-| CircuitCraft | `02e8a88` | `v0.2.0` | en cours |
-| GeoCraft | `ab09978` | `v0.2.0` | en cours |
-| StreamCraft | `08de7dd` | `v0.2.0` | en cours |
-| SimCraft | `07e56a1` | `v0.2.0` | en cours |
-| MusicCraft | `575052b` | `v0.2.0` | en cours |
+| DiagramCraft | `8f7d284` | `v0.2.0` | ✅ validée |
+| ProjectCraft | `1a4f808` | `v0.2.0` | ✅ validée |
+| FormCraft | `c6b927e` | `v0.2.0` | ✅ validée |
+| MathCraft | `99061bc` | `v0.2.0` | ✅ validée |
+| MasterCraft | `dd43c55` | `v0.2.0` | ✅ validée |
+| CircuitCraft | `02e8a88` | `v0.2.0` | ✅ validée |
+| GeoCraft | `ab09978` | `v0.2.0` | ✅ validée |
+| StreamCraft | `da7415f` | `v0.2.0` | relancée (ALSA) |
+| SimCraft | `07e56a1` | `v0.2.0` | ✅ validée |
+| MusicCraft | `575052b` | `v0.2.0` | ✅ validée |
 
 ## Launcher
 
