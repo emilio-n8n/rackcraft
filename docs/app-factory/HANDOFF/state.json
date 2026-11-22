@@ -127,7 +127,25 @@
       "musiccraft",
       "streamcraft",
       "simcraft"
-    ]
+    ],
+    "wave_a_status": {
+      "projectcraft": {
+        "commit": "847ec5d",
+        "status": "done"
+      },
+      "diagramcraft": {
+        "status": "in_progress"
+      },
+      "formcraft": {
+        "status": "in_progress"
+      },
+      "mathcraft": {
+        "status": "in_progress"
+      },
+      "mastercraft": {
+        "status": "in_progress"
+      }
+    }
   },
   "launcher": {
     "unofficial_repo": "YalKouassi/craft-unofficial-launcher",
@@ -136,4 +154,4 @@
     "all_apps_simulated_dir_check": "0 warnings",
     "certificates": "none"
   }
-}
+}\n

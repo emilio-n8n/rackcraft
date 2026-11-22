@@ -30,9 +30,14 @@ Aucune n’est un clone complet d’un logiciel commercial.
 - MVP : tâches, dépendances, CPM, Gantt, CSV, undo.
 - Limites : pas de flèches de dépendance, Gantt fixe, pas de drag des barres,
   pas de ressources/coûts, pas d’import CSV, table autrefois étroite (corrigée).
-- Productisation A : flèches, drag des barres, zoom jour/semaine/mois, jalons,
-  notes, ressources/coûts, import CSV, export PDF.
-- Release `v0.1.0` publiée.
+- **Productisation A livrée** : commit `847ec5d`, CI verte, 34 tests.
+  Gantt interactif, flèches de dépendance, drag des barres, zoom
+  jour/semaine/mois/fit, jalons, notes, ressources/coûts, import CSV, export
+  PDF vectoriel, dates ouvrées.
+- Release `v0.1.0` publiée ; le travail de productisation n’est pas encore
+  taggé (futur `v0.2.0`).
+- Limites : PDF ASCII sur une page, week-ends seulement à l’affichage, pas de
+  nivellement de ressources.
 
 ## FormCraft — base de données
 

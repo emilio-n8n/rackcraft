@@ -16,7 +16,7 @@
 | App | `main` | `v0.1.0` | Release | Productisation |
 | --- | --- | --- | --- | --- |
 | DiagramCraft | `015c0d8` | `f6e8929` | ✅ publiée | Vague A en cours |
-| ProjectCraft | `b82aa23` | `00bdd07` | ✅ publiée | Vague A en cours |
+| ProjectCraft | `847ec5d` | `00bdd07` | ✅ publiée | Vague A terminée |
 | FormCraft | `aae8d4d` | `79fe16c` | ✅ publiée | Vague A en cours |
 | MathCraft | `6d9839b` | `1099943` | ✅ publiée | Vague A en cours |
 | MasterCraft | `8d76c81` | `bfddbde` | ✅ publiée | Vague A en cours |
@@ -37,6 +37,17 @@ de vague A vont ajouter de nouveaux commits.
 - Les 10 passent `craft-release-check github` avec **0 warning**.
 - Les 10 `SHA256SUMS.txt` ont été vérifiés après téléchargement.
 - Aucun MSI, DMG, AppImage, `.deb` ou `.rpm` signé pour l'instant.
+
+## Productisation
+
+| App | Commit | CI | État |
+| --- | --- | --- | --- |
+| ProjectCraft | `847ec5d` | ✅ | Livré (v0.2 fonctionnelle) |
+| DiagramCraft | en cours | — | Vague A |
+| FormCraft | en cours | — | Vague A |
+| MathCraft | en cours | — | Vague A |
+| MasterCraft | en cours | — | Vague A |
+| CircuitCraft, GeoCraft, MusicCraft, StreamCraft, SimCraft | — | — | Vague B à lancer |
 
 ## Launcher
 
