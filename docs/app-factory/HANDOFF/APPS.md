@@ -68,9 +68,11 @@ Aucune n’est un clone complet d’un logiciel commercial.
 - MVP : WAV, waveform, gain, normalisation, export float 32, jobs.
 - Limites : pas de lecture audio, pas de sélection/trim/fade, pas de batch, pas
   de PCM16, chargement WAV synchrone.
-- Productisation A : playback `cpal`/`rodio` si possible, sélection, trim/fade,
-  batch, PCM16, chargement asynchrone.
-- Release `v0.1.0` publiée.
+- Productisation A livrée (`bb09a91`) : playback rodio/CPAL, sélection/zoom,
+  trim/silence/fade/gain/normalisation, batch, PCM16, chargement asynchrone.
+- Limites : échantillons non sérialisés, pas de spectral/ML, pas de monitoring
+  temps réel, fades/trim synchrones.
+- Release `v0.1.0` publiée ; la productisation ira vers `v0.2.0`.
 
 ## CircuitCraft — schéma électronique
 

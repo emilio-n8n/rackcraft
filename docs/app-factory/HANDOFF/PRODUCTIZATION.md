@@ -6,6 +6,7 @@
 | --- | --- | --- | --- |
 | ProjectCraft | `847ec5d` | ✅ | Livré |
 | FormCraft | `59f0850` | ✅ | Livré |
+| MasterCraft | `bb09a91` | ✅ | Livré |
 | DiagramCraft | en cours | — | En cours |
 | MathCraft | en cours | — | En cours |
 | MasterCraft | en cours | — | En cours |
@@ -50,7 +51,13 @@ orthogonal, PDF, zoom-to-fit. Voir `PROMPTS/diagramcraft-product.md`.
 Objectif : matrices persistées, feuilles multiples, notation scientifique,
 tracé interactif, CSV. Voir `PROMPTS/mathcraft-product.md`.
 
-## MasterCraft — en cours
+## MasterCraft — bb09a91
 
-Objectif : playback, sélection, trim/fade, batch, PCM16, chargement asynchrone.
-Voir `PROMPTS/mastercraft-product.md`.
+- Lecture rodio/CPAL : play/pause/stop/seek, playhead, message clair sans device.
+- Waveform zoom 1×–64×, sélection, marqueurs, durée.
+- Trim, silence, fade in/out, gain et normalisation sur sélection, undo.
+- Traitement par lot avec progression/annulation.
+- Export float32 ou PCM16, chargement WAV asynchrone.
+- `libasound2-dev` ajouté aux workflows Linux.
+- Limites : échantillons non sérialisés, pas de spectral/ML, pas de monitoring
+  temps réel, fades/trim synchrones. 31 tests.
