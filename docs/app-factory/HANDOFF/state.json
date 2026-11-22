@@ -85,12 +85,12 @@
     {
       "id": "geocraft",
       "repo": "emilio-n8n/geocraft",
-      "main": "da38592",
+      "main": "a169b10",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B in progress"
+      "productization": "wave B complete"
     },
     {
       "id": "musiccraft",
@@ -166,8 +166,8 @@
         "status": "done"
       },
       "geocraft": {
-        "session": "ses_dfba3a720ffecf0RUkKEJXx11q",
-        "status": "in_progress"
+        "commit": "a169b10",
+        "status": "done"
       },
       "musiccraft": {
         "session": "ses_dfba3a70effehu7sWKCqt7WTgQ",

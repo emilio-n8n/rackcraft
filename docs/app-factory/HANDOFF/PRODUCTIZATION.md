@@ -15,7 +15,7 @@
 | App | Session | État |
 | --- | --- | --- |
 | CircuitCraft | `ses_dfba3a723ffeXoD9LipEYl1iAe` | ✅ `cd71ed6` |
-| GeoCraft | `ses_dfba3a720ffecf0RUkKEJXx11q` | En cours |
+| GeoCraft | `ses_dfba3a720ffecf0RUkKEJXx11q` | ✅ `a169b10` |
 | MusicCraft | `ses_dfba3a70effehu7sWKCqt7WTgQ` | En cours |
 | StreamCraft | `ses_dfba3a70affeoebUmv5Qv5Uvi2` | En cours |
 | SimCraft | `ses_dfba3a706ffe7Q5ZBUuq49i1I8` | ✅ `07e56a1` |
@@ -108,3 +108,19 @@ Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 - 52 tests. Limites : conduction stationnaire uniquement, régions
   axis-alignées, pas de transitoire ni de maillage non structuré, SOR lent sur
   matériaux très hétérogènes.
+
+## GeoCraft — a169b10
+
+- Outils point, ligne, polygone, suppression, édition de sommets par
+  glisser-déposer, raccourcis V/P/L/G.
+- Table attributaire éditable : ajout, modification, suppression, filtre
+  insensible à la casse sur couche/géométrie/id/attributs.
+- Imports GeoJSON et CSV de points (`lon/lat`, alias `x/y`) ; exports GeoJSON,
+  CSV, PNG cartographique et SVG.
+- Styles de couche (couleur, épaisseur, opacité, visibilité), zoom-to-layer,
+  pan/zoom Web Mercator, fit-to-bounds.
+- 42 tests ; schéma 1 et manifeste launcher inchangés ; champs de style avec
+  valeurs par défaut serde.
+- Limites : WGS84 → Web Mercator seulement, géométries Multi* aplaties, pas de
+  GeoTIFF, styles non exportés en GeoJSON, PNG plafonné à 2048 px, édition de
+  sommets sans topologie ni snapping.

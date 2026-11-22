@@ -21,7 +21,7 @@
 | MathCraft | `efc1f7d` | `1099943` | ✅ publiée | Vague A terminée |
 | MasterCraft | `bb09a91` | `bfddbde` | ✅ publiée | Vague A terminée |
 | CircuitCraft | `cd71ed6` | `99ef5ae` | ✅ publiée | Vague B terminée |
-| GeoCraft | `da38592` | `dd771be` | ✅ publiée | Vague B en cours |
+| GeoCraft | `a169b10` | `dd771be` | ✅ publiée | Vague B terminée |
 | MusicCraft | `c971588` | `f4f03ce` | ✅ publiée | Vague B en cours |
 | StreamCraft | `76147a7` | `7ad60b7` | ✅ publiée | Vague B en cours |
 | SimCraft | `07e56a1` | `69464f5` | ✅ publiée | Vague B terminée |
@@ -49,7 +49,8 @@ de vague A vont ajouter de nouveaux commits.
 | MasterCraft | `bb09a91` | ✅ | Livré |
 | CircuitCraft | `cd71ed6` | ✅ | Livré (v0.2 fonctionnelle) |
 | SimCraft | `07e56a1` | ✅ | Livré (v0.2 fonctionnelle) |
-| GeoCraft, MusicCraft, StreamCraft | en cours | — | Vague B en cours |
+| GeoCraft | `a169b10` | ✅ | Livré (v0.2 fonctionnelle) |
+| MusicCraft, StreamCraft | en cours | — | Vague B en cours |
 
 ## Launcher
 
