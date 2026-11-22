@@ -37,9 +37,11 @@ référence stable est toujours `origin/main` de chaque dépôt.
 | --- | --- | --- | --- | --- |
 | CircuitCraft | `emilio-n8n/circuitcraft` | `d86ad8a` | ✅ | Schéma, composants, fils, netlist, BOM, SVG |
 | GeoCraft | `emilio-n8n/geocraft` | `cbde169` | ✅ | GeoJSON, couches, carte, table attributaire |
-| MusicCraft | `emilio-n8n/musiccraft` | `c971588` | ⏳ | MIDI, synthé offline, mixdown WAV |
-| StreamCraft | `emilio-n8n/streamcraft` | `76147a7` | ⏳ | Scènes, sources, compositeur |
+| MusicCraft | `emilio-n8n/musiccraft` | `c971588` | ✅ | MIDI, synthé offline, mixdown WAV |
+| StreamCraft | `emilio-n8n/streamcraft` | `76147a7` | ✅ | Scènes, sources, compositeur PNG/SVG |
 | SimCraft | `emilio-n8n/simcraft` | `981b128` | ✅ | FEM 2D thermique, Gauss-Seidel |
+
+**Les dix applications sont livrées et leurs CI sont vertes.**
 
 ## Launcher
 
