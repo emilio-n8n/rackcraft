@@ -42,12 +42,12 @@ de vague A vont ajouter de nouveaux commits.
 
 | App | Commit | CI | État |
 | --- | --- | --- | --- |
-| ProjectCraft | `847ec5d` | ✅ | Livré (v0.2 fonctionnelle) |
-| DiagramCraft | en cours | — | Vague A |
-| FormCraft | en cours | — | Vague A |
-| MathCraft | en cours | — | Vague A |
-| MasterCraft | en cours | — | Vague A |
-| CircuitCraft, GeoCraft, MusicCraft, StreamCraft, SimCraft | — | — | Vague B à lancer |
+| DiagramCraft | `19ac4ba` | ✅ | Livré |
+| ProjectCraft | `847ec5d` | ✅ | Livré |
+| FormCraft | `59f0850` | ✅ | Livré |
+| MathCraft | `efc1f7d` | ✅ | Livré |
+| MasterCraft | `bb09a91` | ✅ | Livré |
+| CircuitCraft, GeoCraft, MusicCraft, StreamCraft, SimCraft | — | — | Vague B lancée |
 
 ## Launcher
 
