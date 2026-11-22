@@ -17,7 +17,7 @@
 | --- | --- | --- | --- | --- |
 | DiagramCraft | `015c0d8` | `f6e8929` | ✅ publiée | Vague A en cours |
 | ProjectCraft | `847ec5d` | `00bdd07` | ✅ publiée | Vague A terminée |
-| FormCraft | `aae8d4d` | `79fe16c` | ✅ publiée | Vague A en cours |
+| FormCraft | `59f0850` | `79fe16c` | ✅ publiée | Vague A terminée |
 | MathCraft | `6d9839b` | `1099943` | ✅ publiée | Vague A en cours |
 | MasterCraft | `8d76c81` | `bfddbde` | ✅ publiée | Vague A en cours |
 | CircuitCraft | `d86ad8a` | `99ef5ae` | ✅ publiée | Vague B à lancer |

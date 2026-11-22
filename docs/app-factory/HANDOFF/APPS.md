@@ -46,9 +46,11 @@ Aucune n’est un clone complet d’un logiciel commercial.
   export CSV, base mémoire `--sample`.
 - Limites : pas d’édition de cellules, pas de création de table, pas de
   formulaire, pas d’import CSV, requêtes volontairement en lecture seule.
-- Productisation A : grille éditable, schéma, formulaire généré, import CSV,
-  historique, écritures contrôlées.
-- Release `v0.1.0` publiée.
+- Productisation A livrée (`59f0850`) : grille éditable, éditeur de schéma,
+  formulaire généré, import CSV transactionnel, historique, filtre, schéma 2.
+- Limites : `.accdb` non supporté, undo des données en session, schéma non
+  annulable, `WITHOUT ROWID` non éditable.
+- Release `v0.1.0` publiée ; la productisation ira vers `v0.2.0`.
 
 ## MathCraft — calcul scientifique
 

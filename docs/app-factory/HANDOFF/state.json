@@ -44,11 +44,12 @@
     {
       "id": "formcraft",
       "repo": "emilio-n8n/formcraft",
-      "main": "aae8d4d",
+      "main": "59f0850",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
-      "release_check": "0 warnings"
+      "release_check": "0 warnings",
+      "productization": "wave A complete"
     },
     {
       "id": "mathcraft",
@@ -138,7 +139,8 @@
         "status": "in_progress"
       },
       "formcraft": {
-        "status": "in_progress"
+        "commit": "59f0850",
+        "status": "done"
       },
       "mathcraft": {
         "status": "in_progress"

@@ -5,8 +5,8 @@
 | App | Commit | CI | État |
 | --- | --- | --- | --- |
 | ProjectCraft | `847ec5d` | ✅ | Livré |
+| FormCraft | `59f0850` | ✅ | Livré |
 | DiagramCraft | en cours | — | En cours |
-| FormCraft | en cours | — | En cours |
 | MathCraft | en cours | — | En cours |
 | MasterCraft | en cours | — | En cours |
 
@@ -33,10 +33,17 @@ SimCraft. Prompts dans `PROMPTS/`.
 Objectif : labels inline, resize, multi-sélection, copier/coller, routage
 orthogonal, PDF, zoom-to-fit. Voir `PROMPTS/diagramcraft-product.md`.
 
-## FormCraft — en cours
+## FormCraft — 59f0850
 
-Objectif : grille éditable, schéma, formulaire généré, import CSV, historique.
-Voir `PROMPTS/formcraft-product.md`.
+- Grille éditable (édition inline, ajout/suppression de ligne, undo par édition).
+- Éditeur de schéma : création de table, ajout de colonne, suppression avec
+  confirmation.
+- Formulaire généré depuis le schéma, validation des types.
+- Import CSV transactionnel (rollback), en-têtes insensibles à la casse.
+- Historique de requêtes borné, persistance schéma 2 avec migration v1.
+- Filtre texte, limite de lignes, export CSV, SQL libre en lecture seule.
+- Limites : `.accdb` non supporté, undo données en session, pas d'undo sur le
+  schéma, `WITHOUT ROWID` non éditable, filtre LIKE global. 16 tests.
 
 ## MathCraft — en cours
 
