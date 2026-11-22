@@ -25,11 +25,12 @@
     {
       "id": "diagramcraft",
       "repo": "emilio-n8n/diagramcraft",
-      "main": "015c0d8",
+      "main": "19ac4ba",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
-      "release_check": "0 warnings"
+      "release_check": "0 warnings",
+      "productization": "wave A complete"
     },
     {
       "id": "projectcraft",
@@ -137,7 +138,8 @@
         "status": "done"
       },
       "diagramcraft": {
-        "status": "in_progress"
+        "commit": "19ac4ba",
+        "status": "done"
       },
       "formcraft": {
         "commit": "59f0850",

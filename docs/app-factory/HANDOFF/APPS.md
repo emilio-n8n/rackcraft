@@ -19,9 +19,13 @@ Aucune n’est un clone complet d’un logiciel commercial.
   sélection/déplacement, export SVG, JSON.
 - Limites MVP : labels non éditables, pas de resize/rotation, connecteurs
   droits uniquement, pas de multi-sélection, pas de PDF.
-- Productisation A : labels inline, resize, multi-sélection/copier-coller,
-  routage orthogonal, PDF, zoom-to-fit, tests.
-- Release `v0.1.0` publiée, validée par le launcher unofficial.
+- Productisation A livrée (`19ac4ba`) : labels inline, 8 poignées de resize,
+  multi-sélection, copier/coller/dupliquer, connecteurs orthogonaux avec
+  waypoints, alignement/distribution, PDF vectoriel, zoom-to-fit, 46 tests.
+- Limites : PDF Helvetica (hors Latin-1 → `?`), pas de suppression de waypoint
+  dans l’UI, pas de test visuel Xvfb.
+- Release `v0.1.0` publiée, validée par le launcher unofficial ; la
+  productisation ira vers `v0.2.0`.
 - C’est le pilote le plus proche de RackCraft.
 
 ## ProjectCraft — planification

@@ -15,7 +15,7 @@
 
 | App | `main` | `v0.1.0` | Release | Productisation |
 | --- | --- | --- | --- | --- |
-| DiagramCraft | `015c0d8` | `f6e8929` | ✅ publiée | Vague A en cours |
+| DiagramCraft | `19ac4ba` | `f6e8929` | ✅ publiée | Vague A terminée |
 | ProjectCraft | `847ec5d` | `00bdd07` | ✅ publiée | Vague A terminée |
 | FormCraft | `59f0850` | `79fe16c` | ✅ publiée | Vague A terminée |
 | MathCraft | `6d9839b` | `1099943` | ✅ publiée | Vague A en cours |

@@ -7,7 +7,7 @@
 | ProjectCraft | `847ec5d` | ✅ | Livré |
 | FormCraft | `59f0850` | ✅ | Livré |
 | MasterCraft | `bb09a91` | ✅ | Livré |
-| DiagramCraft | en cours | — | En cours |
+| DiagramCraft | `19ac4ba` | ✅ | Livré |
 | MathCraft | en cours | — | En cours |
 | MasterCraft | `bb09a91` | ✅ | Livré |
 
@@ -29,10 +29,17 @@ SimCraft. Prompts dans `PROMPTS/`.
 - Limites : PDF mono-page ASCII, week-ends non intégrés aux durées, pas de
   nivellement de ressources, drag gauche contraint par les prédécesseurs.
 
-## DiagramCraft — en cours
+## DiagramCraft — 19ac4ba
 
-Objectif : labels inline, resize, multi-sélection, copier/coller, routage
-orthogonal, PDF, zoom-to-fit. Voir `PROMPTS/diagramcraft-product.md`.
+- Labels éditables en place (double-clic/Entrée/F2), undo.
+- 8 poignées de resize, déplacement groupé, multi-sélection Shift.
+- Copier/coller/dupliquer avec remap des ids et liens internes.
+- Connecteurs droits + orthogonaux avec waypoints, sélection/suppression.
+- Alignement 6 modes, distribution 2 axes.
+- Export PDF vectoriel et SVG, zoom-to-fit, grille/snapping, titre éditable.
+- Schéma 2 avec champs optionnels ; migration schéma 1 testée. 46 tests.
+- Limites : PDF Helvetica WinAnsi (hors Latin-1 → `?`), pas de suppression
+  individuelle de waypoint dans l’UI, pas de test visuel Xvfb.
 
 ## FormCraft — 59f0850
 
