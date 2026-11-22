@@ -105,12 +105,12 @@
     {
       "id": "streamcraft",
       "repo": "emilio-n8n/streamcraft",
-      "main": "76147a7",
+      "main": "a0aca05",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B in progress"
+      "productization": "wave B complete"
     },
     {
       "id": "simcraft",
@@ -174,8 +174,8 @@
         "status": "in_progress"
       },
       "streamcraft": {
-        "session": "ses_dfba3a70affeoebUmv5Qv5Uvi2",
-        "status": "in_progress"
+        "commit": "a0aca05",
+        "status": "done"
       },
       "simcraft": {
         "commit": "07e56a1",

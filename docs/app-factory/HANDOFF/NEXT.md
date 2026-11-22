@@ -5,10 +5,10 @@
 1. Les 10 releases `v0.1.0` sont publiées, avec 7 assets, checksums vérifiés
    et `craft-release-check github` à 0 warning.
 
-2. Attendre les 2 agents restants de la **vague B** : MusicCraft et
-   StreamCraft. CircuitCraft (`cd71ed6`), SimCraft (`07e56a1`) et GeoCraft
-   (`a169b10`) sont livrés. Vérifier commits, CI et
-   `python3 tools/launcher_check.py .` à chaque rapport.
+2. Attendre le dernier agent de la **vague B** : MusicCraft.
+   CircuitCraft (`cd71ed6`), SimCraft (`07e56a1`), GeoCraft (`a169b10`) et
+   StreamCraft (`a0aca05`) sont livrés. Vérifier commit, CI et
+   `python3 tools/launcher_check.py .`.
 
 ## Ensuite
 

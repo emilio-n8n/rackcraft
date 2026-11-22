@@ -17,7 +17,7 @@
 | CircuitCraft | `ses_dfba3a723ffeXoD9LipEYl1iAe` | ✅ `cd71ed6` |
 | GeoCraft | `ses_dfba3a720ffecf0RUkKEJXx11q` | ✅ `a169b10` |
 | MusicCraft | `ses_dfba3a70effehu7sWKCqt7WTgQ` | En cours |
-| StreamCraft | `ses_dfba3a70affeoebUmv5Qv5Uvi2` | En cours |
+| StreamCraft | `ses_dfba3a70affeoebUmv5Qv5Uvi2` | ✅ `a0aca05` |
 | SimCraft | `ses_dfba3a706ffe7Q5ZBUuq49i1I8` | ✅ `07e56a1` |
 
 Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
@@ -124,3 +124,18 @@ Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 - Limites : WGS84 → Web Mercator seulement, géométries Multi* aplaties, pas de
   GeoTIFF, styles non exportés en GeoJSON, PNG plafonné à 2048 px, édition de
   sommets sans topologie ni snapping.
+
+## StreamCraft — a0aca05
+
+- Capture écran/fenêtre Linux/X11 réelle (`x11rb`, GetImage), aperçu live,
+  énumération de cibles, fallback « unsupported » hors Linux/sans display ;
+  test fumée Xvfb exécuté (ignoré par défaut).
+- Monitoring audio cpal (F32/I16/U8), niveau RMS, message clair sans micro.
+- Webcam : détection `/dev/video*` ; décodage de frames explicitement non
+  implémenté.
+- Enregistrement : MKV/MP4 via ffmpeg si présent, sinon séquence PNG testée.
+- Transitions cut/fade, PageUp/PageDown, F11, Ctrl+R, export PNG/SVG.
+- 31 tests + 1 test Xvfb ignoré ; schéma 1 conservé (`transition` optionnel).
+- Limites : capture validée sous Xvfb uniquement, micro/webcam non testés sur
+  matériel réel, encodage ffmpeg non testé (binaire absent), PNG avec police
+  bitmap 3×5, pas de streaming ni de clone OBS.
