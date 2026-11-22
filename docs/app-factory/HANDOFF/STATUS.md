@@ -55,8 +55,8 @@ de vague A vont ajouter de nouveaux commits.
 
 ## Releases v0.2.0
 
-Les 10 apps ont reçu le tag `v0.2.0` le 22 novembre 2026. Neuf releases sont
-publiées et validées ; StreamCraft est relancée après un correctif ALSA.
+Les 10 apps ont reçu le tag `v0.2.0` le 22 novembre 2026. Les dix releases
+sont publiées et validées par `craft-release-check` (0 warning, 7 assets).
 
 | App | Commit | Tag | Release |
 | --- | --- | --- | --- |
@@ -67,7 +67,7 @@ publiées et validées ; StreamCraft est relancée après un correctif ALSA.
 | MasterCraft | `dd43c55` | `v0.2.0` | ✅ validée |
 | CircuitCraft | `02e8a88` | `v0.2.0` | ✅ validée |
 | GeoCraft | `ab09978` | `v0.2.0` | ✅ validée |
-| StreamCraft | `da7415f` | `v0.2.0` | relancée (ALSA) |
+| StreamCraft | `da7415f` | `v0.2.0` | ✅ validée |
 | SimCraft | `07e56a1` | `v0.2.0` | ✅ validée |
 | MusicCraft | `575052b` | `v0.2.0` | ✅ validée |
 

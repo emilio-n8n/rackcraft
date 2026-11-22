@@ -28,8 +28,7 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
 - **Vague B terminée** : CircuitCraft, SimCraft, GeoCraft, StreamCraft et
   MusicCraft sont livrés.
 - **Les 10 releases `v0.1.0` sont publiées et vérifiées.**
-- **9 releases `v0.2.0` validées** (7 assets, 0 warning) ; StreamCraft est
-  relancée après l’ajout de `libasound2-dev` au workflow de release.
+- **10 releases `v0.2.0` validées** (7 assets, 0 warning), toutes publiées.
 
 ## Ordre de lecture
 

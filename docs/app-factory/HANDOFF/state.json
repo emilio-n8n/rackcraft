@@ -136,7 +136,7 @@
       "release_check": "0 warnings",
       "productization": "wave B complete",
       "tag_v0_2_0": "v0.2.0",
-      "release_v0_2_0": "rerunning after ALSA fix",
+      "release_v0_2_0": "validated",
       "release_v0_2_0_run": 45058744385
     },
     {
@@ -235,18 +235,17 @@
       "streamcraft"
     ],
     "validated": [
-      "diagramcraft",
-      "projectcraft",
-      "formcraft",
-      "mathcraft",
-      "mastercraft",
       "circuitcraft",
+      "diagramcraft",
+      "formcraft",
       "geocraft",
+      "mastercraft",
+      "mathcraft",
+      "musiccraft",
+      "projectcraft",
       "simcraft",
-      "musiccraft"
-    ],
-    "rerunning": [
       "streamcraft"
-    ]
+    ],
+    "rerunning": []
   }
 }
