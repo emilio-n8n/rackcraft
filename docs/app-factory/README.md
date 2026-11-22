@@ -16,6 +16,7 @@ couches et les pièges système sont réutilisables.
 
 | Fichier | Contenu |
 | --- | --- |
+| [PORTFOLIO.md](PORTFOLIO.md) | Les dix apps prévues : MVP, risques, réutilisation, ordre de démarrage |
 | [WORKFLOW.md](WORKFLOW.md) | Cycle complet : cadrage → architecture → cœur → UI → CI → release → maintenance |
 | [HANDOFF.md](HANDOFF.md) | Prompt de reprise compact et checklist d'état |
 | [ENVIRONMENT.md](ENVIRONMENT.md) | Cloud Shell, toolchain Rust non persistante, disque, GUI headless, libs systèmes |
