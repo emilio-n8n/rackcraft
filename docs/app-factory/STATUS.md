@@ -31,7 +31,7 @@ référence stable est toujours `origin/main` de chaque dépôt.
 - assets : Linux tar.gz, Windows `-portable.zip`, macOS ARM/Intel tar.gz,
   `craft-app.json`, icône 128×128, checksums.
 
-## Vague 2 — en cours
+## Vague 2 — terminée
 
 | App | Dépôt | Commit | CI | Périmètre |
 | --- | --- | --- | --- | --- |
