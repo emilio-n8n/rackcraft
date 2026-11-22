@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (without the leading v), e.g. 0.2.0"
+        description: "Release version (without the leading v), e.g. 0.2.1"
         required: true
-        default: "0.2.0"
+        default: "0.2.1"
         type: string
 
 permissions:
@@ -212,7 +212,12 @@ jobs:
             - Magnetic cables with labels, colours, ortho/straight routing,
               dashed lines and arrows.
             - Vector A4 PDF: schematic + project cartouche + inventory page.
-            - Legacy `.vss` import with bundled `vss2xhtml` in the AppImage.
+            - Vendor `.zip` stencil downloads are opened directly; `.vssx` is
+              preferred over legacy `.vss`.
+            - Legacy `.vss` import with bundled `vss2xhtml` in the AppImage,
+              automatic companion `.vssx` selection and native CFB fallback.
+            - Vendor EMF/WMF artwork (Cisco Catalyst stencils) is converted to
+              vector at placement time.
             - Offline sample stencils, including network topology symbols.
 
             ### Downloads

@@ -14,7 +14,7 @@ default-members = [
 ]
 
 [workspace.package]
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/emilio-n8n/rackcraft"
@@ -36,6 +36,7 @@ cfb = "0.16"
 rust_xlsxwriter = "0.103"
 pdf-writer = "0.15"
 svgtypes = "0.16"
+metafile = "1.0.1"
 png = "0.17"
 time = { version = "0.3", default-features = false, features = ["std"] }
 csv = "1.3"

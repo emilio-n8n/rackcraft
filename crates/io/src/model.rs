@@ -1,6 +1,7 @@
 //! Stencil library and master data model shared by the UI and exporters.
 
 use std::collections::BTreeMap;
+use std::sync::Arc;
 
 use rackcraft_engine::{
     Color, ConnectionPoint, DrawPath, Item, MountSpec, PathCommand, Point, ProjectFields,
@@ -46,6 +47,11 @@ pub struct Master {
     pub keywords: String,
     /// Optional thumbnail decoded from the embedded ICO.
     pub icon: Option<IconImage>,
+    /// Package entries containing EMF/WMF artwork referenced by ForeignData.
+    ///
+    /// The artwork is converted lazily when the master is placed, not during
+    /// import (vendor libraries can contain hundreds of megabytes of metafiles).
+    pub foreign_vector_entries: Vec<String>,
 }
 
 impl Master {
@@ -169,6 +175,8 @@ pub struct StencilLibrary {
     pub name: String,
     /// Original file location, when loaded from disk.
     pub source: Option<String>,
+    /// Original OPC package bytes, kept for lazy ForeignData EMF/WMF rendering.
+    pub package: Option<Arc<[u8]>>,
     /// Parsed masters in document order.
     pub masters: Vec<Master>,
     /// Non-fatal diagnostics (skipped malformed masters, unsupported shapes…).
@@ -202,6 +210,24 @@ impl StencilLibrary {
             .iter()
             .filter(|master| master.matches(query))
             .collect()
+    }
+
+    /// Convert this master's ForeignData EMF/WMF artwork into normalized paths.
+    ///
+    /// This is intentionally lazy: some vendor libraries contain hundreds of
+    /// megabytes of metafiles. An empty vector means the master has no external
+    /// vector artwork (ordinary geometry is already in [`Master::graphics`]).
+    pub fn materialize_vector_graphics(&self, master: &Master) -> crate::Result<Vec<DrawPath>> {
+        if master.foreign_vector_entries.is_empty() {
+            return Ok(Vec::new());
+        }
+        let package = self.package.as_deref().ok_or_else(|| {
+            crate::IoError::Conversion(
+                "ForeignData artwork is unavailable because the original package bytes were not retained"
+                    .to_owned(),
+            )
+        })?;
+        crate::foreign::vector_graphics(package, &master.foreign_vector_entries)
     }
 }
 

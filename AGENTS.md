@@ -100,6 +100,10 @@ UI crate. The UI never parses `.vssx` itself.
   PNG/ICO previews, printable metadata and a clearly labelled placeholder.
   The Linux AppImage bundles `vss2xhtml` and its private libraries. Never present
   a placeholder as a fully converted master.
+- Vendor masters often keep their visible switch/server artwork in
+  `ForeignData` EMF/WMF rather than Visio geometry. Record those package entries
+  at import and convert them lazily to normalized `DrawPath`s when a master is
+  placed; never decompress all vendor metafiles at import.
 - Keep parsing defensive: malformed masters are skipped with diagnostics rather
   than panicking. Library must not `unwrap()` on external input.
 

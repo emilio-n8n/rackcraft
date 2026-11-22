@@ -54,6 +54,7 @@ pub fn load_vss2xhtml(
     let mut library = StencilLibrary {
         name: display_name.to_owned(),
         source,
+        package: None,
         masters: Vec::new(),
         warnings: Vec::new(),
     };
@@ -78,20 +79,7 @@ fn parse_svg_master(
     let width_mm = (view_width * SVG_MM_PER_POINT).max(1.0);
     let height_mm = (view_height * SVG_MM_PER_POINT).max(1.0);
 
-    let mut graphics = Vec::new();
-    let identity = Affine::IDENTITY;
-    for child in svg.children().filter(Node::is_element) {
-        collect_element(
-            &child,
-            identity,
-            SvgStyle::default(),
-            view_x,
-            view_y,
-            view_width,
-            view_height,
-            &mut graphics,
-        );
-    }
+    let graphics = graphics_for_svg(svg, view_x, view_y, view_width, view_height);
 
     let texts = collect_texts(svg);
     let title = texts
@@ -144,7 +132,57 @@ fn parse_svg_master(
         mount: None,
         keywords,
         icon: None,
+        foreign_vector_entries: Vec::new(),
     })
+}
+
+fn graphics_for_svg(
+    svg: &Node<'_, '_>,
+    view_x: f64,
+    view_y: f64,
+    view_width: f64,
+    view_height: f64,
+) -> Vec<DrawPath> {
+    let mut graphics = Vec::new();
+    for child in svg.children().filter(Node::is_element) {
+        collect_element(
+            &child,
+            Affine::IDENTITY,
+            SvgStyle::default(),
+            view_x,
+            view_y,
+            view_width,
+            view_height,
+            &mut graphics,
+        );
+    }
+    graphics
+}
+
+/// Parse a standalone SVG document (for example the SVG emitted by an EMF/WMF
+/// renderer) into normalized RackCraft paths.
+pub(crate) fn svg_graphics(svg: &[u8]) -> Result<Vec<DrawPath>> {
+    let text = String::from_utf8_lossy(svg);
+    let document = XmlDoc::parse_with_options(
+        &text,
+        ParsingOptions {
+            allow_dtd: true,
+            ..ParsingOptions::default()
+        },
+    )
+    .map_err(|err| IoError::xml("metafile SVG", err.to_string()))?;
+    let root = document
+        .descendants()
+        .find(|node| node.is_element() && node.tag_name().name() == "svg")
+        .ok_or_else(|| IoError::Conversion("metafile output contains no SVG root".to_owned()))?;
+    let (view_x, view_y, view_width, view_height) = view_box(&root);
+    Ok(graphics_for_svg(
+        &root,
+        view_x,
+        view_y,
+        view_width,
+        view_height,
+    ))
 }
 
 fn view_box(svg: &Node<'_, '_>) -> (f64, f64, f64, f64) {
@@ -577,6 +615,16 @@ mod tests {
             panic!("expected move");
         };
         assert!((to.x - 2.0 / 136.8).abs() < 1e-6);
+    }
+
+    #[test]
+    fn standalone_metafile_svg_parses() {
+        let svg = br##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50">
+          <path d="M 0 0 L 100 0 L 100 50 Z" fill="#b7b7b7"/>
+        </svg>"##;
+        let graphics = svg_graphics(svg).unwrap();
+        assert_eq!(graphics.len(), 1);
+        assert_eq!(graphics[0].fill, Some(Color::rgb(183, 183, 183)));
     }
 
     #[test]

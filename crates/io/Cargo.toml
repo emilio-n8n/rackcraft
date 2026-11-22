@@ -20,6 +20,7 @@ kurbo.workspace = true
 rust_xlsxwriter.workspace = true
 pdf-writer.workspace = true
 svgtypes.workspace = true
+metafile.workspace = true
 png.workspace = true
 time.workspace = true
 csv.workspace = true

@@ -21,7 +21,7 @@ It follows the layout and engineering conventions of the
 is a **community project**: it is not developed, endorsed or supported by
 Storytold or the ArtCraft team.
 
-> **Project status: 0.2.0 MVP.** Rack diagrams, network topology diagrams,
+> **Project status: 0.2.1 MVP.** Rack diagrams, network topology diagrams,
 > magnetically glued cables, vector PDF/Excel inventories, and Visio stencil
 > import (`.vssx` natively, legacy `.vss` through bundled `vss2xhtml`, LibreOffice
 > or a native metadata fallback).
@@ -31,8 +31,9 @@ Storytold or the ArtCraft team.
 - **Native, vector canvas** — infinite zoom to port level, pan, drag to place,
   select, duplicate and delete. Everything is drawn from embedded normalized
   paths, never from raster screenshots.
-- **Stencil browser** — import `.vssx` libraries, search by name, browse by
-  category with thumbnail previews.
+- **Stencil browser** — import `.vssx` libraries, vendor `.zip` archives or
+  legacy `.vss` files; search by name and browse categories with thumbnail
+  previews.
 - **Magnetic snapping** — equipment aligns to rack `U` slots and stencil
   connection points; a bright green marker confirms the glue.
 - **Connectors / cables** — a dedicated connector tool (`C`) glues cables to
@@ -46,10 +47,15 @@ Storytold or the ArtCraft team.
   and notes are editable project fields.
 - **BOM / inventory** — live grouping by part identity and quantity; export to
   a formatted `.xlsx` workbook, UTF-8 `.csv` or the PDF inventory page.
+- **Vendor EMF/WMF artwork** — stencils such as Cisco Catalyst 9000 store their
+  switch faces as embedded metafiles. RackCraft converts them to vector paths
+  lazily on placement, so Cisco equipment renders as real switches, not blank
+  rectangles.
 - **Legacy `.vss`** — native OLE/CFB inspection (streams, PNG/ICO previews,
   metadata) as a fallback; `vss2xhtml` and LibreOffice are detected
   automatically. The AppImage bundles `vss2xhtml` so old industrial stencils
-  work without installing LibreOffice.
+  work without installing LibreOffice, and a sibling `.vssx` is always preferred
+  when a vendor package contains both formats.
 - **Self-contained documents** — save and open `.json` files with undo/redo
   history intact during the session. Documents do not need the original stencil
   library to render or compute a BOM.
@@ -77,8 +83,9 @@ Or launch empty and import a stencil library:
 cargo run -p rackcraft
 ```
 
-In the app: use **Load sample** in the toolbar, **Import .vssx** to add a
-library, then drag a shape from the left panel onto the rack. Use **V** for
+In the app: use **Load sample** in the toolbar, **Import stencil** to add a
+library (a vendor `.zip` containing `.vssx`/`.vss` works directly), then drag a
+shape from the left panel onto the rack. Use **V** for
 selection and **C** to draw a cable between two ports (or free canvas points);
 click a cable in selection mode to edit its label, color, routing and arrows in
 the right panel. Middle-drag (or space-drag) pans; the wheel zooms under the
@@ -152,14 +159,24 @@ To inspect a stencil from the command line:
 cargo run -p rackcraft-io --example stencil_info -- samples/rackcraft-datacenter.vssx
 ```
 
+To open an existing project on startup:
+
+```bash
+cargo run -p rackcraft -- --open downloads/rack.json
+```
+
 ### Visio compatibility
 
-- `.vssx` (Visio 2013+ Open XML stencil) is the supported format.
+- `.vssx` (Visio 2013+ Open XML stencil) is the primary format; vendor ZIP
+  archives are opened directly and their `.vssx` is preferred over `.vss`.
 - Groups, rotated/flipped shapes, lines, cubic/quadratic Béziers, ellipses,
   arcs and NURBS endpoints are flattened into normalized drawable paths.
 - `Connection` rows become snap anchors; `Property`/`ShapeData` rows become
   editable shape data. Master icons are decoded from the embedded ICO payload
   for the stencil browser.
+- Vendor faceplate art stored in `ForeignData` EMF/WMF metafiles is converted
+  to vector paths lazily when an item is placed. This is what makes Cisco
+  Catalyst 9000 and similar stencils render as real switches.
 - Binary `.vss` is detected by its CFB signature. RackCraft tries LibreOffice
   first, then `vss2xhtml` (bundled in the AppImage), then a native OLE reader
   that recovers streams, preview icons and printable metadata. The native

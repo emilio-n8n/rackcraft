@@ -73,14 +73,14 @@ pub fn show(
             let import = ui
                 .add(
                     egui::Button::new(
-                        egui::RichText::new("+ Import .vssx")
+                        egui::RichText::new("+ Import")
                             .size(11.5)
                             .color(theme::TEXT),
                     )
                     .fill(theme::RAISED)
                     .corner_radius(CornerRadius::same(5)),
                 )
-                .on_hover_text("Import a Visio stencil library (.vssx or .vss)");
+                .on_hover_text("Import a Visio stencil (.vssx/.vss) or a vendor ZIP archive");
             if import.clicked() {
                 action = BrowserAction::Import;
             }

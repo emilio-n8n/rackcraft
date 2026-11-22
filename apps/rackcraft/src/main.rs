@@ -2,6 +2,8 @@
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::path::PathBuf;
+
 use rackcraft_ui::RunOptions;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -12,13 +14,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         println!(
             "RackCraft {} — rack & structured-cabling designer\n\n\
-             Usage: rackcraft [--sample]\n\n\
+             Usage: rackcraft [--sample] [--open <project.json>]\n\n\
              Options:\n  \
-             --sample   Open the built-in sample rack\n  \
-             --version  Print version and exit\n  \
-             --help     Show this help\n\n\
+             --sample          Open the built-in sample rack\n  \
+             --open <file>     Open a RackCraft .json project\n  \
+             --version         Print version and exit\n  \
+             --help            Show this help\n\n\
              Project files are saved as .json. Visio 2013+ .vssx stencils can be imported;\n\
-             legacy .vss files require conversion with LibreOffice.\n",
+             legacy .vss files use vss2xhtml/LibreOffice when available.\n",
             env!("CARGO_PKG_VERSION")
         );
         return Ok(());
@@ -27,20 +30,30 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("RackCraft {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
     }
-    let unknown: Vec<&str> = args
-        .iter()
-        .map(String::as_str)
-        .filter(|argument| *argument != "--sample")
-        .collect();
-    if !unknown.is_empty() {
-        eprintln!(
-            "Unknown argument(s): {}\nRun `rackcraft --help` for usage.",
-            unknown.join(", ")
-        );
-        std::process::exit(2);
+    let mut sample = false;
+    let mut open: Option<PathBuf> = None;
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--sample" => sample = true,
+            "--open" => {
+                index += 1;
+                let Some(path) = args.get(index) else {
+                    eprintln!("--open requires a .json project path");
+                    std::process::exit(2);
+                };
+                open = Some(PathBuf::from(path));
+            }
+            path if !path.starts_with('-') && path.ends_with(".json") => {
+                open = Some(PathBuf::from(path));
+            }
+            unknown => {
+                eprintln!("Unknown argument: {unknown}\nRun `rackcraft --help` for usage.");
+                std::process::exit(2);
+            }
+        }
+        index += 1;
     }
-
-    let sample = args.iter().any(|argument| argument == "--sample");
-    rackcraft_ui::run(RunOptions { sample })?;
+    rackcraft_ui::run(RunOptions { sample, open })?;
     Ok(())
 }

@@ -7,6 +7,7 @@
 
 use std::collections::BTreeMap;
 use std::io::Cursor;
+use std::sync::Arc;
 
 use base64::Engine as _;
 use rackcraft_engine::{ConnectionPoint, DrawPath, MountSpec, PathCommand, Point, ShapeField};
@@ -48,6 +49,7 @@ pub fn load_vssx_bytes(
     let mut library = StencilLibrary {
         name: display_name.to_owned(),
         source,
+        package: None,
         masters: Vec::new(),
         warnings: Vec::new(),
     };
@@ -75,7 +77,10 @@ pub fn load_vssx_bytes(
         };
 
         match parse_master(index, &node, &part_xml, &part_path, display_name) {
-            Ok(master) => library.masters.push(master),
+            Ok(mut master) => {
+                master.foreign_vector_entries = collect_vector_entries(&mut archive, &part_path);
+                library.masters.push(master);
+            }
             Err(err) => push_warning(
                 &mut library,
                 format!("skipped master {index} ({part_path}): {err}"),
@@ -86,7 +91,37 @@ pub fn load_vssx_bytes(
     if library.masters.is_empty() {
         return Err(IoError::NoMasters);
     }
+    if library
+        .masters
+        .iter()
+        .any(|master| !master.foreign_vector_entries.is_empty())
+    {
+        library.package = Some(Arc::from(bytes));
+    }
     Ok(library)
+}
+
+fn collect_vector_entries(archive: &mut Archive<'_>, part_path: &str) -> Vec<String> {
+    let rels_path = part_rels_path(part_path);
+    let Some(bytes) = read_part(archive, &rels_path) else {
+        return Vec::new();
+    };
+    let mut entries: Vec<String> = parse_relationships(&String::from_utf8_lossy(&bytes))
+        .into_values()
+        .filter(|target| {
+            target.rsplit_once('.').is_some_and(|(_, extension)| {
+                extension.eq_ignore_ascii_case("emf") || extension.eq_ignore_ascii_case("wmf")
+            })
+        })
+        .collect();
+    entries.sort();
+    entries.dedup();
+    entries
+}
+
+fn part_rels_path(part_path: &str) -> String {
+    let (folder, filename) = part_path.rsplit_once('/').unwrap_or(("", part_path));
+    format!("{folder}/_rels/{filename}.rels")
 }
 
 fn push_warning(library: &mut StencilLibrary, message: String) {
@@ -231,6 +266,23 @@ fn parse_master(
         .filter(|value| !value.is_empty())
         .map(str::to_owned)
         .unwrap_or_else(|| infer_category(&name));
+    if category == "General"
+        && let Some(description) = shape_value(
+            &content.shape_data,
+            &["Product Description", "Description", "Product"],
+        )
+    {
+        let inferred = infer_category(description);
+        if inferred != "General" {
+            category = inferred;
+        }
+    }
+    if category == "General" {
+        let inferred = infer_category(library_name);
+        if inferred != "General" {
+            category = inferred;
+        }
+    }
     if category.is_empty() {
         category = "General".into();
     }
@@ -276,6 +328,7 @@ fn parse_master(
         mount,
         keywords,
         icon,
+        foreign_vector_entries: Vec::new(),
     })
 }
 
@@ -1112,6 +1165,17 @@ mod tests {
             zip.start_file("visio/masters/master1.xml", options)
                 .unwrap();
             zip.write_all(MASTER_CONTENTS.as_bytes()).unwrap();
+            zip.start_file("visio/masters/_rels/master1.xml.rels", options)
+                .unwrap();
+            zip.write_all(
+                br#"<?xml version="1.0" encoding="UTF-8"?>
+                <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.emf"/>
+                </Relationships>"#,
+            )
+            .unwrap();
+            zip.start_file("visio/media/image1.emf", options).unwrap();
+            zip.write_all(b"not a real metafile").unwrap();
             zip.finish().unwrap();
         }
         buffer.into_inner()
@@ -1130,6 +1194,11 @@ mod tests {
         assert_eq!(master.graphics.len(), 2);
         assert_eq!(master.shape_data.len(), 4);
         assert!(!master.keywords.is_empty());
+        assert_eq!(
+            master.foreign_vector_entries,
+            vec!["visio/media/image1.emf".to_owned()]
+        );
+        assert!(library.package.is_some());
     }
 
     #[test]

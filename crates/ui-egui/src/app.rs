@@ -1,5 +1,6 @@
 //! Main RackCraft application shell and interaction logic.
 
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use eframe::egui::{
@@ -7,8 +8,8 @@ use eframe::egui::{
     Sense, Stroke, pos2, vec2,
 };
 use rackcraft_engine::{
-    Connector, ConnectorEnd, ConnectorId, Document, History, ItemId, Point, ProjectFields,
-    Rect as DocRect, Routing, SnapKind, SnapResult, SnapSettings, snap_item,
+    Connector, ConnectorEnd, ConnectorId, Document, DrawPath, History, ItemId, Point,
+    ProjectFields, Rect as DocRect, Routing, SnapKind, SnapResult, SnapSettings, snap_item,
 };
 use rackcraft_io::StencilLibrary;
 
@@ -16,10 +17,12 @@ use crate::browser::{self, BrowserState, StencilKey};
 use crate::{canvas, inspector, inventory, theme};
 
 /// Startup options.
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct RunOptions {
     /// Open the built-in sample rack immediately.
     pub sample: bool,
+    /// Open a `.json` project on startup.
+    pub open: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -106,6 +109,7 @@ pub struct RackCraftApp {
     history: History,
     libraries: Vec<StencilLibrary>,
     browser: BrowserState,
+    emf_cache: HashMap<StencilKey, Vec<DrawPath>>,
     view: canvas::View,
     tool_mode: ToolMode,
     selection: Option<ItemId>,
@@ -133,7 +137,26 @@ impl RackCraftApp {
     pub fn new(cc: &eframe::CreationContext<'_>, options: RunOptions) -> Self {
         theme::apply(&cc.egui_ctx);
         let bundled = rackcraft_io::load_bundled_stencils();
-        let document = if options.sample {
+        let mut startup_error = bundled.errors.first().cloned();
+        let mut project_path = None;
+        let document = if let Some(path) = &options.open {
+            match std::fs::read_to_string(path)
+                .map_err(|err| err.to_string())
+                .and_then(|json| Document::from_json(&json).map_err(|err| err.to_string()))
+            {
+                Ok(document) => {
+                    project_path = Some(path.clone());
+                    document
+                }
+                Err(err) => {
+                    startup_error = Some(format!(
+                        "Could not open {} on startup:\n\n{err}",
+                        path.display()
+                    ));
+                    Document::new("Untitled rack")
+                }
+            }
+        } else if options.sample {
             rackcraft_engine::sample::document()
         } else {
             Document::new("Untitled rack")
@@ -143,7 +166,15 @@ impl RackCraftApp {
             .iter()
             .map(|library| library.masters.len())
             .sum();
-        let status = if options.sample {
+        let status = if project_path.is_some() {
+            Status::success(format!(
+                "Opened {} · {} items",
+                project_path
+                    .as_ref()
+                    .map_or_else(String::new, |path| display_path(path)),
+                document.items.len()
+            ))
+        } else if options.sample {
             Status::success(format!(
                 "Sample loaded · {} items · {} stencils ready",
                 document.items.len(),
@@ -155,11 +186,12 @@ impl RackCraftApp {
                 bundled.libraries.len()
             ))
         };
-        let error_dialog = bundled.errors.first().cloned();
+        let error_dialog = startup_error;
         Self {
             history: History::new(document),
             libraries: bundled.libraries,
             browser: BrowserState::default(),
+            emf_cache: HashMap::new(),
             view: canvas::View::default(),
             tool_mode: ToolMode::Select,
             selection: None,
@@ -170,7 +202,7 @@ impl RackCraftApp {
             item_drag: None,
             form: None,
             connector_form: None,
-            project_path: None,
+            project_path,
             status,
             show_inventory: false,
             show_help: false,
@@ -417,7 +449,7 @@ impl RackCraftApp {
 
     fn import_stencil(&mut self) {
         let Some(path) = rfd::FileDialog::new()
-            .add_filter("Visio stencil", &["vssx", "vss"])
+            .add_filter("Visio stencil or ZIP archive", &["vssx", "vss", "zip"])
             .pick_file()
         else {
             return;
@@ -440,6 +472,7 @@ impl RackCraftApp {
                 let warnings = library.warnings.clone();
                 self.libraries.push(library);
                 self.browser.clear_textures();
+                self.emf_cache.clear();
                 self.browser.armed = None;
                 self.browser.search.clear();
                 self.status = if warnings.is_empty() {
@@ -620,6 +653,44 @@ impl RackCraftApp {
         self.status = Status::success("Connector applied");
     }
 
+    fn ensure_materialized(&mut self, key: &StencilKey) {
+        if self.emf_cache.contains_key(key) {
+            return;
+        }
+        let Some(library) = self.libraries.get(key.library) else {
+            return;
+        };
+        let Some(master) = library.master(&key.master) else {
+            return;
+        };
+        if master.foreign_vector_entries.is_empty() {
+            self.emf_cache.insert(key.clone(), Vec::new());
+            return;
+        }
+        match library.materialize_vector_graphics(master) {
+            Ok(graphics) => {
+                let count = graphics.len();
+                self.emf_cache.insert(key.clone(), graphics);
+                if count > 0 {
+                    self.status =
+                        Status::success(format!("Loaded embedded vector artwork · {count} paths"));
+                } else {
+                    self.status = Status::info("No vector artwork found in this master");
+                }
+            }
+            Err(err) => {
+                self.emf_cache.insert(key.clone(), Vec::new());
+                self.status = Status::error(format!("Could not render embedded artwork: {err}"));
+            }
+        }
+    }
+
+    fn append_materialized(&self, key: &StencilKey, item: &mut rackcraft_engine::Item) {
+        if let Some(graphics) = self.emf_cache.get(key) {
+            item.graphics.extend(graphics.iter().cloned());
+        }
+    }
+
     fn place_stencil_at(&mut self, key: &StencilKey, screen: Pos2) {
         let Some(rect) = self.canvas_rect else {
             return;
@@ -633,6 +704,7 @@ impl RackCraftApp {
         let library_name = library.name.clone();
         let cursor = self.view.screen_to_doc(rect.min, screen);
         let mut item = master.to_item(&library_name, Point::default());
+        self.append_materialized(key, &mut item);
         let canvas_rect = DocRect::new(
             0.0,
             0.0,
@@ -1288,6 +1360,9 @@ impl RackCraftApp {
                     let master = library.master(&key.master)?;
                     let document = self.history.document();
                     let mut item = master.to_item(&library.name, Point::default());
+                    if let Some(graphics) = self.emf_cache.get(key) {
+                        item.graphics.extend(graphics.iter().cloned());
+                    }
                     let cursor = self.view.screen_to_doc(rect.min, pointer);
                     let desired = Point::new(
                         cursor.x - item.size.width * 0.5,
@@ -1622,6 +1697,14 @@ impl eframe::App for RackCraftApp {
         }
 
         self.inspector_panel(ui);
+        if let Some(key) = self
+            .browser
+            .dragging
+            .clone()
+            .or_else(|| self.browser.armed.clone())
+        {
+            self.ensure_materialized(&key);
+        }
         if (self.browser.armed.is_some() || self.browser.dragging.is_some())
             && self.tool_mode != ToolMode::Select
         {

@@ -124,6 +124,26 @@ pub fn convert_and_load(path: &Path) -> Result<StencilLibrary> {
     let source = Some(path.display().to_string());
     let mut diagnostics = Vec::new();
 
+    // Vendor downloads often ship the same stencil twice (legacy .vss and
+    // current .vssx). Prefer the companion .vssx: it has the original vector
+    // ForeignData/metadata and avoids a multi-hundred-megabyte conversion.
+    if let Some(companion) = companion_vssx(path) {
+        let bytes = std::fs::read(&companion)?;
+        match load_vssx_bytes(&bytes, &name, Some(companion.display().to_string())) {
+            Ok(mut library) => {
+                library.warnings.push(format!(
+                    "A companion .vssx file was found and used instead of converting the legacy .vss: {}",
+                    companion.display()
+                ));
+                return Ok(library);
+            }
+            Err(err) => diagnostics.push(format!(
+                "companion .vssx {} failed to load: {err}",
+                companion.display()
+            )),
+        }
+    }
+
     if let Some(soffice) = find_executable("soffice") {
         match convert_with_soffice(&soffice, path, &name, source.clone()) {
             Ok(mut library) => {
@@ -212,6 +232,36 @@ fn convert_with_vss2xhtml(
     legacy_svg::load_vss2xhtml(&output.stdout, name, source)
 }
 
+fn companion_vssx(path: &Path) -> Option<PathBuf> {
+    if path
+        .extension()
+        .and_then(OsStr::to_str)
+        .is_none_or(|extension| !extension.eq_ignore_ascii_case("vss"))
+    {
+        return None;
+    }
+    let direct = path.with_extension("vssx");
+    if direct.is_file() {
+        return Some(direct);
+    }
+    let folder = path.parent()?;
+    let stem = path.file_stem()?.to_str()?.to_ascii_lowercase();
+    std::fs::read_dir(folder)
+        .ok()?
+        .filter_map(std::result::Result::ok)
+        .map(|entry| entry.path())
+        .find(|candidate| {
+            candidate
+                .extension()
+                .and_then(OsStr::to_str)
+                .is_some_and(|extension| extension.eq_ignore_ascii_case("vssx"))
+                && candidate
+                    .file_stem()
+                    .and_then(OsStr::to_str)
+                    .is_some_and(|name| name.eq_ignore_ascii_case(&stem))
+        })
+}
+
 fn find_converted(folder: &Path) -> Result<PathBuf> {
     let mut candidates = Vec::new();
     for entry in std::fs::read_dir(folder)? {
@@ -268,6 +318,23 @@ mod tests {
         let message = error.to_string();
         assert!(message.contains("soffice") || message.contains("vss2xhtml"));
         assert!(message.contains(".vssx"));
+    }
+
+    #[test]
+    fn companion_vssx_is_preferred_over_legacy_conversion() {
+        let folder = tempfile::tempdir().unwrap();
+        let vssx = folder.path().join("vendor.vssx");
+        std::fs::write(&vssx, crate::BUNDLED_STENCILS[0].1).unwrap();
+        let vss = folder.path().join("vendor.vss");
+        std::fs::write(&vss, [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1, 0, 0]).unwrap();
+        let library = convert_and_load(&vss).unwrap();
+        assert!(library.masters.len() >= 4);
+        assert!(
+            library
+                .warnings
+                .iter()
+                .any(|warning| warning.contains("companion .vssx"))
+        );
     }
 
     #[test]

@@ -9,9 +9,13 @@ use std::error::Error;
 use rackcraft_io::load_stencil_file;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let path = std::env::args()
-        .nth(1)
-        .ok_or("usage: stencil_info <file.vssx|file.vss>")?;
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let path = args
+        .iter()
+        .find(|argument| !argument.starts_with("--"))
+        .ok_or("usage: stencil_info [--art] <file.vssx|file.vss>")?
+        .clone();
+    let materialize = args.iter().any(|argument| argument == "--art");
     let library = load_stencil_file(&path)?;
     println!(
         "{} — {} masters ({} warnings)",
@@ -38,6 +42,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         if let Some(mount) = &master.mount {
             println!("    rack: {}U", mount.units);
+        }
+        if materialize && !master.foreign_vector_entries.is_empty() {
+            match library.materialize_vector_graphics(master) {
+                Ok(graphics) => println!(
+                    "    metafile: {} entries, {} converted paths",
+                    master.foreign_vector_entries.len(),
+                    graphics.len()
+                ),
+                Err(err) => println!("    metafile: ERROR {err}"),
+            }
         }
     }
     for warning in &library.warnings {

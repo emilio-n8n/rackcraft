@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.2.1 — 2026-11-22
+
+- **Cisco/vendor EMF artwork:** Visio `.vssx` masters whose visuals live in
+  `ForeignData` EMF/WMF files are now converted to normalized vector paths the
+  first time they are placed. Cisco Catalyst 9000 switch faces render instead of
+  plain 1U rectangles; conversion is lazy and cached per master.
+- **Vendor ZIP import:** `.zip` downloads are opened directly; the contained
+  `.vssx` is preferred over `.vss`, with a size-safe fallback chain.
+- **Companion `.vssx`:** importing a legacy `.vss` automatically uses a sibling
+  `.vssx` with the same stem when present, avoiding huge lossy conversion of
+  vendor packages that ship both formats.
+- **Open project from CLI:** `rackcraft --open project.json` (or a positional
+  `.json` path) starts directly in an existing project.
+- Import detection now records ForeignData image entries without loading
+  hundreds of megabytes at import time; vector rendering happens on placement.
+- Third-party notices include the Apache-2.0 `metafile` renderer.
+
 ## 0.2.0 — 2026-11-21
 
 - **Connectors:** new document model (`Connector`, glued/free endpoints, labels,

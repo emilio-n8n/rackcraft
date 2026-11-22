@@ -14,6 +14,7 @@ stencils can be converted without installing LibreOffice:
 | ICU (`libicuuc`, `libicudata`) | Unicode support used by libxml2/libvisio | Unicode License / MIT-style |
 | zlib, liblzma | compression support used by libxml2 | zlib / public domain |
 | GNU libstdc++ / libgcc | C++ runtime for the bundled converter | GPL-3.0 with GCC Runtime Library Exception |
+| `metafile` (Rust) | EMF/WMF vector rendering for vendor stencils | Apache-2.0 |
 
 The bundled libraries are used only by the isolated `vss2xhtml` subprocess. The
 AppImage remains extractable, so users can replace those libraries if desired.

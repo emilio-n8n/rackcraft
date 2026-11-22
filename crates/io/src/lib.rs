@@ -9,6 +9,7 @@
 
 pub mod bom_export;
 pub mod error;
+pub mod foreign;
 pub mod legacy;
 pub mod legacy_native;
 pub mod legacy_svg;
@@ -16,7 +17,8 @@ pub mod model;
 pub mod pdf;
 pub mod vssx;
 
-use std::path::Path;
+use std::io::{Cursor, Read, Write};
+use std::path::{Path, PathBuf};
 
 pub use bom_export::{BOM_HEADERS, bom_csv_bytes, bom_xlsx_bytes, export_bom_csv, export_bom_xlsx};
 pub use error::{IoError, Result};
@@ -65,21 +67,120 @@ pub fn load_bundled_stencils() -> BundledStencils {
     bundled
 }
 
-/// Load a stencil from a file, detecting `.vssx` and legacy `.vss`.
+/// Load a stencil from a file, detecting `.vssx`, legacy `.vss` and ZIP
+/// collections of stencils (as distributed by many vendors).
 pub fn load_stencil_file(path: impl AsRef<Path>) -> Result<StencilLibrary> {
     let path = path.as_ref();
     let bytes = std::fs::read(path)?;
     match detect_format(&bytes) {
         StencilFormat::Vssx => {
-            let name = path
-                .file_stem()
-                .and_then(std::ffi::OsStr::to_str)
-                .unwrap_or("Imported stencil");
-            load_vssx_bytes(&bytes, name, Some(path.display().to_string()))
+            if is_visio_master_package(&bytes) {
+                let name = path
+                    .file_stem()
+                    .and_then(std::ffi::OsStr::to_str)
+                    .unwrap_or("Imported stencil");
+                load_vssx_bytes(&bytes, name, Some(path.display().to_string()))
+            } else {
+                load_stencil_archive(&bytes, path)
+            }
         }
         StencilFormat::Vss => legacy::convert_and_load(path),
         StencilFormat::Unknown => Err(IoError::UnknownFormat(path.display().to_string())),
     }
+}
+
+fn is_visio_master_package(bytes: &[u8]) -> bool {
+    let Ok(mut archive) = zip::ZipArchive::new(Cursor::new(bytes)) else {
+        return false;
+    };
+    archive.by_name("visio/masters/masters.xml").is_ok()
+}
+
+/// Load a vendor ZIP containing one or more `.vssx` / `.vss` files.
+///
+/// `.vssx` is always preferred over legacy `.vss`; Cisco and many other vendors
+/// ship both in the same archive.
+fn load_stencil_archive(bytes: &[u8], archive_path: &Path) -> Result<StencilLibrary> {
+    let mut archive = zip::ZipArchive::new(Cursor::new(bytes))?;
+    let mut entries = Vec::new();
+    for index in 0..archive.len() {
+        let Ok(file) = archive.by_index(index) else {
+            continue;
+        };
+        if file.is_dir() {
+            continue;
+        }
+        let name = file.name().to_owned();
+        if name.starts_with("__MACOSX/") {
+            continue;
+        }
+        let lower = name.to_ascii_lowercase();
+        if lower.ends_with(".vssx") || lower.ends_with(".vss") {
+            entries.push(name);
+        }
+    }
+    entries.sort_by_key(|name| (!name.to_ascii_lowercase().ends_with(".vssx"), name.clone()));
+    let Some(entry_name) = entries.first().cloned() else {
+        return Err(IoError::MissingPart(format!(
+            "{} contains no .vssx or .vss stencil",
+            archive_path.display()
+        )));
+    };
+    let entry_stem = Path::new(&entry_name)
+        .file_stem()
+        .and_then(std::ffi::OsStr::to_str)
+        .unwrap_or("Imported stencil")
+        .to_owned();
+    let source = format!("{}#{entry_name}", archive_path.display());
+
+    if entry_name.to_ascii_lowercase().ends_with(".vssx") {
+        let mut file = archive.by_name(&entry_name)?;
+        if file.size() > 256 * 1024 * 1024 {
+            return Err(IoError::Conversion(format!(
+                "{entry_name} exceeds the 256 MiB archive entry limit"
+            )));
+        }
+        let mut stencil_bytes = Vec::with_capacity(usize::try_from(file.size()).unwrap_or(0));
+        file.read_to_end(&mut stencil_bytes)?;
+        let mut library = load_vssx_bytes(&stencil_bytes, &entry_stem, Some(source))?;
+        if entries.len() > 1 {
+            library.warnings.push(format!(
+                "Archive contains {} stencils; loaded {}",
+                entries.len(),
+                entry_stem
+            ));
+        }
+        return Ok(library);
+    }
+
+    // Legacy-only archive: extract to a temporary file so the regular
+    // conversion chain (companion vssx, vsoffice, vss2xhtml, native CFB) works.
+    let temporary = tempfile::Builder::new()
+        .prefix("rackcraft-zip-vss-")
+        .tempdir()?;
+    let filename = Path::new(&entry_name)
+        .file_name()
+        .and_then(std::ffi::OsStr::to_str)
+        .unwrap_or("stencil.vss");
+    let temp_path: PathBuf = temporary.path().join(filename);
+    let mut output = std::fs::File::create(&temp_path)?;
+    {
+        let mut file = archive.by_name(&entry_name)?;
+        if file.size() > 256 * 1024 * 1024 {
+            return Err(IoError::Conversion(format!(
+                "{entry_name} exceeds the 256 MiB archive entry limit"
+            )));
+        }
+        std::io::copy(&mut file, &mut output)?;
+    }
+    output.flush()?;
+    let mut library = legacy::convert_and_load(&temp_path)?;
+    library.warnings.push(format!(
+        "Loaded {} from {}",
+        entry_name,
+        archive_path.display()
+    ));
+    Ok(library)
 }
 
 /// Load a stencil from memory. Legacy `.vss` cannot be converted without a path.
@@ -115,6 +216,29 @@ pub fn export_bom_both(
 mod tests {
     use super::*;
     use kurbo::Shape;
+    use std::io::Write;
+
+    #[test]
+    fn vendor_zip_with_vssx_is_loaded_directly() {
+        let folder = tempfile::tempdir().unwrap();
+        let archive_path = folder.path().join("vendor.zip");
+        {
+            let file = std::fs::File::create(&archive_path).unwrap();
+            let mut archive = zip::ZipWriter::new(file);
+            let options = zip::write::SimpleFileOptions::default()
+                .compression_method(zip::CompressionMethod::Deflated);
+            archive
+                .start_file("vendor/Switches - Catalyst.vssx", options)
+                .unwrap();
+            archive.write_all(BUNDLED_STENCILS[0].1).unwrap();
+            archive.start_file("vendor/readme.pdf", options).unwrap();
+            archive.write_all(b"not a stencil").unwrap();
+            archive.finish().unwrap();
+        }
+        let library = load_stencil_file(&archive_path).unwrap();
+        assert_eq!(library.masters.len(), 4);
+        assert!(library.name.contains("Switches"));
+    }
 
     #[test]
     fn bundled_libraries_parse_offline() {

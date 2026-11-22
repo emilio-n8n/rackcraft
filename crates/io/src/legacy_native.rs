@@ -133,10 +133,12 @@ pub fn load_native_fallback(
         mount: None,
         keywords,
         icon: inspection.icon,
+        foreign_vector_entries: Vec::new(),
     };
     let library = StencilLibrary {
         name: display_name.to_owned(),
         source,
+        package: None,
         masters: vec![master],
         warnings: vec![
             "Native .vss fallback: only container metadata and preview icons could be recovered. \

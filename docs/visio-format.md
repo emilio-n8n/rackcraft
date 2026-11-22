@@ -8,7 +8,8 @@ No vendor stencil is redistributed in this repository.
 
 ## Container
 
-A `.vssx` is an OPC package (ZIP):
+A `.vssx` is an OPC package (ZIP); vendor `.zip` downloads containing `.vssx`
+or `.vss` are opened directly and `.vssx` is preferred:
 
 ```
 [Content_Types].xml
@@ -58,10 +59,12 @@ Geometry cells:
 - Ellipses are approximated by four cubic Béziers; other unsupported rows are
   reduced to their endpoint so a shape never disappears completely.
 
-Real vendor stencils often contain a `ForeignData` bitmap with a simple
-geometry rectangle. When no geometry exists, RackCraft draws a visible fallback
-box with the master's fill/line colours and keeps the connection points and
-shape data.
+Real vendor stencils often contain a `ForeignData` bitmap or metafile with a
+simple geometry rectangle. For `.vssx`, RackCraft records EMF/WMF entries and
+converts them to normalized vector paths lazily when the master is placed (Cisco
+Catalyst 9000 is the reference case). When no geometry exists, RackCraft draws a
+visible fallback box with the master's fill/line colours and keeps the
+connection points and shape data.
 
 ## Shape data
 

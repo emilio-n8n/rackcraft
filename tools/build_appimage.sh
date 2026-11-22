@@ -3,7 +3,7 @@
 #
 # Usage:
 #   APPIMAGETOOL=/path/to/appimagetool ./tools/build_appimage.sh \
-#       target/release/rackcraft dist/rackcraft-x86_64.AppImage 0.2.0
+#       target/release/rackcraft dist/rackcraft-x86_64.AppImage 0.2.1
 #
 # The binary should be built on an old-glibc system for broad compatibility
 # (GitHub Actions uses Ubuntu 22.04 for this reason).
@@ -12,7 +12,7 @@ set -euo pipefail
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 BIN=${1:?usage: build_appimage.sh <binary> <output.AppImage> [version]}
 OUT=${2:?usage: build_appimage.sh <binary> <output.AppImage> [version]}
-VERSION=${3:-${VERSION:-0.2.0}}
+VERSION=${3:-${VERSION:-0.2.1}}
 APPIMAGETOOL=${APPIMAGETOOL:-$(command -v appimagetool || true)}
 ARCH=${ARCH:-x86_64}
 
