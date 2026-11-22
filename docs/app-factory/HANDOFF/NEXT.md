@@ -5,18 +5,16 @@
 1. Les 10 releases `v0.1.0` sont publiées, avec 7 assets, checksums vérifiés
    et `craft-release-check github` à 0 warning.
 
-2. Attendre le dernier agent de la **vague B** : MusicCraft.
-   CircuitCraft (`cd71ed6`), SimCraft (`07e56a1`), GeoCraft (`a169b10`) et
-   StreamCraft (`a0aca05`) sont livrés. Vérifier commit, CI et
-   `python3 tools/launcher_check.py .`.
+2. Valider les 10 releases `v0.2.0` :
+   `craft-release-check github --repo emilio-n8n/<app> --tag v0.2.0`.
+   Vérifier les 7 assets et les checksums.
 
 ## Ensuite
 
-3. Quand A et B sont terminées :
-   - vérifier les 10 CI ;
-   - vérifier les binaires `--sample` ;
-   - décider des releases `v0.2.0` ;
-   - tagger et vérifier chaque release avec `craft-release-check github`.
+3. Après validation :
+   - vérifier les binaires `--version`/`--help` ;
+   - soumettre DiagramCraft au Craft Unofficial Launcher ;
+   - préparer la revue ArtCraft officielle (certificats à décider).
 
 5. Soumission launcher :
    - ajouter DiagramCraft au **Craft Unofficial Launcher** (l’utilisateur peut
