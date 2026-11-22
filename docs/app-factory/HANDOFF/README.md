@@ -39,7 +39,8 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
 6. `DECISIONS.md` — décisions à ne pas rouvrir
 7. `INCIDENTS.md` — erreurs déjà rencontrées
 8. `NEXT.md` — actions immédiates
-9. `PROMPTS/` — prompts de productisation prêts à relancer
+9. `RESUME-PROMPT.md` — texte à copier dans une nouvelle session
+10. `PROMPTS/` — prompts de productisation prêts à relancer
 
 ## Raccourcis
 
