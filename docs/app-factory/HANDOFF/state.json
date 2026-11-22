@@ -116,12 +116,15 @@
     {
       "id": "musiccraft",
       "repo": "emilio-n8n/musiccraft",
-      "main": "c971588",
+      "main": "575052b",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B in progress"
+      "productization": "wave B complete",
+      "tag_v0_2_0": "v0.2.0",
+      "release_v0_2_0": "in progress",
+      "release_v0_2_0_run": 45059375627
     },
     {
       "id": "streamcraft",
@@ -197,8 +200,8 @@
         "status": "done"
       },
       "musiccraft": {
-        "session": "ses_dfba3a70effehu7sWKCqt7WTgQ",
-        "status": "in_progress"
+        "commit": "64615c8",
+        "status": "done"
       },
       "streamcraft": {
         "commit": "a0aca05",
@@ -226,10 +229,10 @@
       "geocraft",
       "mastercraft",
       "mathcraft",
+      "musiccraft",
       "projectcraft",
       "simcraft",
       "streamcraft"
-    ],
-    "musiccraft": "pending productization"
+    ]
   }
 }

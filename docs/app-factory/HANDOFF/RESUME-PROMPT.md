@@ -31,11 +31,10 @@ Règles absolues :
   847ec5d, FormCraft 59f0850, MathCraft efc1f7d, MasterCraft bb09a91.
 - Vague B : CircuitCraft, SimCraft, GeoCraft et StreamCraft sont livrés.
   MusicCraft est encore en cours.
-- **9 tags `v0.2.0` poussés** sur les apps terminées (DiagramCraft, ProjectCraft,
-  FormCraft, MathCraft, MasterCraft, CircuitCraft, GeoCraft, StreamCraft,
-  SimCraft) ; les releases GitHub Actions sont lancées. Valider avec
+- **10 tags `v0.2.0` poussés** sur toutes les apps ; les releases GitHub Actions
+  sont lancées. Valider avec
   `craft-release-check github --repo emilio-n8n/<app> --tag v0.2.0`.
-- MusicCraft n'a pas encore de tag `v0.2.0`.
+- MusicCraft est taguée `v0.2.0` (`575052b`).
 - Sessions B dans WORKFLOW.md ; attendre leurs rapports, vérifier CI et
   launcher_check, puis mettre à jour le dossier.
 

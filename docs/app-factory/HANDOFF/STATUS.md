@@ -22,7 +22,7 @@
 | MasterCraft | `bb09a91` | `bfddbde` | ✅ publiée | Vague A terminée |
 | CircuitCraft | `cd71ed6` | `99ef5ae` | ✅ publiée | Vague B terminée |
 | GeoCraft | `a169b10` | `dd771be` | ✅ publiée | Vague B terminée |
-| MusicCraft | `c971588` | `f4f03ce` | ✅ publiée | Vague B en cours |
+| MusicCraft | `575052b` | `f4f03ce` | ✅ publiée | Vague B terminée |
 | StreamCraft | `a0aca05` | `7ad60b7` | ✅ publiée | Vague B terminée |
 | SimCraft | `07e56a1` | `69464f5` | ✅ publiée | Vague B terminée |
 
@@ -51,12 +51,12 @@ de vague A vont ajouter de nouveaux commits.
 | SimCraft | `07e56a1` | ✅ | Livré (v0.2 fonctionnelle) |
 | GeoCraft | `a169b10` | ✅ | Livré (v0.2 fonctionnelle) |
 | StreamCraft | `a0aca05` | ✅ | Livré (v0.2 fonctionnelle) |
-| MusicCraft | en cours | — | Vague B en cours |
+| MusicCraft | `64615c8` | `575052b` | ✅ | Livré (v0.2 fonctionnelle) |
 
 ## Releases v0.2.0
 
-Les 9 apps terminées ont reçu le tag `v0.2.0` le 22 novembre 2026 et les
-workflows de release GitHub Actions ont été lancés :
+Les 10 apps ont reçu le tag `v0.2.0` le 22 novembre 2026 et les workflows de
+release GitHub Actions ont été lancés :
 
 | App | Commit | Tag | Release |
 | --- | --- | --- | --- |
@@ -69,8 +69,7 @@ workflows de release GitHub Actions ont été lancés :
 | GeoCraft | `ab09978` | `v0.2.0` | en cours |
 | StreamCraft | `08de7dd` | `v0.2.0` | en cours |
 | SimCraft | `07e56a1` | `v0.2.0` | en cours |
-
-MusicCraft n'est pas taguée : sa productisation est encore en cours.
+| MusicCraft | `575052b` | `v0.2.0` | en cours |
 
 ## Launcher
 

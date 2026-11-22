@@ -16,7 +16,7 @@
 | --- | --- | --- |
 | CircuitCraft | `ses_dfba3a723ffeXoD9LipEYl1iAe` | ✅ `cd71ed6` |
 | GeoCraft | `ses_dfba3a720ffecf0RUkKEJXx11q` | ✅ `a169b10` |
-| MusicCraft | `ses_dfba3a70effehu7sWKCqt7WTgQ` | En cours |
+| MusicCraft | `ses_dfba3a70effehu7sWKCqt7WTgQ` | ✅ `64615c8` |
 | StreamCraft | `ses_dfba3a70affeoebUmv5Qv5Uvi2` | ✅ `a0aca05` |
 | SimCraft | `ses_dfba3a706ffe7Q5ZBUuq49i1I8` | ✅ `07e56a1` |
 
@@ -139,3 +139,18 @@ Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 - Limites : capture validée sous Xvfb uniquement, micro/webcam non testés sur
   matériel réel, encodage ffmpeg non testé (binaire absent), PNG avec police
   bitmap 3×5, pas de streaming ni de clone OBS.
+
+## MusicCraft — 64615c8
+
+- Piano roll : déplacement et redimensionnement par glisser, duplication (`D`),
+  quantification (`Q`), une gesture = une étape d'undo.
+- MIDI SMF type 1 : import/export tempo, pistes, programmes, NoteOn/Off,
+  vélocités ; round-trip testé.
+- 5 oscillateurs, ADSR, delay et reverb par piste, mute/solo/volume par piste
+  et volume master.
+- Lecture temps réel CPAL quand un périphérique existe, sinon « offline
+  preview » affiché explicitement ; mixdown WAV 44,1 kHz float32.
+- 30 tests ; schéma 1 conservé, nouveaux champs additifs (`serde(default)`).
+- Limites : pas de VST, pas d'entrée MIDI live, pas d'automation, lecture d'un
+  buffer pré-rendu, pas de pan ni d'export multipiste, aucun son en CI
+  headless.
