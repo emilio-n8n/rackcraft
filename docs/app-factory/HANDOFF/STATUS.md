@@ -85,6 +85,8 @@ Détail et couverture : `E2E.md`.
 ## Launcher
 
 - **Craft Unofficial Launcher** : lit `craft-app.json`, chemin validé.
+  PR d’index communautaire : [#9](https://github.com/YalKouassi/craft-unofficial-launcher/pull/9)
+  (10 apps, en revue par le mainteneur).
 - **ArtCraft Launcher officiel** : ne lit pas encore `craft-app.json` (#989) ;
   les apps communautaires approuvées passent par revue + catalogue + paquets
   signés.

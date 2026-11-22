@@ -9,8 +9,9 @@
    un vrai bureau, exports via l'UI, WAV réel MasterCraft, matériel audio,
    Wayland, Windows/macOS à l'exécution.
 
-3. Soumettre DiagramCraft au Craft Unofficial Launcher (puis les autres apps),
-   avec `craft-app.json`, l'icône et les archives `v0.2.1`.
+3. Suivre la PR #9 de l’index communautaire :
+   https://github.com/YalKouassi/craft-unofficial-launcher/pull/9
+   Répondre aux demandes du mainteneur ; ne pas merger soi-même.
 
 ## Ensuite
 

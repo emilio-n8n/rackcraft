@@ -222,11 +222,21 @@
     }
   },
   "launcher": {
-    "unofficial_repo": "YalKouassi/craft-unofficial-launcher",
-    "official_issue": "storytold/craft-launcher#989",
-    "diagramcraft_release_check": "0 warnings",
-    "all_apps_simulated_dir_check": "0 warnings",
-    "certificates": "none"
+    "unofficial_index_pr": "https://github.com/YalKouassi/craft-unofficial-launcher/pull/9",
+    "status": "open, awaiting maintainer review",
+    "apps_submitted": [
+      "diagramcraft",
+      "projectcraft",
+      "formcraft",
+      "mathcraft",
+      "mastercraft",
+      "circuitcraft",
+      "geocraft",
+      "streamcraft",
+      "simcraft",
+      "musiccraft"
+    ],
+    "official_launcher": "blocked on certificates and maintainer review"
   },
   "releases_v0_2_0": {
     "launched": "2026-11-22",

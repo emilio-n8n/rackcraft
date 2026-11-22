@@ -55,21 +55,32 @@ faudra `.msi` signé et `.dmg` signé/notarisé.
 
 ## État
 
-- DiagramCraft `v0.1.0` : release réelle, `craft-release-check github` →
+- Les 10 apps ont une release `v0.2.0` (DiagramCraft et SimCraft : `v0.2.1`)
+  avec 7 assets.
+- `craft-release-check github` sur la dernière release de chaque app :
   **0 warning**.
-- Les 10 apps : `craft-release-check dir` sur release simulée → **0 warning**.
-- Releases `v0.1.0` des 9 autres : en cours au moment du snapshot.
+- Le checker est celui du Craft Unofficial Launcher 0.12.1 ; les noms d’assets,
+  `craft-app.json`, l’icône et `SHA256SUMS.txt` sont conformes.
 - Aucun certificat Apple/Windows ; `apple_team: null`.
 - Aucun MSI/DMG/AppImage/deb/rpm dans les releases actuelles.
 
-## Soumission
+## Soumission à l’index communautaire
 
-- Pour le launcher unofficial : l’utilisateur peut ajouter
-  `emilio-n8n/<slug>` dans les réglages. Pour l’index communautaire, c’est une
-  décision des mainteneurs ; ne pas ajouter d’entrée `index/apps.json` soi-même.
-- Pour le launcher officiel : demander aux mainteneurs d’ArtCraft le chemin
-  exact, avec le pilote DiagramCraft, la release, le manifeste et le statut de
-  signature. Ne pas se présenter comme officiel avant accord.
+PR ouverte : <https://github.com/YalKouassi/craft-unofficial-launcher/pull/9>
+
+- branche `emilio-n8n:add-emilio-n8n-apps` sur le fork ;
+- ajoute les 10 entrées à `index/apps.json` avec des catégories ;
+- tests `cargo test -p craft-app-descriptor index --locked` : 5/5 ;
+- **la décision de merger appartient au mainteneur** ; ne pas merger soi-même
+  ni présenter l’index comme acquis.
+- Un utilisateur peut aussi ajouter `emilio-n8n/<slug>` à la main dans les
+  réglages du launcher sans attendre l’index.
+
+## Launcher officiel
+
+- Demander aux mainteneurs d’ArtCraft le chemin exact, avec le pilote
+  DiagramCraft, la release, le manifeste et le statut de signature.
+- Ne pas se présenter comme officiel avant accord.
 
 ## Vérifier
 
