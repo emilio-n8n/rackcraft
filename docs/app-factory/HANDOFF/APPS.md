@@ -106,9 +106,13 @@ Aucune n’est un clone complet d’un logiciel commercial.
 - MVP : MIDI interne, 3 instruments, piano roll, mixdown WAV offline, jobs.
 - Limites : pas de son temps réel, pas d’import/export MIDI, édition de notes
   limitée, mono 44,1 kHz float32.
-- Productisation B : édition de notes, import/export MIDI, effets simples,
-  playback `cpal` si l’environnement le permet.
-- Release `v0.1.0` publiée.
+- Productisation B livrée (`64615c8`) : piano roll drag/resize/duplicate/
+  quantize, import/export MIDI SMF, 5 oscillateurs, ADSR, delay/reverb,
+  mixage mute/solo/volume, playback CPAL temps réel avec repli « offline
+  preview », 30 tests.
+- Limites : pas de VST, pas d'entrée MIDI live, pas d'automation, buffer
+  pré-rendu, mono 44,1 kHz, pas de pan ni d'export multipiste.
+- Release `v0.1.0` publiée ; `v0.2.0` taguée (`575052b`).
 
 ## StreamCraft — composition de scènes
 

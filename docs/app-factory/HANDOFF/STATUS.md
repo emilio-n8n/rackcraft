@@ -51,7 +51,7 @@ de vague A vont ajouter de nouveaux commits.
 | SimCraft | `07e56a1` | ✅ | Livré (v0.2 fonctionnelle) |
 | GeoCraft | `a169b10` | ✅ | Livré (v0.2 fonctionnelle) |
 | StreamCraft | `a0aca05` | ✅ | Livré (v0.2 fonctionnelle) |
-| MusicCraft | `64615c8` | `575052b` | ✅ | Livré (v0.2 fonctionnelle) |
+| MusicCraft | `575052b` | ✅ | Livré (v0.2 fonctionnelle) |
 
 ## Releases v0.2.0
 
