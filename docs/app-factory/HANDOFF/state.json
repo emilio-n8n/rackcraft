@@ -115,12 +115,12 @@
     {
       "id": "simcraft",
       "repo": "emilio-n8n/simcraft",
-      "main": "981b128",
+      "main": "07e56a1",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B in progress"
+      "productization": "wave B complete"
     }
   ],
   "productization": {
@@ -178,8 +178,8 @@
         "status": "in_progress"
       },
       "simcraft": {
-        "session": "ses_dfba3a706ffe7Q5ZBUuq49i1I8",
-        "status": "in_progress"
+        "commit": "07e56a1",
+        "status": "done"
       }
     }
   },

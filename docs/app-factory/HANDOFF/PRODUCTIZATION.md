@@ -18,7 +18,7 @@
 | GeoCraft | `ses_dfba3a720ffecf0RUkKEJXx11q` | En cours |
 | MusicCraft | `ses_dfba3a70effehu7sWKCqt7WTgQ` | En cours |
 | StreamCraft | `ses_dfba3a70affeoebUmv5Qv5Uvi2` | En cours |
-| SimCraft | `ses_dfba3a706ffe7Q5ZBUuq49i1I8` | En cours |
+| SimCraft | `ses_dfba3a706ffe7Q5ZBUuq49i1I8` | ✅ `07e56a1` |
 
 Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 
@@ -95,3 +95,16 @@ Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 - Limites : routage sans waypoints, croisements toujours connectés, PDF
   Helvetica non embarquée (non-ASCII → `?`), pas de test visuel, pas de PCB
   ni de SPICE.
+
+## SimCraft — 07e56a1
+
+- Régions rectangulaires multi-matériaux, conductance d'interface par moyenne
+  harmonique ; conditions Dirichlet, flux, convection, bord isolé.
+- Solveur SOR quasi-optimal (ω ≈ 1,99), résidu, déséquilibre finite-volume,
+  estimation des balayages restants, contrôle de grille par demi-résolution.
+- Grille jusqu'à 401×401 ; export CSV et PNG avec légende.
+- Formulaire à 5 presets, validation par champ, carte de température
+  interactive, persistance JSON v0.1.0 compatible.
+- 52 tests. Limites : conduction stationnaire uniquement, régions
+  axis-alignées, pas de transitoire ni de maillage non structuré, SOR lent sur
+  matériaux très hétérogènes.
