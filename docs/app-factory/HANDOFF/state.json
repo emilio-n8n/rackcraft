@@ -75,12 +75,12 @@
     {
       "id": "circuitcraft",
       "repo": "emilio-n8n/circuitcraft",
-      "main": "d86ad8a",
+      "main": "cd71ed6",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
       "release_check": "0 warnings",
-      "productization": "wave B in progress"
+      "productization": "wave B complete"
     },
     {
       "id": "geocraft",
@@ -162,8 +162,8 @@
     },
     "wave_b_status": {
       "circuitcraft": {
-        "session": "ses_dfba3a723ffeXoD9LipEYl1iAe",
-        "status": "in_progress"
+        "commit": "cd71ed6",
+        "status": "done"
       },
       "geocraft": {
         "session": "ses_dfba3a720ffecf0RUkKEJXx11q",

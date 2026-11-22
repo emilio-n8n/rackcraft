@@ -14,7 +14,7 @@
 
 | App | Session | État |
 | --- | --- | --- |
-| CircuitCraft | `ses_dfba3a723ffeXoD9LipEYl1iAe` | En cours |
+| CircuitCraft | `ses_dfba3a723ffeXoD9LipEYl1iAe` | ✅ `cd71ed6` |
 | GeoCraft | `ses_dfba3a720ffecf0RUkKEJXx11q` | En cours |
 | MusicCraft | `ses_dfba3a70effehu7sWKCqt7WTgQ` | En cours |
 | StreamCraft | `ses_dfba3a70affeoebUmv5Qv5Uvi2` | En cours |
@@ -81,3 +81,15 @@ Prompts : `PROMPTS/<slug>-product.md`. Ne pas lancer de 6e agent.
 - `libasound2-dev` ajouté aux workflows Linux.
 - Limites : échantillons non sérialisés, pas de spectral/ML, pas de monitoring
   temps réel, fades/trim synchrones. 31 tests.
+
+## CircuitCraft — cd71ed6
+
+- Rotation 90° des composants (`R`, barre d'outils, inspecteur), pins et
+  symboles solidaires ; champ `rotation` `serde(default)`.
+- Fils orthogonaux automatiques, jonctions aux pins partagés et croisements,
+  sélection/suppression d'un fil.
+- Netlist nommée (`GND`, `V+`, `N<n>`) par union-find ; export BOM CSV.
+- Exports SVG et PDF (une page, Helvetica standard), échappement du texte.
+- Grille/snapping 20 unités, zoom-to-fit `F`, palette de 10 symboles.
+- 24 tests. Limites : routage sans waypoints manuels, tout croisement est une
+  jonction, PDF non-ASCII remplacé par `?`, pas de test visuel.
