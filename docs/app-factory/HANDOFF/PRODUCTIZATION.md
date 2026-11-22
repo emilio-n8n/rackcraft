@@ -9,7 +9,7 @@
 | MasterCraft | `bb09a91` | ✅ | Livré |
 | DiagramCraft | en cours | — | En cours |
 | MathCraft | en cours | — | En cours |
-| MasterCraft | en cours | — | En cours |
+| MasterCraft | `bb09a91` | ✅ | Livré |
 
 ## Vague B
 
