@@ -134,3 +134,26 @@ dans le panneau gauche, lui-même rendu scrollable, en `d9c447b` ; release
 `v0.2.2` (`baa401a`). Vérifié en UI : saisie de 4 points `0,0` … `3,9`, clic
 Import → « Imported 4 points into 'series' », série listée et courbe ajoutée au
 tracé.
+
+## Wayland et enregistrement ffmpeg (23 novembre)
+
+### Wayland
+
+Weston headless + backend pixman, `WAYLAND_DISPLAY=wayland-1` :
+
+| App | Surface `xdg_surface` | Commits `wl_surface` | Panics |
+| --- | --- | --- | --- |
+| Les 10 apps | 6 | 8 à 14 | 0 |
+
+Les 10 binaires démarrent sous Wayland, créent une surface et commitent des
+buffers. La capture d’écran Weston n’a pas pu être utilisée (capture non
+autorisée), donc le rendu visuel Wayland n’a pas été comparé pixel par pixel.
+
+### StreamCraft / ffmpeg
+
+`ffmpeg` installé, enregistrement MKV testé via l’UI. Premier constat : un
+enregistrement de 5 s ne produisait que 8 à 11 frames (durée 0,27–0,37 s),
+car l’app ne demandait pas de repaint pendant l’enregistrement. Correctif
+`34e3115` : `request_repaint_after(interval)` tant qu’un enregistrement est
+actif. Release `v0.2.1` en cours ; le rendu PNG 1280×720 reste coûteux, donc le
+nombre de frames réel en release doit être mesuré sur le binaire publié.

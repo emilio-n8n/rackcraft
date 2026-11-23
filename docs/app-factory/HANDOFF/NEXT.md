@@ -5,8 +5,9 @@
 1. Les 10 releases `v0.1.0` sont publiées, avec 7 assets, checksums vérifiés
    et `craft-release-check github` à 0 warning.
 
-2. Valider la release `v0.2.2` de MathCraft, puis poursuivre `E2E.md` :
-   Wayland, matériel audio/webcam, ffmpeg, Windows/macOS à l'exécution.
+2. Valider la release `v0.2.1` de StreamCraft et tester l’enregistrement sur le
+   binaire publié. Restent : matériel audio/webcam, Windows/macOS à
+   l'exécution.
 
 3. Suivre la PR #9 de l’index communautaire :
    https://github.com/YalKouassi/craft-unofficial-launcher/pull/9
