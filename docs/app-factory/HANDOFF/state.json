@@ -164,7 +164,7 @@
         "34e3115",
         "fcab0e9"
       ],
-      "recording_limitation": "5s -> ~34 frames/1.13s in published release; dedicated capture thread needed"
+      "recording_verified": "138 frames / 4.6s for a 5s recording in the published v0.2.2 binary"
     },
     {
       "id": "simcraft",
@@ -326,7 +326,7 @@
     "round3": {
       "date": "2026-11-23",
       "wayland": "10/10 start, create xdg_surface and commit buffers, no panic",
-      "streamcraft_recording": "v0.2.1 artifact still 7fps (cache suspicion); v0.2.2 version bump forces rebuild"
+      "streamcraft_recording": "v0.2.2 published binary: 138 frames/4.60s for 5s; earlier measurement used the wrong artifact"
     }
   }
 }

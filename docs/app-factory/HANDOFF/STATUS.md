@@ -81,7 +81,7 @@ L'audit E2E sur les binaires publiés a trouvé trois défauts réels :
 | SimCraft | `976db22` | `v0.2.1` (`a76e96d`) | ✅ validée, 7 assets |
 | MathCraft | `a0c5252` | `v0.2.1` (`67adb8d`) | ✅ validée |
 | MathCraft | `d9c447b` | `v0.2.2` (`baa401a`) | ✅ validée |
-| StreamCraft | `7154ca0` | `v0.2.2` (`7154ca0`) | ✅ validée, limite durée |
+| StreamCraft | `7154ca0` | `v0.2.2` (`7154ca0`) | ✅ validée, 138 frames/4,6 s |
 
 Détail et couverture : `E2E.md`.
 
