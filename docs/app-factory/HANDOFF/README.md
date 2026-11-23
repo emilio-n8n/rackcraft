@@ -31,9 +31,10 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
 - **10 releases `v0.2.0` validées** (7 assets, 0 warning), toutes publiées.
 - **PR d’index communautaire** : 10 apps proposées au Craft Unofficial
   Launcher (PR #9, en revue).
-- **Audit E2E des binaires `v0.2.0`** : 2 défauts réels trouvés et corrigés
-  (DiagramCraft, SimCraft), releases `v0.2.1` publiées et validées. Voir
-  `E2E.md`.
+- **Audit E2E des binaires publiés** : 3 défauts réels trouvés et corrigés
+  (DiagramCraft, SimCraft, MathCraft), releases `v0.2.1` (MathCraft en cours).
+  Sauvegarde/réouverture et imports/exports réels validés sur les 8 autres
+  apps. Voir `E2E.md`.
 
 ## Ordre de lecture
 

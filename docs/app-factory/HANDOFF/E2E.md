@@ -85,3 +85,43 @@ Les archives Linux `v0.2.1` ont été retéléchargées et relancées sous Xvfb 
   l'exemple en 449 balayages (ω = 1,940, correction 9,63e-9) et carte de
   température affichée avec sa légende. Correctif confirmé dans le binaire
   publié.
+
+## Deuxième passe — persistance, imports et exports réels (23 novembre)
+
+Les binaires Linux `v0.2.0` des huit autres apps ont été relancés avec le
+portail XDG/GTK, ce qui rend les boîtes de dialogue natives fonctionnelles.
+
+### Sauvegarde et réouverture
+
+| App | Save | Réouverture | Remarque |
+| --- | --- | --- | --- |
+| ProjectCraft | ✅ | ✅ | titre = nom du fichier |
+| FormCraft | ✅ | ✅ | |
+| MathCraft | ✅ | ✅ | ❌ chemin perdu, corrigé en `v0.2.1` |
+| MasterCraft | ✅ | ✅ | l’audio n’est pas dans le JSON, message explicite |
+| CircuitCraft | ✅ | ✅ | |
+| GeoCraft | ✅ | ✅ | |
+| StreamCraft | ✅ | ✅ | |
+| MusicCraft | ✅ | ✅ | |
+
+### Imports et exports avec de vrais fichiers
+
+- **FormCraft** : import CSV `id,name,email` (2 lignes) → 5 lignes dans la
+  grille ; export CSV → 5 lignes avec les valeurs importées.
+- **GeoCraft** : import GeoJSON (Point + Polygon) → couche « import » avec
+  2 features ; export PNG 741×689 valide.
+- **MasterCraft** : chargement d’un WAV réel 1 s / 44,1 kHz / mono → waveform
+  et durée 1,00 s ; export WAV float32 valide.
+- **ProjectCraft** : export CSV du Gantt avec 16 colonnes calculées (CPM,
+  marge, critique).
+- **CircuitCraft** : export BOM CSV (4 composants) et PDF `%PDF-1.7`.
+- **StreamCraft** : export PNG de scène 1280×720.
+- **MusicCraft** : export MIDI `MThd` et mixdown WAV `RIFF/WAVE`.
+
+### Correctif MathCraft
+
+`load_path` normalisait le document avec `host.reset`, qui efface le chemin.
+Le titre restait « Untitled » et `Save` rouvrait « Save As ». Remplacé par
+`host.history_mut().replace(document)`, qui conserve le chemin. Vérifié :
+titre `persist-mathcraft.json — MathCraft`, `Ctrl+S` écrit en place, export PNG
+960×540.
