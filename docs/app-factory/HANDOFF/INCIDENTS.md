@@ -102,3 +102,18 @@ gh release view v0.1.0 --repo emilio-n8n/<slug>
 ```
 
 Un workflow `in_progress` n’est pas un échec. Ne pas recréer le tag.
+
+## Runners macOS indisponibles (23 novembre 2026)
+
+Deux releases StreamCraft ont échoué car GitHub n’a pas pu acquérir un runner
+macOS (`The job was not acquired by Runner of type hosted`) : d’abord macOS
+x86_64, puis macOS arm64. Linux, Windows et l’autre macOS avaient réussi.
+
+- Ce n’est pas une erreur de code ni de workflow.
+- Relancer uniquement les jobs échoués :
+  `gh run rerun <run-id> --failed`.
+- Ne pas recréer le tag tant qu’aucune release n’est publiée. Si la release
+  n’existe pas et que le tag doit porter un correctif, le déplacer est possible
+  (`git tag -d v…`, `git push origin :refs/tags/v…`, re-tag, re-push).
+- Un job `cancelled` dans la matrice empêche `checksums` et `release`, même
+  avec `fail-fast: false`.
