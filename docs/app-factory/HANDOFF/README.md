@@ -33,7 +33,7 @@ technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit pl
   Launcher (PR #9, en revue).
 - **Audit E2E des binaires publiés** : 5 défauts réels trouvés et corrigés
   (DiagramCraft, SimCraft, MathCraft ×2, StreamCraft). MathCraft `v0.2.2`
-  validée ; StreamCraft `v0.2.1` en cours (repaint + durée temps réel). Sauvegarde/réouverture,
+  validée ; StreamCraft `v0.2.2` en cours (repaint + durée temps réel). Sauvegarde/réouverture,
   imports/exports, Wayland et enregistrement ffmpeg testés. Voir `E2E.md`.
 
 ## Ordre de lecture

@@ -117,3 +117,16 @@ x86_64, puis macOS arm64. Linux, Windows et l’autre macOS avaient réussi.
   (`git tag -d v…`, `git push origin :refs/tags/v…`, re-tag, re-push).
 - Un job `cancelled` dans la matrice empêche `checksums` et `release`, même
   avec `fail-fast: false`.
+
+## Cache Cargo et artefacts de release
+
+L’artefact Linux de StreamCraft `v0.2.1` (run 45200551665) se comportait comme
+le binaire précédent : 73 frames / 2,43 s pour 10 s, alors que le code tagué
+contenait la duplication de frames. Le cache `Swatinem/rust-cache` a
+probablement restauré un binaire que Cargo a considéré à jour après le
+déplacement du tag.
+
+- Un simple déplacement de tag ne garantit pas une reconstruction.
+- Bumper la version (`Cargo.toml` + `Cargo.lock`) force la recompilation de la
+  crate applicative ; c’est la méthode retenue pour `v0.2.2`.
+- Vérifier le comportement du binaire publié, pas seulement le SHA du run.

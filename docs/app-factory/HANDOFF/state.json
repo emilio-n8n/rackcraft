@@ -141,7 +141,7 @@
     {
       "id": "streamcraft",
       "repo": "emilio-n8n/streamcraft",
-      "main": "fcab0e9",
+      "main": "7154ca0",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "B",
@@ -150,10 +150,17 @@
       "tag_v0_2_0": "v0.2.0",
       "release_v0_2_0": "validated",
       "release_v0_2_0_run": 45058744385,
-      "tag_v0_2_1": "v0.2.1",
-      "release_v0_2_1": "in progress",
+      "tag_v0_2_1": null,
+      "release_v0_2_1": "not published",
       "release_v0_2_1_run": 45200551665,
       "fix_v0_2_1": [
+        "34e3115",
+        "fcab0e9"
+      ],
+      "tag_v0_2_2": "v0.2.2",
+      "release_v0_2_2": "in progress",
+      "release_v0_2_2_run": 45204467771,
+      "fix_v0_2_2": [
         "34e3115",
         "fcab0e9"
       ]
@@ -318,7 +325,7 @@
     "round3": {
       "date": "2026-11-23",
       "wayland": "10/10 start, create xdg_surface and commit buffers, no panic",
-      "streamcraft_recording": "release artifact 35 frames/1.17s for 5s; frame padding fix in v0.2.1"
+      "streamcraft_recording": "v0.2.1 artifact still 7fps (cache suspicion); v0.2.2 version bump forces rebuild"
     }
   }
 }
