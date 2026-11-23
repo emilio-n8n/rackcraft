@@ -68,7 +68,7 @@
     {
       "id": "mathcraft",
       "repo": "emilio-n8n/mathcraft",
-      "main": "67adb8d",
+      "main": "baa401a",
       "tag": "v0.1.0",
       "release": "published",
       "wave": "A",
@@ -78,9 +78,13 @@
       "release_v0_2_0": "validated",
       "release_v0_2_0_run": 45058732163,
       "tag_v0_2_1": "v0.2.1",
-      "release_v0_2_1": "in progress",
+      "release_v0_2_1": "validated",
       "release_v0_2_1_run": 45192625027,
-      "fix_v0_2_1": "a0c5252"
+      "fix_v0_2_1": "a0c5252",
+      "tag_v0_2_2": "v0.2.2",
+      "release_v0_2_2": "in progress",
+      "release_v0_2_2_run": 45194938876,
+      "fix_v0_2_2": "d9c447b"
     },
     {
       "id": "mastercraft",
@@ -301,7 +305,8 @@
         "streamcraft PNG out",
         "musiccraft MIDI+WAV out"
       ],
-      "mathcraft_bug": "project path lost on open, fixed in v0.2.1"
+      "mathcraft_bug": "project path lost on open, fixed in v0.2.1",
+      "mathcraft_bug_2": "CSV import panel unreachable, fixed in v0.2.2"
     }
   }
 }

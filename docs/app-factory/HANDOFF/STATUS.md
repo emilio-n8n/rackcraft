@@ -18,7 +18,7 @@
 | DiagramCraft | `c3722fe` | `f6e8929` | ✅ publiée | Vague A terminée |
 | ProjectCraft | `847ec5d` | `00bdd07` | ✅ publiée | Vague A terminée |
 | FormCraft | `59f0850` | `79fe16c` | ✅ publiée | Vague A terminée |
-| MathCraft | `67adb8d` | `1099943` | ✅ publiée | Vague A terminée |
+| MathCraft | `baa401a` | `1099943` | ✅ publiée | Vague A terminée |
 | MasterCraft | `bb09a91` | `bfddbde` | ✅ publiée | Vague A terminée |
 | CircuitCraft | `cd71ed6` | `99ef5ae` | ✅ publiée | Vague B terminée |
 | GeoCraft | `a169b10` | `dd771be` | ✅ publiée | Vague B terminée |
@@ -45,7 +45,7 @@ de vague A vont ajouter de nouveaux commits.
 | DiagramCraft | `c3722fe` | ✅ | Livré (v0.2.1) |
 | ProjectCraft | `847ec5d` | ✅ | Livré |
 | FormCraft | `59f0850` | ✅ | Livré |
-| MathCraft | `67adb8d` | ✅ | Livré (v0.2.1) |
+| MathCraft | `baa401a` | ✅ | Livré (v0.2.2) |
 | MasterCraft | `bb09a91` | ✅ | Livré |
 | CircuitCraft | `cd71ed6` | ✅ | Livré (v0.2 fonctionnelle) |
 | SimCraft | `a76e96d` | ✅ | Livré (v0.2.1) |
@@ -79,7 +79,8 @@ L'audit E2E sur les binaires publiés a trouvé trois défauts réels :
 | --- | --- | --- | --- |
 | DiagramCraft | `1fdab24` | `v0.2.1` (`c3722fe`) | ✅ validée, 7 assets |
 | SimCraft | `976db22` | `v0.2.1` (`a76e96d`) | ✅ validée, 7 assets |
-| MathCraft | `a0c5252` | `v0.2.1` (`67adb8d`) | en cours |
+| MathCraft | `a0c5252` | `v0.2.1` (`67adb8d`) | ✅ validée |
+| MathCraft | `d9c447b` | `v0.2.2` (`baa401a`) | en cours |
 
 Détail et couverture : `E2E.md`.
 

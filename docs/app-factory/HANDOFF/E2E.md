@@ -125,3 +125,12 @@ Le titre restait « Untitled » et `Save` rouvrait « Save As ». Remplacé par
 `host.history_mut().replace(document)`, qui conserve le chemin. Vérifié :
 titre `persist-mathcraft.json — MathCraft`, `Ctrl+S` écrit en place, export PNG
 960×540.
+
+### Deuxième correctif MathCraft — panneau CSV
+
+Le panneau « Import CSV points » était sous le bas de la fenêtre : le panneau
+central ne scrollait pas et le panneau CSV était inaccessible à 900 px. Déplacé
+dans le panneau gauche, lui-même rendu scrollable, en `d9c447b` ; release
+`v0.2.2` (`baa401a`). Vérifié en UI : saisie de 4 points `0,0` … `3,9`, clic
+Import → « Imported 4 points into 'series' », série listée et courbe ajoutée au
+tracé.
