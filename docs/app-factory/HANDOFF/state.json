@@ -158,12 +158,13 @@
         "fcab0e9"
       ],
       "tag_v0_2_2": "v0.2.2",
-      "release_v0_2_2": "in progress",
+      "release_v0_2_2": "validated",
       "release_v0_2_2_run": 45204467771,
       "fix_v0_2_2": [
         "34e3115",
         "fcab0e9"
-      ]
+      ],
+      "recording_limitation": "5s -> ~34 frames/1.13s in published release; dedicated capture thread needed"
     },
     {
       "id": "simcraft",

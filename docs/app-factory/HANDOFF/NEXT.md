@@ -5,9 +5,10 @@
 1. Les 10 releases `v0.1.0` sont publiées, avec 7 assets, checksums vérifiés
    et `craft-release-check github` à 0 warning.
 
-2. Valider la release `v0.2.1` de StreamCraft et tester l’enregistrement sur le
-   binaire publié. Restent : matériel audio/webcam, Windows/macOS à
-   l'exécution.
+2. StreamCraft : remplacer la capture dépendante de l’UI par un thread dédié
+   qui pousse les frames à 30 fps, puis retester la durée (5 s → ~150 frames).
+
+3. Restent : matériel audio/webcam, Windows/macOS à l'exécution.
 
 3. Suivre la PR #9 de l’index communautaire :
    https://github.com/YalKouassi/craft-unofficial-launcher/pull/9
