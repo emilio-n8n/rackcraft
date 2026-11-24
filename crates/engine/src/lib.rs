@@ -18,8 +18,8 @@ pub mod units;
 pub use bom::{Bom, BomLine};
 pub use connector::{Arrow, Connector, ConnectorEnd, ConnectorId, LineStyle, Routing};
 pub use document::{
-    Canvas, ConnectionPoint, Document, DrawPath, Item, ItemId, MountSpec, PathCommand,
-    ProjectFields, ShapeField, StencilRef,
+    CANVAS_GROW_MARGIN_MM, Canvas, ConnectionPoint, Document, DrawPath, Item, ItemId, MountSpec,
+    PathCommand, ProjectFields, ShapeField, StencilRef,
 };
 pub use error::EngineError;
 pub use geometry::{Color, Point, Rect, Size};

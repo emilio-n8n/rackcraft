@@ -8,8 +8,8 @@ use eframe::egui::{
     Sense, Stroke, pos2, vec2,
 };
 use rackcraft_engine::{
-    Connector, ConnectorEnd, ConnectorId, Document, DrawPath, History, ItemId, Point,
-    ProjectFields, Rect as DocRect, Routing, SnapKind, SnapResult, SnapSettings, snap_item,
+    CANVAS_GROW_MARGIN_MM, Canvas, Connector, ConnectorEnd, ConnectorId, Document, DrawPath,
+    History, ItemId, Point, ProjectFields, Routing, SnapKind, SnapResult, SnapSettings, snap_item,
 };
 use rackcraft_io::StencilLibrary;
 
@@ -326,7 +326,7 @@ impl RackCraftApp {
             UiAction::ExportPdf => self.export_pdf(),
             UiAction::Fit => {
                 self.view.initialized = false;
-                self.status = Status::info("Canvas fitted to window");
+                self.status = Status::info("Content fitted to window");
             }
             UiAction::Help => {
                 self.show_help = !self.show_help;
@@ -705,26 +705,25 @@ impl RackCraftApp {
         let cursor = self.view.screen_to_doc(rect.min, screen);
         let mut item = master.to_item(&library_name, Point::default());
         self.append_materialized(key, &mut item);
-        let canvas_rect = DocRect::new(
-            0.0,
-            0.0,
-            self.history.document().canvas.width_mm,
-            self.history.document().canvas.height_mm,
-        );
+        let canvas = self.history.document().canvas.clone();
         let desired = Point::new(
-            cursor.x - item.size.width * 0.5,
-            cursor.y - item.size.height * 0.5,
+            (cursor.x - item.size.width * 0.5).max(0.0),
+            (cursor.y - item.size.height * 0.5).max(0.0),
         );
-        let desired = canvas_rect.clamp_position(item.size, desired);
         let settings = self.snap_settings();
         let snap = snap_item(self.history.document(), &item, desired, &settings);
         item.position = snap.position;
+        let grows_canvas =
+            item.bounds().right() > canvas.width_mm || item.bounds().bottom() > canvas.height_mm;
         let item_name = item.name.clone();
         let mut new_id = None;
         self.history.apply(|doc| {
             new_id = Some(doc.add_item(item));
         });
         if let Some(id) = new_id {
+            if grows_canvas {
+                self.view.initialized = false;
+            }
             self.select(Some(id));
             self.tool_mode = ToolMode::Select;
             self.browser.armed = None;
@@ -1135,7 +1134,8 @@ impl RackCraftApp {
                 self.canvas_rect = Some(rect);
                 {
                     let document = self.history.document();
-                    self.view.ensure_fit(rect, &document.canvas);
+                    let fit_canvas = fitting_canvas(document);
+                    self.view.ensure_fit(rect, &fit_canvas);
                 }
 
                 let space_down = !ui.ctx().egui_wants_keyboard_input()
@@ -1229,15 +1229,10 @@ impl RackCraftApp {
                         document.item(id).map(|item| {
                             let delta_x = f64::from((pointer.x - start_pointer.x) / self.view.zoom);
                             let delta_y = f64::from((pointer.y - start_pointer.y) / self.view.zoom);
-                            let desired =
-                                Point::new(start_position.x + delta_x, start_position.y + delta_y);
-                            let canvas = DocRect::new(
-                                0.0,
-                                0.0,
-                                document.canvas.width_mm,
-                                document.canvas.height_mm,
+                            let desired = Point::new(
+                                (start_position.x + delta_x).max(0.0),
+                                (start_position.y + delta_y).max(0.0),
                             );
-                            let desired = canvas.clamp_position(item.size, desired);
                             let snap = snap_item(document, item, desired, &self.snap_settings());
                             (snap, (pointer - start_pointer).length() > 3.0)
                         })
@@ -1365,16 +1360,9 @@ impl RackCraftApp {
                     }
                     let cursor = self.view.screen_to_doc(rect.min, pointer);
                     let desired = Point::new(
-                        cursor.x - item.size.width * 0.5,
-                        cursor.y - item.size.height * 0.5,
+                        (cursor.x - item.size.width * 0.5).max(0.0),
+                        (cursor.y - item.size.height * 0.5).max(0.0),
                     );
-                    let canvas_rect = DocRect::new(
-                        0.0,
-                        0.0,
-                        document.canvas.width_mm,
-                        document.canvas.height_mm,
-                    );
-                    let desired = canvas_rect.clamp_position(item.size, desired);
                     let snap = snap_item(document, &item, desired, &self.snap_settings());
                     item.position = snap.position;
                     Some((item, snap.position, snap))
@@ -1464,8 +1452,12 @@ impl RackCraftApp {
                     let id = drag.id;
                     let position = drag.current;
                     self.history.apply(|doc| {
-                        if let Some(item) = doc.item_mut(id) {
+                        let bounds = doc.item_mut(id).map(|item| {
                             item.position = position;
+                            item.bounds()
+                        });
+                        if let Some(bounds) = bounds {
+                            doc.canvas.grow_to_include(bounds, CANVAS_GROW_MARGIN_MM);
                         }
                     });
                     self.status = Status::success("Item moved");
@@ -1791,6 +1783,14 @@ fn truncate(text: &str, max: usize) -> String {
     }
 }
 
+fn fitting_canvas(document: &Document) -> Canvas {
+    let mut canvas = document.canvas.clone();
+    if let Some(bounds) = document.content_bounds() {
+        canvas.grow_to_include(bounds, CANVAS_GROW_MARGIN_MM);
+    }
+    canvas
+}
+
 fn clamp_canvas_point(document: &Document, point: Point) -> Point {
     Point::new(
         point.x.clamp(0.0, document.canvas.width_mm.max(0.0)),
@@ -1864,5 +1864,26 @@ mod tests {
             with_extension(PathBuf::from("inventory"), "xlsx"),
             PathBuf::from("inventory.xlsx")
         );
+    }
+
+    #[test]
+    fn fitting_canvas_includes_a_42u_rack() {
+        use rackcraft_engine::{Item, Size, StencilRef};
+
+        let mut document = Document::new("Test");
+        let before = document.canvas.height_mm;
+        document.add_item(Item::new(
+            StencilRef {
+                library: "Test".into(),
+                master_id: "rack".into(),
+                name: "42U rack".into(),
+            },
+            "42U rack",
+            Point::new(0.0, 0.0),
+            Size::new(600.0, 42.0 * 44.45),
+        ));
+        let canvas = fitting_canvas(&document);
+        assert!(canvas.height_mm >= 42.0 * 44.45);
+        assert!(canvas.height_mm > before);
     }
 }

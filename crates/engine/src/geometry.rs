@@ -125,6 +125,16 @@ impl Rect {
             && self.bottom() > other.top()
     }
 
+    /// Smallest rectangle that contains both rectangles.
+    #[must_use]
+    pub fn union(self, other: Self) -> Self {
+        let left = self.left().min(other.left());
+        let top = self.top().min(other.top());
+        let right = self.right().max(other.right());
+        let bottom = self.bottom().max(other.bottom());
+        Self::new(left, top, right - left, bottom - top)
+    }
+
     /// Clamp a position so a rectangle of `size` stays inside this rectangle
     /// when possible. If `size` is larger, its top-left is clamped to the top-left.
     #[must_use]
@@ -217,6 +227,14 @@ mod tests {
             Some(Color::rgba(0x11, 0x22, 0x33, 0x44))
         );
         assert_eq!(Color::from_hex("#12345"), None);
+    }
+
+    #[test]
+    fn union_covers_both_rectangles() {
+        let a = Rect::new(10.0, 20.0, 30.0, 40.0);
+        let b = Rect::new(50.0, 5.0, 10.0, 10.0);
+        assert_eq!(a.union(b), Rect::new(10.0, 5.0, 50.0, 55.0));
+        assert_eq!(a.union(a), a);
     }
 
     #[test]

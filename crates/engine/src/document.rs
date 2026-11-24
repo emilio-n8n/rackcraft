@@ -500,6 +500,9 @@ const fn default_canvas_color() -> Color {
     Color::rgb(21, 24, 30)
 }
 
+/// Extra room kept around content when the canvas grows automatically.
+pub const CANVAS_GROW_MARGIN_MM: f64 = 80.0;
+
 impl Default for Canvas {
     fn default() -> Self {
         Self {
@@ -509,6 +512,25 @@ impl Default for Canvas {
             show_grid: true,
             background: default_canvas_color(),
         }
+    }
+}
+
+impl Canvas {
+    /// Grow the page so `bounds` fits with `margin` millimetres to spare.
+    ///
+    /// The canvas only grows; it never shrinks, so saved documents keep their
+    /// size and undo does not fight the user.
+    pub fn grow_to_include(&mut self, bounds: Rect, margin: f64) {
+        if !bounds.x.is_finite()
+            || !bounds.y.is_finite()
+            || !bounds.width.is_finite()
+            || !bounds.height.is_finite()
+        {
+            return;
+        }
+        let margin = margin.max(0.0);
+        self.width_mm = self.width_mm.max(bounds.right() + margin).max(1.0);
+        self.height_mm = self.height_mm.max(bounds.bottom() + margin).max(1.0);
     }
 }
 
@@ -569,7 +591,17 @@ impl Document {
         }
     }
 
+    /// Axis-aligned box that contains every placed item, in millimetres.
+    #[must_use]
+    pub fn content_bounds(&self) -> Option<Rect> {
+        self.items.iter().map(Item::bounds).reduce(Rect::union)
+    }
+
     /// Add an item and assign it a fresh id.
+    ///
+    /// The canvas grows automatically when the item extends past the page, so
+    /// a 42U rack or another large stencil stays usable without a fixed page
+    /// size.
     pub fn add_item(&mut self, mut item: Item) -> ItemId {
         let id = self.next_id.max(1);
         self.next_id = id + 1;
@@ -577,6 +609,8 @@ impl Document {
         if item.z_index == 0 {
             item.z_index = self.items.len() as i32;
         }
+        self.canvas
+            .grow_to_include(item.bounds(), CANVAS_GROW_MARGIN_MM);
         self.items.push(item);
         id
     }
@@ -685,6 +719,39 @@ mod tests {
         item.set_shape_value("Part Number", "RC-PP-24");
         item.connection_points = vec![ConnectionPoint::new("Port 1", 0.25, 0.5)];
         item
+    }
+
+    #[test]
+    fn add_grows_the_canvas_for_a_42u_rack() {
+        let mut doc = Document::new("Test");
+        let rack = Item::new(
+            StencilRef {
+                library: "Test".into(),
+                master_id: "rack".into(),
+                name: "42U rack".into(),
+            },
+            "42U rack",
+            Point::new(0.0, 0.0),
+            Size::new(600.0, 42.0 * 44.45),
+        );
+        doc.add_item(rack);
+        assert!(
+            doc.canvas.height_mm >= 42.0 * 44.45 + CANVAS_GROW_MARGIN_MM,
+            "canvas height {} should include the 42U rack",
+            doc.canvas.height_mm
+        );
+        assert_eq!(
+            doc.content_bounds(),
+            Some(Rect::new(0.0, 0.0, 600.0, 42.0 * 44.45))
+        );
+    }
+
+    #[test]
+    fn canvas_does_not_grow_for_a_small_item() {
+        let mut doc = Document::new("Test");
+        let before = doc.canvas.clone();
+        doc.add_item(sample_item());
+        assert_eq!(doc.canvas, before);
     }
 
     #[test]
