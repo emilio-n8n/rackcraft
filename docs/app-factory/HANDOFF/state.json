@@ -2,9 +2,12 @@
   "generated": "2026-11-22",
   "rackcraft": {
     "repo": "emilio-n8n/rackcraft",
-    "commit": "f6459da",
+    "commit": "2618273",
     "status": "outside ArtCraft portfolio",
-    "note": "Projet d'un ami, ne pas publier dans ArtCraft; correctifs ciblés uniquement à la demande du propriétaire. Dernier: canevas auto-extensible pour stencils 42U (24/11/2026)."
+    "note": "Projet d'un ami, ne pas publier dans ArtCraft; correctifs ciblés uniquement à la demande du propriétaire. Dernier: canevas auto-extensible pour stencils 42U (24/11/2026).",
+    "tag": "v0.2.2",
+    "release": "published",
+    "appimage": "rackcraft-x86_64.AppImage"
   },
   "craftkit": {
     "repo": "emilio-n8n/craftkit",
