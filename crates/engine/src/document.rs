@@ -696,6 +696,12 @@ impl Document {
             .unwrap_or(0);
         document.next_connector_id = document.next_connector_id.max(max_connector + 1).max(1);
         document.schema_version = SCHEMA_VERSION;
+        // Repair documents saved before the canvas grew with their content.
+        if let Some(bounds) = document.content_bounds() {
+            document
+                .canvas
+                .grow_to_include(bounds, CANVAS_GROW_MARGIN_MM);
+        }
         Ok(document)
     }
 }
@@ -752,6 +758,26 @@ mod tests {
         let before = doc.canvas.clone();
         doc.add_item(sample_item());
         assert_eq!(doc.canvas, before);
+    }
+
+    #[test]
+    fn loading_an_old_document_repairs_the_canvas() {
+        let mut doc = Document::new("Test");
+        doc.add_item(Item::new(
+            StencilRef {
+                library: "Test".into(),
+                master_id: "rack".into(),
+                name: "42U rack".into(),
+            },
+            "42U rack",
+            Point::new(0.0, 0.0),
+            Size::new(600.0, 42.0 * 44.45),
+        ));
+        doc.canvas.width_mm = 760.0;
+        doc.canvas.height_mm = 1420.0;
+        let json = doc.to_json_pretty().expect("serialize");
+        let loaded = Document::from_json(&json).expect("load");
+        assert!(loaded.canvas.height_mm >= 42.0 * 44.45);
     }
 
     #[test]
