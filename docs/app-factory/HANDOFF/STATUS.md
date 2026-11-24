@@ -7,7 +7,7 @@
 | CraftKit `main` | `8b88798` |
 | CraftKit tag bibliothèque | `v0.1.0` |
 | Tests CraftKit | 35 |
-| RackCraft | `8515ee6`, hors portefeuille, correctif canevas 42U |
+| RackCraft | `f6459da`, hors portefeuille, correctif canevas 42U |
 | Agents simultanés max | **5** |
 | Modèle agents | `opencode-go/hy4-flash-free` |
 

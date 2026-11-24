@@ -139,10 +139,11 @@ Aucune n’est un clone complet d’un logiciel commercial.
 
 ## RackCraft — hors périmètre
 
-- Dépôt : `emilio-n8n/rackcraft`, `8515ee6`.
+- Dépôt : `emilio-n8n/rackcraft`, `f6459da`.
 - Application de référence : cas d’usage trop spécifique (baies, Visio, EMF,
   BOM), projet d’un ami, non destiné à ArtCraft.
 - Ne pas ajouter `craft-app.json`, ne pas tagger, ne pas migrer vers CraftKit
   sans demande explicite.
 - Correctif ciblé du 24/11/2026 : canevas auto-extensible pour les stencils
-  42U (Fit sur le contenu, page agrandie à l’ajout/déplacement).
+  42U (Fit sur le contenu, page agrandie à l’ajout/déplacement, réparation à
+  l’ouverture des anciens projets).

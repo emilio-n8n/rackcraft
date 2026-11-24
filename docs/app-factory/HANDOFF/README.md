@@ -12,7 +12,7 @@ ajouter `craft-app.json`, ne pas le tagger, ne pas le publier dans ArtCraft.
 
 Des correctifs ciblés restent possibles **à la demande du propriétaire**. Le
 24 novembre 2026, le canevas a été rendu auto-extensible pour les stencils
-42U (`8515ee6`). Sans demande explicite, ne pas modifier RackCraft.
+42U (`f6459da`). Sans demande explicite, ne pas modifier RackCraft.
 
 ## Ce qui existe
 

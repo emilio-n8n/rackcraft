@@ -7,7 +7,7 @@
 - Il reste la référence technique et l’origine de CraftKit.
 - Ne pas y ajouter `craft-app.json`, ne pas le tagger, ne pas le migrer.
 - Des correctifs ciblés sont possibles à la demande du propriétaire. Dernier :
-  canevas auto-extensible pour les stencils 42U, commit `8515ee6` (24/11/2026).
+  canevas auto-extensible pour les stencils 42U, commit `f6459da` (24/11/2026).
 
 ## Concurrence des agents
 
