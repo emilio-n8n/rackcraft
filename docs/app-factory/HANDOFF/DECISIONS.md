@@ -2,11 +2,12 @@
 
 ## RackCraft
 
-- **On ne touche plus à RackCraft.** C’est le projet d’un ami, trop spécifique
-  (baies, Visio, câblage) pour être publié dans ArtCraft.
-- Il reste la référence technique et l’origine de CraftKit, mais il n’est pas
-  dans le portefeuille ArtCraft.
+- **RackCraft reste hors du portefeuille ArtCraft.** C’est le projet d’un ami,
+  trop spécifique (baies, Visio, câblage) pour être publié dans ArtCraft.
+- Il reste la référence technique et l’origine de CraftKit.
 - Ne pas y ajouter `craft-app.json`, ne pas le tagger, ne pas le migrer.
+- Des correctifs ciblés sont possibles à la demande du propriétaire. Dernier :
+  canevas auto-extensible pour les stencils 42U, commit `8515ee6` (24/11/2026).
 
 ## Concurrence des agents
 

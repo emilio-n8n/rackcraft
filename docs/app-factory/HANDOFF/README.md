@@ -4,12 +4,15 @@
 **Objet :** tout ce qu'un nouvel agent doit savoir pour reprendre sans
 l'historique du chat.
 
-## Règle absolue
+## Règle pour RackCraft
 
-**Ne pas modifier RackCraft.** C'est le projet d'un ami, trop spécifique
-(baies, Visio, câblage) pour être publié dans ArtCraft. Il a servi de référence
-technique, il reste à part. Le dépôt RackCraft est à `372f81a` et ne doit plus
-évoluer pour ce portefeuille.
+RackCraft est le projet d'un ami, trop spécifique (baies, Visio, câblage) pour
+être publié dans ArtCraft. Il reste **hors du portefeuille** : ne pas lui
+ajouter `craft-app.json`, ne pas le tagger, ne pas le publier dans ArtCraft.
+
+Des correctifs ciblés restent possibles **à la demande du propriétaire**. Le
+24 novembre 2026, le canevas a été rendu auto-extensible pour les stencils
+42U (`8515ee6`). Sans demande explicite, ne pas modifier RackCraft.
 
 ## Ce qui existe
 

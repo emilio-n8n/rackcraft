@@ -32,13 +32,14 @@
 - Certificats Apple Developer ID / Windows Authenticode : aucun pour l’instant.
 - Faut-il ajouter AppImage, `.deb`, `.rpm`, `.msi`, `.dmg` ?
 - Faut-il migrer RackCraft vers CraftKit ? **Non**, RackCraft reste hors
-  périmètre.
+  périmètre. Des correctifs ciblés restent possibles à la demande du
+  propriétaire.
 - Faut-il tester 6 agents simultanés ? Oui, après la vague B, avec une petite
   tâche et surveillance des `429`.
 
 ## Ne pas faire
 
-- Ne pas toucher à RackCraft.
+- Ne pas modifier RackCraft sans demande explicite de son propriétaire.
 - Ne pas dépasser 5 agents simultanés sans test.
 - Ne pas créer de tag `v0.2.0` avant que la productisation soit vérifiée.
 - Ne pas copier de code/assets propriétaires.
