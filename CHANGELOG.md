@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.2 — 2026-11-24
+
+- **Large stencils / 42U racks:** the page grows automatically when an item is
+  placed, moved or loaded past its edge. Placement is no longer clamped to the
+  fixed 760 × 1420 mm canvas, so a standard 42U rack (1866.9 mm) fits and stays
+  usable.
+- **Fit to content:** the Fit action now frames the page union all item bounds,
+  instead of the page alone.
+- **Old projects:** opening a document repairs its canvas when items extend
+  beyond the saved page.
+- **Tests:** 44 engine tests, 33 io tests and 7 UI tests, including a 42U canvas
+  regression test.
+
 ## 0.2.1 — 2026-11-22
 
 - **Cisco/vendor EMF artwork:** Visio `.vssx` masters whose visuals live in
