@@ -357,14 +357,12 @@
     "provider_limit": 5,
     "active": [
       "diagramcraft",
-      "streamcraft",
       "mastercraft",
       "circuitcraft",
-      "geocraft"
-    ],
-    "queued": [
+      "geocraft",
       "simcraft"
     ],
+    "queued": [],
     "reboot": "VPS restart killed agents and cleared /tmp; toolchain reinstall in progress; five active sessions relaunched",
     "results": {
       "musiccraft": {
@@ -388,6 +386,13 @@
       "projectcraft": {
         "commit": "cd5a723",
         "tests": 57,
+        "ci": "success",
+        "status": "done"
+      },
+      "streamcraft": {
+        "commit": "0861d9d",
+        "tests": 53,
+        "x11_tests": 2,
         "ci": "success",
         "status": "done"
       }
