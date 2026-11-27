@@ -356,19 +356,26 @@
     ],
     "provider_limit": 5,
     "active": [
+      "diagramcraft",
       "projectcraft",
       "formcraft",
       "mathcraft",
-      "streamcraft",
-      "musiccraft"
+      "streamcraft"
     ],
     "queued": [
-      "diagramcraft",
       "mastercraft",
       "circuitcraft",
       "geocraft",
       "simcraft"
     ],
-    "reboot": "VPS restart killed agents and cleared /tmp; toolchain reinstall in progress; five active sessions relaunched"
+    "reboot": "VPS restart killed agents and cleared /tmp; toolchain reinstall in progress; five active sessions relaunched",
+    "results": {
+      "musiccraft": {
+        "commit": "4c7f6dc",
+        "tests": 51,
+        "ci": "success",
+        "status": "done"
+      }
+    }
   }
 }
