@@ -177,12 +177,12 @@ Ressources partagées : `/tmp/cargo-target`, `CARGO_BUILD_JOBS=1`, verrou Cargo.
 
 ### File d'attente provider (limite 5)
 
-Actives : DiagramCraft, ProjectCraft, StreamCraft, MasterCraft, CircuitCraft.
+Actives : DiagramCraft, StreamCraft, MasterCraft, CircuitCraft, GeoCraft.
 
-En attente (refus quota provider) : GeoCraft, SimCraft.
+En attente (refus quota provider) : SimCraft.
 Terminés : MusicCraft (`4c7f6dc`, 51 tests), FormCraft (`ce8fde9`, 27 tests),
-MathCraft (`fe864ec`, 84 tests), CI vertes. Relancer les apps en attente dès
-qu'un agent actif rend son slot.
+MathCraft (`fe864ec`, 84 tests), ProjectCraft (`cd5a723`, 57 tests), CI vertes.
+Relancer les apps en attente dès qu'un agent actif rend son slot.
 
 ### Redémarrage VPS
 

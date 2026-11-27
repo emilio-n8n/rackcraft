@@ -357,13 +357,12 @@
     "provider_limit": 5,
     "active": [
       "diagramcraft",
-      "projectcraft",
       "streamcraft",
       "mastercraft",
-      "circuitcraft"
+      "circuitcraft",
+      "geocraft"
     ],
     "queued": [
-      "geocraft",
       "simcraft"
     ],
     "reboot": "VPS restart killed agents and cleared /tmp; toolchain reinstall in progress; five active sessions relaunched",
@@ -383,6 +382,12 @@
       "mathcraft": {
         "commit": "fe864ec",
         "tests": 84,
+        "ci": "success",
+        "status": "done"
+      },
+      "projectcraft": {
+        "commit": "cd5a723",
+        "tests": 57,
         "ci": "success",
         "status": "done"
       }
