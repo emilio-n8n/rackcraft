@@ -335,7 +335,7 @@
   "bug_hunt_2026_11_27": {
     "model": "opencode-go/hungerg-free",
     "concurrent": 5,
-    "status": "in_progress",
+    "status": "in_progress_after_reboot",
     "sessions": {
       "diagramcraft": "ses_de20ef711ffeqIAFrD52jBu6Rf",
       "projectcraft": "ses_de20ef70bffe4ZytuO1Ul83kUb",
@@ -368,6 +368,7 @@
       "circuitcraft",
       "geocraft",
       "simcraft"
-    ]
+    ],
+    "reboot": "VPS restart killed agents and cleared /tmp; toolchain reinstall in progress; five active sessions relaunched"
   }
 }

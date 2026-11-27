@@ -181,3 +181,9 @@ Actives : ProjectCraft, FormCraft, MathCraft, StreamCraft, MusicCraft.
 
 En attente (refus quota provider) : DiagramCraft, MasterCraft, CircuitCraft,
 GeoCraft, SimCraft. Les relancer dès qu'un agent actif rend son slot.
+
+### Redémarrage VPS
+
+Le VPS a redémarré : les 5 agents actifs ont été coupés et `/tmp` a été vidé.
+L'outillage est réinstallé et les 5 sessions actives ont été relancées. Les 5
+apps en attente le restent jusqu'à la libération d'un slot provider.
