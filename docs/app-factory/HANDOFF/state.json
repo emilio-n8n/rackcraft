@@ -356,18 +356,18 @@
     ],
     "provider_limit": 5,
     "active": [
-      "diagramcraft",
       "projectcraft",
       "formcraft",
       "mathcraft",
-      "mastercraft"
+      "streamcraft",
+      "musiccraft"
     ],
     "queued": [
+      "diagramcraft",
+      "mastercraft",
       "circuitcraft",
       "geocraft",
-      "streamcraft",
-      "simcraft",
-      "musiccraft"
+      "simcraft"
     ]
   }
 }

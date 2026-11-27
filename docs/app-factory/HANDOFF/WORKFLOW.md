@@ -177,6 +177,7 @@ Ressources partagées : `/tmp/cargo-target`, `CARGO_BUILD_JOBS=1`, verrou Cargo.
 
 ### File d'attente provider (limite 5)
 
-Actives : DiagramCraft, ProjectCraft, FormCraft, MathCraft, MasterCraft.
+Actives : ProjectCraft, FormCraft, MathCraft, StreamCraft, MusicCraft.
 
-En attente : CircuitCraft, GeoCraft, StreamCraft, SimCraft, MusicCraft.
+En attente (refus quota provider) : DiagramCraft, MasterCraft, CircuitCraft,
+GeoCraft, SimCraft. Les relancer dès qu'un agent actif rend son slot.
