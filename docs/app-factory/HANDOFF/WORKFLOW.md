@@ -149,3 +149,26 @@ convert /tmp/<slug>.xwd /tmp/<slug>.png
 
 Ne jamais utiliser `pkill -f "Xvfb :99"` depuis une commande qui contient cette
 chaîne : cela peut tuer le shell lui-même. Utiliser un PID.
+
+## Audit HungerG free — 27 novembre 2026
+
+Les 10 apps ont été lancées en audit/fix simultané à la demande de
+l'utilisateur, modèle `opencode-go/hungerg-free`. Chaque agent possède une seule
+app, doit reproduire/fixer des bugs, ajouter des tests, faire une amélioration
+produit, pousser `main` avec CI verte, sans tag/release ni modification de
+CraftKit/RackCraft.
+
+| App | Session |
+| --- | --- |
+| DiagramCraft | `ses_de20ef711ffeqIAFrD52jBu6Rf` |
+| ProjectCraft | `ses_de20ef70bffe4ZytuO1Ul83kUb` |
+| FormCraft | `ses_de20ef6c8ffeqH0VHDW751bdU1` |
+| MathCraft | `ses_de20ef671ffeGcDSyDKjJAHesd` |
+| MasterCraft | `ses_de20ef5e7ffeskjQcSWg8s9Ptu` |
+| CircuitCraft | `ses_de20ef5e3ffelS1tJaLm7itu5M` |
+| GeoCraft | `ses_de20ef5deffe0paZvhA9376czo` |
+| StreamCraft | `ses_de20ef5d9ffe78cBrGS4MWj7gA` |
+| SimCraft | `ses_de20ef5d4ffeQn448ygGnWdexX` |
+| MusicCraft | `ses_de20ef5ceffebRAj2xDygPG7n9` |
+
+Ressources partagées : `/tmp/cargo-target`, `CARGO_BUILD_JOBS=1`, verrou Cargo.

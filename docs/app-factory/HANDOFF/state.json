@@ -331,5 +331,28 @@
       "wayland": "10/10 start, create xdg_surface and commit buffers, no panic",
       "streamcraft_recording": "v0.2.2 published binary: 138 frames/4.60s for 5s; earlier measurement used the wrong artifact"
     }
+  },
+  "bug_hunt_2026_11_27": {
+    "model": "opencode-go/hungerg-free",
+    "concurrent": 10,
+    "status": "in_progress",
+    "sessions": {
+      "diagramcraft": "ses_de20ef711ffeqIAFrD52jBu6Rf",
+      "projectcraft": "ses_de20ef70bffe4ZytuO1Ul83kUb",
+      "formcraft": "ses_de20ef6c8ffeqH0VHDW751bdU1",
+      "mathcraft": "ses_de20ef671ffeGcDSyDKjJAHesd",
+      "mastercraft": "ses_de20ef5e7ffeskjQcSWg8s9Ptu",
+      "circuitcraft": "ses_de20ef5e3ffelS1tJaLm7itu5M",
+      "geocraft": "ses_de20ef5deffe0paZvhA9376czo",
+      "streamcraft": "ses_de20ef5d9ffe78cBrGS4MWj7gA",
+      "simcraft": "ses_de20ef5d4ffeQn448ygGnWdexX",
+      "musiccraft": "ses_de20ef5ceffebRAj2xDygPG7n9"
+    },
+    "constraints": [
+      "no tags/releases",
+      "no CraftKit/RackCraft changes",
+      "preserve craft-app.json and compatibility",
+      "tests+clippy+CI green"
+    ]
   }
 }
