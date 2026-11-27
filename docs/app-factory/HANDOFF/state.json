@@ -358,12 +358,11 @@
     "active": [
       "diagramcraft",
       "projectcraft",
-      "formcraft",
       "mathcraft",
-      "streamcraft"
+      "streamcraft",
+      "mastercraft"
     ],
     "queued": [
-      "mastercraft",
       "circuitcraft",
       "geocraft",
       "simcraft"
@@ -373,6 +372,12 @@
       "musiccraft": {
         "commit": "4c7f6dc",
         "tests": 51,
+        "ci": "success",
+        "status": "done"
+      },
+      "formcraft": {
+        "commit": "ce8fde9",
+        "tests": 27,
         "ci": "success",
         "status": "done"
       }
