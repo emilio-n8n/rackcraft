@@ -152,11 +152,13 @@ chaîne : cela peut tuer le shell lui-même. Utiliser un PID.
 
 ## Audit HungerG free — 27 novembre 2026
 
-Les 10 apps ont été lancées en audit/fix simultané à la demande de
-l'utilisateur, modèle `opencode-go/hungerg-free`. Chaque agent possède une seule
-app, doit reproduire/fixer des bugs, ajouter des tests, faire une amélioration
-produit, pousser `main` avec CI verte, sans tag/release ni modification de
-CraftKit/RackCraft.
+Les 10 apps ont été confiées à des agents d'audit/fix modèle
+`opencode-go/hungerg-free`. Le provider limite toutefois à **5 requêtes
+simultanées** : les 5 premières apps sont actives, les 5 autres sont en file
+d'attente et seront lancées dès qu'un slot se libère. Chaque agent possède une
+seule app, doit reproduire/fixer des bugs, ajouter des tests, faire une
+amélioration produit, pousser `main` avec CI verte, sans tag/release ni
+modification de CraftKit/RackCraft.
 
 | App | Session |
 | --- | --- |
@@ -172,3 +174,9 @@ CraftKit/RackCraft.
 | MusicCraft | `ses_de20ef5ceffebRAj2xDygPG7n9` |
 
 Ressources partagées : `/tmp/cargo-target`, `CARGO_BUILD_JOBS=1`, verrou Cargo.
+
+### File d'attente provider (limite 5)
+
+Actives : DiagramCraft, ProjectCraft, FormCraft, MathCraft, MasterCraft.
+
+En attente : CircuitCraft, GeoCraft, StreamCraft, SimCraft, MusicCraft.

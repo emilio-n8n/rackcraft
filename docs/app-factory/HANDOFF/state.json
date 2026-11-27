@@ -334,7 +334,7 @@
   },
   "bug_hunt_2026_11_27": {
     "model": "opencode-go/hungerg-free",
-    "concurrent": 10,
+    "concurrent": 5,
     "status": "in_progress",
     "sessions": {
       "diagramcraft": "ses_de20ef711ffeqIAFrD52jBu6Rf",
@@ -353,6 +353,21 @@
       "no CraftKit/RackCraft changes",
       "preserve craft-app.json and compatibility",
       "tests+clippy+CI green"
+    ],
+    "provider_limit": 5,
+    "active": [
+      "diagramcraft",
+      "projectcraft",
+      "formcraft",
+      "mathcraft",
+      "mastercraft"
+    ],
+    "queued": [
+      "circuitcraft",
+      "geocraft",
+      "streamcraft",
+      "simcraft",
+      "musiccraft"
     ]
   }
 }
